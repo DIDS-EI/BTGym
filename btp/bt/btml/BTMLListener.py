@@ -1,14 +1,14 @@
 # Generated from BTMLParser.g4 by ANTLR 4.13.1
 from antlr4 import *
 
-from obtp.bt.btml.grammar.BTMLParser import BTMLParser
-from obtp.bt.btml.grammar.BTMLParserListener import BTMLParserListener
+from btp.bt.btml.grammar.BTMLParser import BTMLParser
+from btp.bt.btml.grammar.BTMLParserListener import BTMLParserListener
 import shortuuid
 # import py_trees as ptree
-# from mabtpg.behavior_tree.base_nodes import Inverter,Selector,Sequence
-# from mabtpg.behavior_tree.base_nodes.AbsAct import AbsAct
-# from mabtpg.behavior_tree.base_nodes.AbsCond import AbsCond
-from obtp.utils.any_tree_node import AnyTreeNode
+# from btp.behavior_tree.base_nodes import Inverter,Selector,Sequence
+# from btp.behavior_tree.base_nodes.AbsAct import AbsAct
+# from btp.behavior_tree.base_nodes.AbsCond import AbsCond
+from btp.utils.any_tree_node import AnyTreeNode
 
 from .BTML import BTML
 

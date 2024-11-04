@@ -1,5 +1,5 @@
-from obtp.bt.base_nodes.BehaviorNode import BahaviorNode, Status
-from obtp.bt.base_nodes.Action import Action
+from btp.bt.base_nodes.BehaviorNode import BahaviorNode, Status
+from btp.bt.base_nodes.Action import Action
 
 class CompositeAction(Action):
     print_name_prefix = "action "

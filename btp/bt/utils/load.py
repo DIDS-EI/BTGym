@@ -1,8 +1,8 @@
 import py_trees as ptree
-from obtp.bt.btml.bak import btmlCompiler
+from btp.bt.btml.bak import btmlCompiler
 import os
 import importlib.util
-from obtp.utils.path import get_root_path
+from btp.utils.path import get_root_path
 
 def load_btml(btml_path):
     tree_root = btmlCompiler.load(btml_path)
@@ -82,7 +82,7 @@ def load_behavior_tree_lib():
     type_list = ["Action","Condition"]
     behavior_dict = {}
     for type in type_list:
-        path = os.path.join(root_path,"mabtpg.behavior_tree","behavior_lib",type)
+        path = os.path.join(root_path,"btp.behavior_tree","behavior_lib",type)
         behavior_dict[type] = get_classes_from_folder(path)
 
     return behavior_dict

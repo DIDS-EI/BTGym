@@ -1,6 +1,6 @@
 import py_trees as ptree
-from obtp.bt.base_nodes.Condition import Condition, Status
-from obtp.bt.base_nodes.Sequence import Sequence
+from btp.bt.base_nodes.Condition import Condition, Status
+from btp.bt.base_nodes.Sequence import Sequence
 
 class CompositeCondition(Condition):
     print_name_prefix = "condition "

@@ -1,23 +1,23 @@
-# from mabtpg.behavior_tree.scene.scene import Scene
-# from mabtpg.behavior_tree.behavior_tree.btml.btmlCompiler import load
+# from btp.behavior_tree.scene.scene import Scene
+# from btp.behavior_tree.behavior_tree.btml.btmlCompiler import load
 
 import py_trees as ptree
-from obtp.bt.utils.visitor import StatusVisitor
-from obtp.utils.any_tree_node import traverse_and_modify_tree
+from btp.bt.utils.visitor import StatusVisitor
+from btp.utils.any_tree_node import traverse_and_modify_tree
 
-from obtp.bt.utils.draw import render_dot_tree
-from obtp.bt.utils.load import print_tree_from_root
-from obtp.bt.btml import load_btml
+from btp.bt.utils.draw import render_dot_tree
+from btp.bt.utils.load import print_tree_from_root
+from btp.bt.btml import load_btml
 
 import os
-from obtp.utils.path import get_root_path
-from obtp.utils.any_tree_node import new_tree_like
+from btp.utils.path import get_root_path
+from btp.utils.any_tree_node import new_tree_like
 
-from obtp.bt.base_nodes import base_node_map, control_node_map,base_node_type_map,composite_node_map
+from btp.bt.base_nodes import base_node_map, control_node_map,base_node_type_map,composite_node_map
 
 import copy
 import sys
-from obtp.utils.tools import print_colored
+from btp.utils.tools import print_colored
 class BehaviorTree(ptree.trees.BehaviourTree):
     def __init__(self, btml=None, behavior_lib=None):
         if isinstance(btml, str):
@@ -116,8 +116,8 @@ class BehaviorTree(ptree.trees.BehaviourTree):
     #         return node_type(*condition_list)
 
     def new_node(self, node):
-        # from mabtpg.envs.numerical_env.behavior_lib.Action.NumAction import NumAction
-        # from mabtpg.envs.numerical_env.behavior_lib.Condition.NumCondition import NumCondition
+        # from btp.envs.numerical_env.behavior_lib.Action.NumAction import NumAction
+        # from btp.envs.numerical_env.behavior_lib.Condition.NumCondition import NumCondition
         # base_node_map["NumAction"] = NumAction
         # base_node_map["NumCondition"] = NumCondition
 

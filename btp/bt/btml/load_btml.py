@@ -3,9 +3,9 @@ from antlr4 import *
 import tempfile
 from pprint import pprint
 
-from obtp.bt.btml.BTMLListener import BTMLListener
-from obtp.bt.btml.grammar.BTMLLexer import BTMLLexer
-from obtp.bt.btml.grammar.BTMLParser import BTMLParser
+from btp.bt.btml.BTMLListener import BTMLListener
+from btp.bt.btml.grammar.BTMLLexer import BTMLLexer
+from btp.bt.btml.grammar.BTMLParser import BTMLParser
 
 
 def load_btml(btml_path: str, verbose =False):

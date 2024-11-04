@@ -1,6 +1,6 @@
-from obtp.bt.base_nodes.BehaviorNode import BahaviorNode
-from obtp.utils.tools import print_colored
-from obtp.bt import Status
+from btp.bt.base_nodes.BehaviorNode import BahaviorNode
+from btp.utils.tools import print_colored
+from btp.bt import Status
 class Action(BahaviorNode):
     print_name_prefix = "action "
     type = 'Action'

@@ -1,10 +1,10 @@
-from obtp.bt.base_nodes.Action import Action
-from obtp.bt.base_nodes.Condition import Condition
-from obtp.bt.base_nodes.Inverter import Inverter
-from obtp.bt.base_nodes.Fallback import Fallback
-from obtp.bt.base_nodes.Sequence import Sequence
-from obtp.bt.base_nodes.CompositeAction import CompositeAction
-from obtp.bt.base_nodes.CompositeCondition import CompositeCondition
+from btp.bt.base_nodes.Action import Action
+from btp.bt.base_nodes.Condition import Condition
+from btp.bt.base_nodes.Inverter import Inverter
+from btp.bt.base_nodes.Fallback import Fallback
+from btp.bt.base_nodes.Sequence import Sequence
+from btp.bt.base_nodes.CompositeAction import CompositeAction
+from btp.bt.base_nodes.CompositeCondition import CompositeCondition
 
 
 base_node_map = {

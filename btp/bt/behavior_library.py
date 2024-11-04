@@ -1,8 +1,8 @@
 import os
-from obtp.utils import ROOT_PATH
+from btp.utils import ROOT_PATH
 import importlib.util
 import copy
-from obtp.bt.base_nodes import Action,Condition
+from btp.bt.base_nodes import Action,Condition
 
 def get_classes_from_folder(folder_path):
     cls_dict = {}
