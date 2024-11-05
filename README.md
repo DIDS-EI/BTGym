@@ -1,5 +1,5 @@
-# OBTP
-Optimal Behavior Tree Planning
+# BTGym
+A Platform for Behavior Tree Designing and Planning
 
 # 安装
 
