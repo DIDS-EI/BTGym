@@ -69,7 +69,7 @@ make -j 32 # replace
 Fast-Downward是一个经典规划求解器，可以用来求解PDDL问题。
 
 ```shell
-cd btp/downward
+cd btp/planning/downward
 ./build.py
 ```
 
