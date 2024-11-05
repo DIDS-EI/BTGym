@@ -1,14 +1,14 @@
 import time
 
-from mabtpg.btp.base.planning_agent import PlanningAgent
-from mabtpg.btp.cabtp import CABTP
-from mabtpg.envs.gridenv.minigrid.planning_action import PlanningAction
-from mabtpg.utils.tools import extract_parameters_from_action_name,extract_predicate_from_action_name,extract_agent_id_from_action_name
-from mabtpg.behavior_tree.btml.BTML import BTML
-from mabtpg.utils import parse_predicate_logic
-from mabtpg.utils.any_tree_node import AnyTreeNode
-from mabtpg.behavior_tree.constants import NODE_TYPE
-from mabtpg.btp.base.planning_condition import PlanningCondition
+from btp.btp.base.planning_agent import PlanningAgent
+from btp.btp.cabtp import CABTP
+from btp.envs.gridenv.minigrid.planning_action import PlanningAction
+from btp.utils.tools import extract_parameters_from_action_name,extract_predicate_from_action_name,extract_agent_id_from_action_name
+from btp.behavior_tree.btml.BTML import BTML
+from btp.utils import parse_predicate_logic
+from btp.utils.any_tree_node import AnyTreeNode
+from btp.behavior_tree.constants import NODE_TYPE
+from btp.btp.base.planning_condition import PlanningCondition
 
 class CompositeActionPlanner:
     def __init__(self, action_model, composition_action,env=None):

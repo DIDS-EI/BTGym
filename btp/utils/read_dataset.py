@@ -12,4 +12,4 @@ example =
     ......
 ]
 """
-# from mabtpg.algos.llm_client.tools import goal_transfer_str, act_str_process
+# from btp.algos.llm_client.tools import goal_transfer_str, act_str_process

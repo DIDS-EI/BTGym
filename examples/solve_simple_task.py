@@ -25,6 +25,9 @@ def main():
 
     It loads Rs_int with a robot, and the robot picks and places a bottle of cologne.
     """
+
+
+
     # Load the config
     config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
     config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
@@ -65,7 +68,10 @@ def main():
     # Grasp of cologne
     grasp_obj = scene.object_registry("name", "cologne")
     print("Executing controller")
-    execute_controller(controller.apply_ref(StarterSemanticActionPrimitiveSet.GRASP, grasp_obj), env)
+
+    primitive_action = controller.apply_ref(StarterSemanticActionPrimitiveSet.GRASP, grasp_obj)
+
+    execute_controller(primitive_action, env)
     print("Finished executing grasp")
 
     # Place cologne on another table

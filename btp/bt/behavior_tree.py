@@ -209,8 +209,8 @@ if __name__ == '__main__':
 
     # create robot
     root_path = get_root_path()
-    btml_path = os.path.join(root_path, 'mabtpg/behavior_tree/utils/draw_bt/robot.bt')
-    behavior_lib_path = os.path.join(root_path, 'mabtpg/behavior_tree/behavior_lib')
+    btml_path = os.path.join(root_path, 'btp/behavior_tree/utils/draw_bt/robot.bt')
+    behavior_lib_path = os.path.join(root_path, 'btp/behavior_tree/behavior_lib')
     bt = load_bt_from_btml(None, btml_path, behavior_lib_path)
 
 

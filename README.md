@@ -14,26 +14,21 @@ git clone https://github.com/StanfordVL/bddl.git
 ## 安装OMPL
 OMPL (the Open Motion Planning Library)，开源运动规划库，由许多基于采样的先进的运动规划算法组成。[官网](https://ompl.kavrakilab.org/download.html)
 
-### Ubuntu
-1. 在官网下载[安装脚本](https://ompl.kavrakilab.org/install-ompl-ubuntu.sh)
-2. 将第88行
-```
-cmake ../.. -DPYTHON_EXEC=/usr/bin/python${PYTHONV}
-```
+推荐从源码安装 https://github.com/ompl/ompl.git
+按照README安装Boost, CMake, Eigen依赖。
 
-后面的python路径改为 omnigibson 虚拟环境中的python路径
 
-3. 按照[官方说明](https://ompl.kavrakilab.org/installation.html)安装依赖
-4. 运行
+### Ubuntu 安装依赖
+
+1. 直接用apt安装依赖
 ```shell
-./install-ompl-ubuntu.sh --python
+sudo apt-get install libboost-all-dev
+sudo apt-get install cmake
+sudo apt-get update sudo apt-get install libeigen3-dev
 ```
 
-### Windows
-从源码安装
-https://github.com/ompl/ompl.git
 
-克隆ompl仓库，并按照README安装Boost, CMake, Eigen依赖。
+### Windows 安装依赖
 
 #### Boost
 
@@ -49,7 +44,6 @@ bootstrap.bat
 ```
 
 
-
 #### CMake
 在官网下载最新版本，例如：[cmake-3.30.5-windows-x86_64.msi](https://github.com/Kitware/CMake/releases/download/v3.30.5/cmake-3.30.5-windows-x86_64.msi)
 
@@ -59,14 +53,23 @@ cmake --version
 ```
 
 
-#### 最后安装 OMPL
 
+### 从源码安装OMPL
 ```
-cd 
 mkdir -p build/Release
 cd build/Release
-cmake ../..
-# next step is optional
-make -j 4 update_bindings # if you want Python bindings
-make -j 4 # replace "4" with the number of cores on your machine
+cmake ../.. -DPYTHON_EXEC=/home/cxl/softwares/anaconda3/envs/omnigibson/bin/python #注意这里一定要把路径改成自己的omnigibson虚拟环境下的python可执行文件路径
+make -j 32 update_bindings
+make -j 32 # replace
 ```
+
+
+## 安装 Fast-Downward
+
+Fast-Downward是一个经典规划求解器，可以用来求解PDDL问题。
+
+```shell
+cd btp/downward
+./build.py
+```
+
