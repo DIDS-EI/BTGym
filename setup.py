@@ -5,13 +5,13 @@ with open('requirements.txt') as f:
     required = f.read().splitlines()
 
 setup(
-    name='obtp',
+    name='btgym',
     version='0.0.1',
-    packages=['obtp'],
+    packages=['btgym'],
     install_requires=required,
     author='',
     author_email='',
-    description='OBTP',
+    description='btgym',
     url='',
     classifiers=[
         'Programming Language :: Python :: 3',

@@ -9,7 +9,7 @@ from omnigibson.action_primitives.starter_semantic_action_primitives import (
 )
 from omnigibson.macros import gm
 
-from btp.behavior_library.Action.GoTo import GoTo
+from btgym.behavior_library.Action.GoTo import GoTo
 
 # Don't use GPU dynamics and use flatcache for performance boost
 # gm.USE_GPU_DYNAMICS = True

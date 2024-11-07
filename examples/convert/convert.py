@@ -2,7 +2,7 @@ from bddl.activity import Conditions
 
 import os
 
-task_list = os.listdir("/home/cxl/code/BTP/activity_definitions")
+task_list = os.listdir("/home/cxl/code/BTGym/activity_definitions")
 with open('output.txt', 'w') as f:
     f.write('\n'.join(task_list))
 

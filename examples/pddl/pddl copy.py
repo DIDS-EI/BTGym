@@ -1,3 +1,3 @@
-from btp.downward import planning
+from btgym.downward import planning
 
-planning("/home/cxl/code/BTP/examples/domain.pddl", "/home/cxl/code/BTP/examples/problem.pddl")
+planning("/home/cxl/code/BTGym/examples/domain.pddl", "/home/cxl/code/BTGym/examples/problem.pddl")
