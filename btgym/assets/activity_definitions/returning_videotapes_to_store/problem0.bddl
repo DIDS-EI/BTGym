@@ -1,4 +1,4 @@
-(define (problem returning_videotapes_to_store-0)
+(define (problem returning_videotapes_to_store_0)
     (:domain omnigibson)
 
     (:objects
@@ -11,7 +11,7 @@
     )
     
     (:init 
-        (ontop cash_register.n.01_1 checkout.n.03_1)
+        (ontop cash_register.n.01_1 checkout.n.03_1) 
         (ontop videodisk.n.01_1 checkout.n.03_1) 
         (ontop videodisk.n.01_2 checkout.n.03_1) 
         (ontop videodisk.n.01_3 checkout.n.03_1) 
@@ -24,8 +24,8 @@
     (:goal 
         (and 
             (forall 
-                (?videodisk.n.01 - videodisk.n.01)
-                (inside ?videodisk.n.01 ?shelf.n.01_1)
+                (?videodisk.n.01 - videodisk.n.01) 
+                (inside ?videodisk.n.01 shelf.n.01_1)
             )
         )
     )

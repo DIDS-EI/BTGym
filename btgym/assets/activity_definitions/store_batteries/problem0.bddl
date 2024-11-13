@@ -1,4 +1,4 @@
-(define (problem store_batteries-0)
+(define (problem store_batteries_0)
     (:domain omnigibson)
 
     (:objects
@@ -10,8 +10,8 @@
     )
     
     (:init 
-        (ontop battery.n.02_1 shelf.n.01_1)
-        (ontop battery.n.02_2 shelf.n.01_1)
+        (ontop battery.n.02_1 shelf.n.01_1) 
+        (ontop battery.n.02_2 shelf.n.01_1) 
         (inroom shelf.n.01_1 bathroom) 
         (inroom chest_of_drawers.n.01_1 bathroom) 
         (inroom floor.n.01_1 bathroom) 
@@ -21,8 +21,8 @@
     (:goal 
         (and 
             (forall 
-                (?battery.n.02 - battery.n.02)
-                (inside ?battery.n.02 ?chest_of_drawers.n.01_1)
+                (?battery.n.02 - battery.n.02) 
+                (inside ?battery.n.02 chest_of_drawers.n.01_1)
             )
         )
     )

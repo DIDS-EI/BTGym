@@ -1,4 +1,4 @@
-(define (problem clean_a_saxophone-0)
+(define (problem clean_a_saxophone_0)
     (:domain omnigibson)
 
     (:objects
@@ -24,7 +24,7 @@
     (:goal 
         (and 
             (not 
-                (covered ?sax.n.02_1 ?dust.n.01_1)
+                (covered sax.n.02_1 dust.n.01_1)
             )
         )
     )

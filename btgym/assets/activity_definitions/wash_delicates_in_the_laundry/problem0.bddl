@@ -1,4 +1,4 @@
-(define (problem wash_delicates_in_the_laundry-0)
+(define (problem wash_delicates_in_the_laundry_0)
     (:domain omnigibson)
 
     (:objects
@@ -31,39 +31,38 @@
         (inside underwear.n.01_2 washer.n.03_1) 
         (covered underwear.n.01_2 stain.n.01_1) 
         (filled detergent__bottle.n.01_1 detergent.n.02_1) 
-        (ontop detergent__bottle.n.01_1 washer.n.03_1)
+        (ontop detergent__bottle.n.01_1 washer.n.03_1) 
         (inroom floor.n.01_1 utility_room) 
         (inroom washer.n.03_1 utility_room) 
-        (inroom clothes_dryer.n.01_1 utility_room)
+        (inroom clothes_dryer.n.01_1 utility_room) 
         (ontop agent.n.01_1 floor.n.01_1)
     )
     
     (:goal 
         (and 
             (forall 
-                (?lingerie.n.01 - lingerie.n.01)
-                (and
-                    (not
-                        (covered ?lingerie.n.01 ?stain.n.01_1)
-                    )
-                    (not
-                        (covered ?lingerie.n.01 ?dust.n.01_1)
+                (?lingerie.n.01 - lingerie.n.01) 
+                (and 
+                    (not 
+                        (covered ?lingerie.n.01 stain.n.01_1)
+                    ) 
+                    (not 
+                        (covered ?lingerie.n.01 dust.n.01_1)
                     )
                 )
-            )
+            ) 
             (forall 
-                (?sweater.n.01 - sweater.n.01)
-                (not
-                    (covered ?sweater.n.01 ?stain.n.01_1)
+                (?sweater.n.01 - sweater.n.01) 
+                (not 
+                    (covered ?sweater.n.01 stain.n.01_1)
                 )
-            )
+            ) 
             (forall 
-                (?underwear.n.01 - underwear.n.01)
-                (not
-                    (covered ?underwear.n.01 ?stain.n.01_1)
+                (?underwear.n.01 - underwear.n.01) 
+                (not 
+                    (covered ?underwear.n.01 stain.n.01_1)
                 )
             )
         )
-    
     )
 )

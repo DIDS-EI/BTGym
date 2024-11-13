@@ -1,4 +1,4 @@
-(define (problem make_a_tropical_breakfast-0)
+(define (problem make_a_tropical_breakfast_0)
     (:domain omnigibson)
 
     (:objects
@@ -41,20 +41,20 @@
         (inroom floor.n.01_1 kitchen) 
         (inroom countertop.n.01_1 kitchen) 
         (inroom countertop.n.01_2 kitchen) 
-        (inroom cabinet.n.01_1 kitchen)
-        (inroom electric_refrigerator.n.01_1 kitchen)
+        (inroom cabinet.n.01_1 kitchen) 
+        (inroom electric_refrigerator.n.01_1 kitchen) 
         (ontop agent.n.01_1 floor.n.01_1)
     )
     
     (:goal 
         (and 
-            (real ?diced__mango.n.01_1) 
-            (real ?diced__kiwi.n.01_1) 
-            (contains ?electric_mixer.n.01_1 ?yogurt.n.01_1) 
-            (contains ?electric_mixer.n.01_1 ?maple_syrup.n.01_1) 
-            (contains ?electric_mixer.n.01_1 ?diced__mango.n.01_1) 
-            (contains ?electric_mixer.n.01_1 ?chia_seed.n.01_1) 
-            (ontop ?raspberry.n.02_1 ?electric_mixer.n.01_1)
+            (real diced__mango.n.01_1) 
+            (real diced__kiwi.n.01_1) 
+            (contains electric_mixer.n.01_1 yogurt.n.01_1) 
+            (contains electric_mixer.n.01_1 maple_syrup.n.01_1) 
+            (contains electric_mixer.n.01_1 diced__mango.n.01_1) 
+            (contains electric_mixer.n.01_1 chia_seed.n.01_1) 
+            (ontop raspberry.n.02_1 electric_mixer.n.01_1)
         )
     )
 )

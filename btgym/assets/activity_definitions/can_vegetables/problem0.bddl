@@ -1,4 +1,4 @@
-(define (problem can_vegetables-0)
+(define (problem can_vegetables_0)
     (:domain omnigibson)
 
     (:objects
@@ -34,19 +34,19 @@
     (:goal 
         (and 
             (forpairs 
-                (?asparagus.n.02 - asparagus.n.02)
-                (?mason_jar.n.01 - mason_jar.n.01)
+                (?asparagus.n.02 - asparagus.n.02) 
+                (?mason_jar.n.01 - mason_jar.n.01) 
                 (inside ?asparagus.n.02 ?mason_jar.n.01)
-            )
+            ) 
             (forpairs 
-                (?lid.n.02 - lid.n.02)
-                (?mason_jar.n.01 - mason_jar.n.01)
+                (?lid.n.02 - lid.n.02) 
+                (?mason_jar.n.01 - mason_jar.n.01) 
                 (ontop ?lid.n.02 ?mason_jar.n.01)
-            )
+            ) 
             (forall 
                 (?mason_jar.n.01 - mason_jar.n.01) 
-                (inside ?mason_jar.n.01 ?cabinet.n.01_1)
-            ) 
+                (inside ?mason_jar.n.01 cabinet.n.01_1)
+            )
         )
     )
 )

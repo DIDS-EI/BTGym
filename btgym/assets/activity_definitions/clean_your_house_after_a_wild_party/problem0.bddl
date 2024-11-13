@@ -1,4 +1,4 @@
-(define (problem clean_your_house_after_a_wild_party-0)
+(define (problem clean_your_house_after_a_wild_party_0)
     (:domain omnigibson)
 
     (:objects
@@ -33,12 +33,12 @@
         (ontop plate.n.04_2 floor.n.01_2) 
         (ontop plate.n.04_3 coffee_table.n.01_1) 
         (ontop cup.n.01_1 coffee_table.n.01_1) 
-        (ontop cup.n.01_2 sink.n.01_1)
+        (ontop cup.n.01_2 sink.n.01_1) 
         (ontop cup.n.01_3 floor.n.01_1) 
         (ontop recycling_bin.n.01_1 floor.n.01_2) 
         (ontop recycling_bin.n.01_2 floor.n.01_1) 
-        (ontop beer_bottle.n.01_1 floor.n.01_3)
-        (ontop beer_bottle.n.01_2 floor.n.01_3)
+        (ontop beer_bottle.n.01_1 floor.n.01_3) 
+        (ontop beer_bottle.n.01_2 floor.n.01_3) 
         (open recycling_bin.n.01_1) 
         (open recycling_bin.n.01_2) 
         (ontop broom.n.01_1 floor.n.01_2) 
@@ -75,34 +75,34 @@
         (and 
             (forall 
                 (?plate.n.04 - plate.n.04) 
-                (inside ?plate.n.04 ?dishwasher.n.01_1)
+                (inside ?plate.n.04 dishwasher.n.01_1)
             ) 
             (forall 
                 (?cup.n.01 - cup.n.01) 
-                (inside ?cup.n.01 ?dishwasher.n.01_1)
+                (inside ?cup.n.01 dishwasher.n.01_1)
             ) 
             (not 
-                (covered ?floor.n.01_1 ?water.n.06_1)
+                (covered floor.n.01_1 water.n.06_1)
             ) 
             (not 
-                (covered ?toilet.n.02_1 ?stain.n.01_1)
+                (covered toilet.n.02_1 stain.n.01_1)
             ) 
             (not 
-                (covered ?floor.n.01_3 ?dust.n.01_1)
+                (covered floor.n.01_3 dust.n.01_1)
             ) 
             (not 
-                (covered ?coffee_table.n.01_1 ?dust.n.01_1)
+                (covered coffee_table.n.01_1 dust.n.01_1)
             ) 
             (not 
-                (covered ?floor.n.01_2 ?adhesive_material.n.01_1)
+                (covered floor.n.01_2 adhesive_material.n.01_1)
             ) 
             (not 
-                (covered ?countertop.n.01_1 ?stain.n.01_1)
+                (covered countertop.n.01_1 stain.n.01_1)
             ) 
             (forall 
-                (?beer_bottle.n.01 - beer_bottle.n.01)
+                (?beer_bottle.n.01 - beer_bottle.n.01) 
                 (exists 
-                    (?recycling_bin.n.01 - recycling_bin.n.01)
+                    (?recycling_bin.n.01 - recycling_bin.n.01) 
                     (inside ?beer_bottle.n.01 ?recycling_bin.n.01)
                 )
             )

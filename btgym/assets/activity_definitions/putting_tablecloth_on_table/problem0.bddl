@@ -1,4 +1,4 @@
-(define (problem putting_tablecloth_on_table-0)
+(define (problem putting_tablecloth_on_table_0)
     (:domain omnigibson)
 
     (:objects
@@ -19,8 +19,8 @@
     
     (:goal 
         (and 
-            (overlaid ?tablecloth.n.01_1 ?breakfast_table.n.01_1)
-            (ontop ?pot_plant.n.01_1 ?breakfast_table.n.01_1)
+            (overlaid tablecloth.n.01_1 breakfast_table.n.01_1) 
+            (ontop pot_plant.n.01_1 breakfast_table.n.01_1)
         )
     )
 )

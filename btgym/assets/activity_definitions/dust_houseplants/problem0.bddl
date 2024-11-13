@@ -1,4 +1,4 @@
-(define (problem dust_houseplants-0)
+(define (problem dust_houseplants_0)
     (:domain omnigibson)
 
     (:objects
@@ -26,10 +26,10 @@
     (:goal 
         (and 
             (not 
-                (covered ?cactus.n.01_1 ?dust.n.01_1)
+                (covered cactus.n.01_1 dust.n.01_1)
             ) 
             (not 
-                (covered ?pot_plant.n.01_1 ?dust.n.01_1)
+                (covered pot_plant.n.01_1 dust.n.01_1)
             )
         )
     )

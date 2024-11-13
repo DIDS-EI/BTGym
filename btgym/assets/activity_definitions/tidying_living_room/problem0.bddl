@@ -1,4 +1,4 @@
-(define (problem tidying_living_room-0)
+(define (problem tidying_living_room_0)
     (:domain omnigibson)
 
     (:objects
@@ -18,17 +18,17 @@
         (ontop letter.n.01_1 floor.n.01_1) 
         (ontop book.n.02_1 floor.n.01_1) 
         (inroom floor.n.01_1 living_room) 
-        (inroom coffee_table.n.01_1 living_room)
-        (inroom shelf.n.01_1 living_room)
+        (inroom coffee_table.n.01_1 living_room) 
+        (inroom shelf.n.01_1 living_room) 
         (ontop agent.n.01_1 floor.n.01_1)
     )
     
     (:goal 
         (and 
-            (ontop ?pot_plant.n.01_1 ?coffee_table.n.01_1)
-            (inside ?newspaper.n.03_1 ?shelf.n.01_1)
-            (inside ?letter.n.01_1 ?shelf.n.01_1)
-            (inside ?book.n.02_1 ?shelf.n.01_1)
+            (ontop pot_plant.n.01_1 coffee_table.n.01_1) 
+            (inside newspaper.n.03_1 shelf.n.01_1) 
+            (inside letter.n.01_1 shelf.n.01_1) 
+            (inside book.n.02_1 shelf.n.01_1)
         )
     )
 )

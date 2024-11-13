@@ -1,8 +1,8 @@
-(define (problem canning_food-0)
+(define (problem canning_food_0)
     (:domain omnigibson)
 
     (:objects
-        steak.n.01_1 - steak.n.01 
+        steak.n.01_1 - steak.n.01
         diced__steak.n.01_1 - diced__steak.n.01
         pineapple.n.02_1 - pineapple.n.02
         diced__pineapple.n.01_1 - diced__pineapple.n.01
@@ -27,42 +27,42 @@
         (inroom electric_refrigerator.n.01_1 kitchen) 
         (inroom countertop.n.01_1 kitchen) 
         (inroom floor.n.01_1 kitchen) 
-        (future diced__pineapple.n.01_1)
-        (future diced__steak.n.01_1)
+        (future diced__pineapple.n.01_1) 
+        (future diced__steak.n.01_1) 
         (ontop agent.n.01_1 floor.n.01_1)
     )
     
     (:goal 
         (and 
-            (real ?diced__steak.n.01_1)
-            (real ?diced__pineapple.n.01_1)
-            (exists
-                (?mason_jar.n.01 - mason_jar.n.01)
-                (and 
-                    (filled ?mason_jar.n.01 ?diced__steak.n.01_1)
-                    (not
-                        (contains ?mason_jar.n.01 ?diced__pineapple.n.01_1)
-                    )
-                )
-            )
-            (exists
-                (?mason_jar.n.01 - mason_jar.n.01)
-                (and 
-                    (filled ?mason_jar.n.01 ?diced__pineapple.n.01_1)
-                    (not
-                        (contains ?mason_jar.n.01 ?diced__steak.n.01_1)
-                    )
-                )
-            )
-            (forall 
+            (real diced__steak.n.01_1) 
+            (real diced__pineapple.n.01_1) 
+            (exists 
                 (?mason_jar.n.01 - mason_jar.n.01) 
-                (and
-                    (inside ?mason_jar.n.01 ?cabinet.n.01_1)
-                    (not
-                        (open ?mason_jar.n.01)
+                (and 
+                    (filled ?mason_jar.n.01 diced__steak.n.01_1) 
+                    (not 
+                        (contains ?mason_jar.n.01 diced__pineapple.n.01_1)
                     )
                 )
             ) 
+            (exists 
+                (?mason_jar.n.01 - mason_jar.n.01) 
+                (and 
+                    (filled ?mason_jar.n.01 diced__pineapple.n.01_1) 
+                    (not 
+                        (contains ?mason_jar.n.01 diced__steak.n.01_1)
+                    )
+                )
+            ) 
+            (forall 
+                (?mason_jar.n.01 - mason_jar.n.01) 
+                (and 
+                    (inside ?mason_jar.n.01 cabinet.n.01_1) 
+                    (not 
+                        (open ?mason_jar.n.01)
+                    )
+                )
+            )
         )
     )
 )

@@ -1,4 +1,4 @@
-(define (problem make_tomato_rice-0)
+(define (problem make_tomato_rice_0)
     (:domain omnigibson)
 
     (:objects
@@ -47,8 +47,8 @@
     
     (:goal 
         (and 
-            (real ?tomato_rice.n.01_1) 
-            (contains ?crock_pot.n.01_1 ?tomato_rice.n.01_1)
+            (real tomato_rice.n.01_1) 
+            (contains crock_pot.n.01_1 tomato_rice.n.01_1)
         )
     )
 )

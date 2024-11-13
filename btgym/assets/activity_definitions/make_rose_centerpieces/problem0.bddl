@@ -1,4 +1,4 @@
-(define (problem make_rose_centerpieces-0)
+(define (problem make_rose_centerpieces_0)
     (:domain omnigibson)
 
     (:objects
@@ -22,10 +22,10 @@
     
     (:goal 
         (and 
-            (inside ?rose.n.01_1 ?vase.n.01_1) 
-            (inside ?rose.n.01_2 ?vase.n.01_1) 
-            (inside ?rose.n.01_3 ?vase.n.01_1) 
-            (inside ?rose.n.01_4 ?vase.n.01_1)
+            (inside rose.n.01_1 vase.n.01_1) 
+            (inside rose.n.01_2 vase.n.01_1) 
+            (inside rose.n.01_3 vase.n.01_1) 
+            (inside rose.n.01_4 vase.n.01_1)
         )
     )
 )

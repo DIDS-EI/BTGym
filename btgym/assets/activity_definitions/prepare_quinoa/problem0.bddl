@@ -1,4 +1,4 @@
-(define (problem prepare_quinoa-0)
+(define (problem prepare_quinoa_0)
     (:domain omnigibson)
 
     (:objects
@@ -22,7 +22,7 @@
         (inside chicken_broth__carton.n.01_1 shelf.n.01_1) 
         (ontop saucepan.n.01_1 stove.n.01_1) 
         (inside tablefork.n.01_1 shelf.n.01_1) 
-        (future cooked__quinoa.n.01_1)
+        (future cooked__quinoa.n.01_1) 
         (inroom shelf.n.01_1 kitchen) 
         (inroom stove.n.01_1 kitchen) 
         (inroom floor.n.01_1 kitchen) 
@@ -31,8 +31,8 @@
     
     (:goal 
         (and 
-            (real ?cooked__quinoa.n.01_1)
-            (filled ?saucepan.n.01_1 ?cooked__quinoa.n.01_1)
+            (real cooked__quinoa.n.01_1) 
+            (filled saucepan.n.01_1 cooked__quinoa.n.01_1)
         )
     )
 )

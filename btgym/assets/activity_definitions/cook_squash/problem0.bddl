@@ -1,4 +1,4 @@
-(define (problem cook_squash-0)
+(define (problem cook_squash_0)
     (:domain omnigibson)
 
     (:objects
@@ -24,7 +24,7 @@
     
     (:goal 
         (and 
-            (cooked ?butternut_squash.n.01_1)
+            (cooked butternut_squash.n.01_1)
         )
     )
 )

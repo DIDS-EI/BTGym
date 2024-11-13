@@ -1,4 +1,4 @@
-(define (problem putting_pesticides_on_lawn-0)
+(define (problem putting_pesticides_on_lawn_0)
     (:domain omnigibson)
 
     (:objects
@@ -19,7 +19,7 @@
     
     (:goal 
         (and 
-            (covered ?lawn.n.01_1 ?pesticide.n.01_1) 
+            (covered lawn.n.01_1 pesticide.n.01_1)
         )
     )
 )

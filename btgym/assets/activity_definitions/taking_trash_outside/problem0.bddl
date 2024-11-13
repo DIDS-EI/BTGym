@@ -1,4 +1,4 @@
-(define (problem taking_trash_outside-0)
+(define (problem taking_trash_outside_0)
     (:domain omnigibson)
 
     (:objects
@@ -7,9 +7,9 @@
         agent.n.01_1 - agent.n.01
     )
     
-    (:init
-        (ontop bag__of__rubbish.n.01_1 floor.n.01_2)
-        (ontop bag__of__rubbish.n.01_2 floor.n.01_2)
+    (:init 
+        (ontop bag__of__rubbish.n.01_1 floor.n.01_2) 
+        (ontop bag__of__rubbish.n.01_2 floor.n.01_2) 
         (inroom floor.n.01_1 garden) 
         (inroom floor.n.01_2 living_room) 
         (ontop agent.n.01_1 floor.n.01_2)
@@ -17,9 +17,9 @@
     
     (:goal 
         (and 
-            (forall
-                (?bag__of__rubbish.n.01 - bag__of__rubbish.n.01)
-                (ontop ?bag__of__rubbish.n.01 ?floor.n.01_1)
+            (forall 
+                (?bag__of__rubbish.n.01 - bag__of__rubbish.n.01) 
+                (ontop ?bag__of__rubbish.n.01 floor.n.01_1)
             )
         )
     )

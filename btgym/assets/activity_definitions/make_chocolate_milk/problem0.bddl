@@ -1,4 +1,4 @@
-(define (problem make_chocolate_milk-0)
+(define (problem make_chocolate_milk_0)
     (:domain omnigibson)
 
     (:objects
@@ -37,8 +37,8 @@
     
     (:goal 
         (and 
-            (real ?chocolate_milk.n.01_1) 
-            (contains ?water_glass.n.02_1 ?chocolate_milk.n.01_1)
+            (real chocolate_milk.n.01_1) 
+            (contains water_glass.n.02_1 chocolate_milk.n.01_1)
         )
     )
 )

@@ -1,4 +1,4 @@
-(define (problem make_chicken_curry-0)
+(define (problem make_chicken_curry_0)
     (:domain omnigibson)
 
     (:objects
@@ -47,8 +47,8 @@
     
     (:goal 
         (and 
-            (real ?chicken_curry.n.01_1) 
-            (contains ?stockpot.n.01_1 ?chicken_curry.n.01_1)
+            (real chicken_curry.n.01_1) 
+            (contains stockpot.n.01_1 chicken_curry.n.01_1)
         )
     )
 )

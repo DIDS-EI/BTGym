@@ -1,4 +1,4 @@
-(define (problem picking_up_trash-0)
+(define (problem picking_up_trash_0)
     (:domain omnigibson)
 
     (:objects
@@ -25,11 +25,11 @@
         (and 
             (forall 
                 (?pad.n.01 - pad.n.01) 
-                (inside ?pad.n.01 ?ashcan.n.01_1)
+                (inside ?pad.n.01 ashcan.n.01_1)
             ) 
             (forall 
                 (?can__of__soda.n.01 - can__of__soda.n.01) 
-                (inside ?can__of__soda.n.01 ?ashcan.n.01_1)
+                (inside ?can__of__soda.n.01 ashcan.n.01_1)
             )
         )
     )

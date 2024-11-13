@@ -1,4 +1,4 @@
-(define (problem sorting_newspapers_for_recycling-0)
+(define (problem sorting_newspapers_for_recycling_0)
     (:domain omnigibson)
 
     (:objects
@@ -33,17 +33,17 @@
         (and 
             (forall 
                 (?newspaper.n.03 - newspaper.n.03) 
-                (inside ?newspaper.n.03 ?recycling_bin.n.01_1)
+                (inside ?newspaper.n.03 recycling_bin.n.01_1)
             ) 
             (forall 
                 (?magazine.n.02 - magazine.n.02) 
-                (inside ?magazine.n.02 ?shelf.n.01_1)
+                (inside ?magazine.n.02 shelf.n.01_1)
             ) 
             (forall 
                 (?mail.n.04 - mail.n.04) 
-                (inside ?mail.n.04 ?shelf.n.01_1)
+                (inside ?mail.n.04 shelf.n.01_1)
             ) 
-            (ontop ?comic_book.n.01_1 ?shelf.n.01_1) 
+            (ontop comic_book.n.01_1 shelf.n.01_1)
         )
     )
 )

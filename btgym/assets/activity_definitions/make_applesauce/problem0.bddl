@@ -1,4 +1,4 @@
-(define (problem make_applesauce-0)
+(define (problem make_applesauce_0)
     (:domain omnigibson)
 
     (:objects
@@ -44,8 +44,8 @@
     
     (:goal 
         (and 
-            (real ?applesauce.n.01_1) 
-            (contains ?saucepan.n.01_1 ?applesauce.n.01_1)
+            (real applesauce.n.01_1) 
+            (contains saucepan.n.01_1 applesauce.n.01_1)
         )
     )
 )

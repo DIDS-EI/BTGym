@@ -1,4 +1,4 @@
-(define (problem tidying_up_wardrobe-0)
+(define (problem tidying_up_wardrobe_0)
     (:domain omnigibson)
 
     (:objects
@@ -16,10 +16,10 @@
         (attached hanger.n.02_1 wardrobe.n.01_1) 
         (attached hanger.n.02_2 wardrobe.n.01_1) 
         (attached hanger.n.02_3 wardrobe.n.01_1) 
-        (ontop jersey.n.03_1 bed.n.01_1)
-        (ontop belt.n.02_1 floor.n.01_1)
-        (ontop underwear.n.01_1 floor.n.01_1)
-        (inroom bed.n.01_1 bedroom)
+        (ontop jersey.n.03_1 bed.n.01_1) 
+        (ontop belt.n.02_1 floor.n.01_1) 
+        (ontop underwear.n.01_1 floor.n.01_1) 
+        (inroom bed.n.01_1 bedroom) 
         (inroom wardrobe.n.01_1 closet) 
         (inroom floor.n.01_1 closet) 
         (ontop agent.n.01_1 floor.n.01_1)
@@ -28,24 +28,24 @@
     (:goal 
         (and 
             (exists 
-                (?hanger.n.02 - hanger.n.02)
+                (?hanger.n.02 - hanger.n.02) 
                 (and 
-                    (draped ?jersey.n.03_1 ?hanger.n.02)
+                    (draped jersey.n.03_1 ?hanger.n.02) 
                     (not 
-                        (draped ?underwear.n.01_1 ?hanger.n.02)
+                        (draped underwear.n.01_1 ?hanger.n.02)
                     )
                 )
-            )
+            ) 
             (exists 
-                (?hanger.n.02 - hanger.n.02)
+                (?hanger.n.02 - hanger.n.02) 
                 (and 
-                    (draped ?underwear.n.01_1 ?hanger.n.02)
+                    (draped underwear.n.01_1 ?hanger.n.02) 
                     (not 
-                        (draped ?jersey.n.03_1 ?hanger.n.02)
+                        (draped jersey.n.03_1 ?hanger.n.02)
                     )
                 )
-            )
-            (inside ?belt.n.02_1 ?wardrobe.n.01_1)
+            ) 
+            (inside belt.n.02_1 wardrobe.n.01_1)
         )
     )
 )

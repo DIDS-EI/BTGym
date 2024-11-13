@@ -1,4 +1,4 @@
-(define (problem place_houseplants_around_your_home-0)
+(define (problem place_houseplants_around_your_home_0)
     (:domain omnigibson)
 
     (:objects
@@ -18,8 +18,8 @@
         (ontop wicker_basket.n.01_1 floor.n.01_2) 
         (ontop wicker_basket.n.01_2 floor.n.01_2) 
         (inroom floor.n.01_1 dining_room) 
-        (inroom table.n.02_1 dining_room)
-        (inroom floor.n.01_2 garden)
+        (inroom table.n.02_1 dining_room) 
+        (inroom floor.n.01_2 garden) 
         (ontop agent.n.01_1 floor.n.01_2)
     )
     
@@ -27,12 +27,12 @@
         (and 
             (forall 
                 (?pot_plant.n.01 - pot_plant.n.01) 
-                (ontop ?pot_plant.n.01 ?table.n.02_1)
+                (ontop ?pot_plant.n.01 table.n.02_1)
             ) 
             (forall 
                 (?cactus.n.01 - cactus.n.01) 
-                (ontop ?cactus.n.01 ?floor.n.01_1)
-            ) 
+                (ontop ?cactus.n.01 floor.n.01_1)
+            )
         )
     )
 )

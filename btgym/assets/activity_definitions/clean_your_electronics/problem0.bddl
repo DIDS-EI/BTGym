@@ -1,4 +1,4 @@
-(define (problem clean_your_electronics-0)
+(define (problem clean_your_electronics_0)
     (:domain omnigibson)
 
     (:objects
@@ -28,13 +28,13 @@
     (:goal 
         (and 
             (not 
-                (covered ?television_receiver.n.01_1 ?dust.n.01_1)
+                (covered television_receiver.n.01_1 dust.n.01_1)
             ) 
             (not 
-                (covered ?laptop.n.01_1 ?dust.n.01_1)
+                (covered laptop.n.01_1 dust.n.01_1)
             ) 
             (not 
-                (covered ?printer.n.03_1 ?dust.n.01_1)
+                (covered printer.n.03_1 dust.n.01_1)
             )
         )
     )

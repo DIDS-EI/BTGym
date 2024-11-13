@@ -1,4 +1,4 @@
-(define (problem boxing_food_after_dinner-0)
+(define (problem boxing_food_after_dinner_0)
     (:domain omnigibson)
 
     (:objects
@@ -12,9 +12,9 @@
     )
     
     (:init 
-        (cooked kabob.n.01_1)
-        (cooked kabob.n.01_2)
-        (cooked kabob.n.01_3)
+        (cooked kabob.n.01_1) 
+        (cooked kabob.n.01_2) 
+        (cooked kabob.n.01_3) 
         (ontop kabob.n.01_1 plate.n.04_1) 
         (ontop kabob.n.01_2 plate.n.04_2) 
         (ontop kabob.n.01_3 plate.n.04_3) 
@@ -31,12 +31,12 @@
     (:goal 
         (and 
             (forall 
-                (?kabob.n.01 - kabob.n.01)
-                (inside ?kabob.n.01 ?tupperware.n.01_1)
-            )
-            (inside ?tupperware.n.01_1 ?electric_refrigerator.n.01_1)
-            (not
-                (open ?electric_refrigerator.n.01_1)
+                (?kabob.n.01 - kabob.n.01) 
+                (inside ?kabob.n.01 tupperware.n.01_1)
+            ) 
+            (inside tupperware.n.01_1 electric_refrigerator.n.01_1) 
+            (not 
+                (open electric_refrigerator.n.01_1)
             )
         )
     )

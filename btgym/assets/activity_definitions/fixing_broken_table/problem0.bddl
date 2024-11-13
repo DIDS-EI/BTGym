@@ -1,4 +1,4 @@
-(define (problem fixing_broken_table-0)
+(define (problem fixing_broken_table_0)
     (:domain omnigibson)
 
     (:objects
@@ -17,7 +17,7 @@
     (:goal 
         (and 
             (not 
-                (broken ?coffee_table.n.01_1)
+                (broken coffee_table.n.01_1)
             )
         )
     )

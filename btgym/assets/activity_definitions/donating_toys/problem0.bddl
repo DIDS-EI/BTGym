@@ -1,4 +1,4 @@
-(define (problem donating_toys-0)
+(define (problem donating_toys_0)
     (:domain omnigibson)
 
     (:objects
@@ -20,8 +20,8 @@
     (:goal 
         (and 
             (and 
-                (inside ?teddy.n.01_1 ?packing_box.n.02_1) 
-                (inside ?jigsaw_puzzle.n.01_1 ?packing_box.n.02_1)
+                (inside teddy.n.01_1 packing_box.n.02_1) 
+                (inside jigsaw_puzzle.n.01_1 packing_box.n.02_1)
             )
         )
     )

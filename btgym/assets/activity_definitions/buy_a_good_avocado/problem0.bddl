@@ -1,4 +1,4 @@
-(define (problem buy_a_good_avocado-0)
+(define (problem buy_a_good_avocado_0)
     (:domain omnigibson)
 
     (:objects
@@ -21,8 +21,8 @@
     
     (:goal 
         (and 
-            (ontop ?money.n.01_1 ?checkout.n.03_1) 
-            (ontop ?avocado.n.01_1 ?checkout.n.03_1)
+            (ontop money.n.01_1 checkout.n.03_1) 
+            (ontop avocado.n.01_1 checkout.n.03_1)
         )
     )
 )

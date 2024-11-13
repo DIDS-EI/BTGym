@@ -1,4 +1,4 @@
-(define (problem make_cream_from_milk-0)
+(define (problem make_cream_from_milk_0)
     (:domain omnigibson)
 
     (:objects
@@ -29,8 +29,8 @@
     
     (:goal 
         (and 
-            (real ?heavy_cream.n.01_1) 
-            (contains ?electric_mixer.n.01_1 ?heavy_cream.n.01_1)
+            (real heavy_cream.n.01_1) 
+            (contains electric_mixer.n.01_1 heavy_cream.n.01_1)
         )
     )
 )

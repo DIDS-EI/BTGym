@@ -1,4 +1,4 @@
-(define (problem cook_a_brisket-0)
+(define (problem cook_a_brisket_0)
     (:domain omnigibson)
 
     (:objects
@@ -17,8 +17,8 @@
         (inside brisket.n.01_1 electric_refrigerator.n.01_1) 
         (not 
             (cooked brisket.n.01_1)
-        )
-        (inside frying_pan.n.01_1 shelf.n.01_1)
+        ) 
+        (inside frying_pan.n.01_1 shelf.n.01_1) 
         (inroom electric_refrigerator.n.01_1 kitchen) 
         (inroom shelf.n.01_1 kitchen) 
         (inroom oven.n.01_1 kitchen) 
@@ -28,8 +28,8 @@
     
     (:goal 
         (and 
-            (cooked ?brisket.n.01_1) 
-            (ontop ?brisket.n.01_1 ?chopping_board.n.01_1)
+            (cooked brisket.n.01_1) 
+            (ontop brisket.n.01_1 chopping_board.n.01_1)
         )
     )
 )

@@ -1,4 +1,4 @@
-(define (problem clean_a_patio-0)
+(define (problem clean_a_patio_0)
     (:domain omnigibson)
 
     (:objects
@@ -20,8 +20,8 @@
     (:goal 
         (and 
             (not 
-                (covered ?driveway.n.01_1 ?dust.n.01_1)
-            ) 
+                (covered driveway.n.01_1 dust.n.01_1)
+            )
         )
     )
 )

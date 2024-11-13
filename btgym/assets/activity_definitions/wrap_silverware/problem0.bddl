@@ -1,4 +1,4 @@
-(define (problem wrap_silverware-0)
+(define (problem wrap_silverware_0)
     (:domain omnigibson)
 
     (:objects
@@ -28,19 +28,19 @@
     (:goal 
         (and 
             (forpairs 
-                (?napkin.n.01 - napkin.n.01)
-                (?table_knife.n.01 - table_knife.n.01)
+                (?napkin.n.01 - napkin.n.01) 
+                (?table_knife.n.01 - table_knife.n.01) 
                 (and 
-                    (overlaid ?napkin.n.01 ?table_knife.n.01)
-                    (inside ?table_knife.n.01 ?cabinet.n.01_1)
+                    (overlaid ?napkin.n.01 ?table_knife.n.01) 
+                    (inside ?table_knife.n.01 cabinet.n.01_1)
                 )
-            )
+            ) 
             (forpairs 
-                (?napkin.n.01 - napkin.n.01)
-                (?tablespoon.n.02 - tablespoon.n.02)
+                (?napkin.n.01 - napkin.n.01) 
+                (?tablespoon.n.02 - tablespoon.n.02) 
                 (and 
-                    (overlaid ?napkin.n.01 ?tablespoon.n.02)
-                    (inside ?tablespoon.n.02 ?cabinet.n.01_1)
+                    (overlaid ?napkin.n.01 ?tablespoon.n.02) 
+                    (inside ?tablespoon.n.02 cabinet.n.01_1)
                 )
             )
         )

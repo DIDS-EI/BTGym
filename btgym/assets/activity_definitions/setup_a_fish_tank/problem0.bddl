@@ -1,4 +1,4 @@
-(define (problem setup_a_fish_tank-0)
+(define (problem setup_a_fish_tank_0)
     (:domain omnigibson)
 
     (:objects
@@ -27,11 +27,11 @@
     (:goal 
         (and 
             (not 
-                (open ?tank.n.02_1)
+                (open tank.n.02_1)
             ) 
-            (filled ?tank.n.02_1 ?water.n.06_1) 
-            (inside ?water_filter.n.01_1 ?tank.n.02_1) 
-            (inside ?pebble.n.01_1 ?tank.n.02_1)
+            (filled tank.n.02_1 water.n.06_1) 
+            (inside water_filter.n.01_1 tank.n.02_1) 
+            (inside pebble.n.01_1 tank.n.02_1)
         )
     )
 )

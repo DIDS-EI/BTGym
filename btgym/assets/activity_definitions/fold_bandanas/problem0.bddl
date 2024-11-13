@@ -1,4 +1,4 @@
-(define (problem fold_bandanas-0)
+(define (problem fold_bandanas_0)
     (:domain omnigibson)
 
     (:objects
@@ -17,7 +17,7 @@
     
     (:goal 
         (and 
-            (folded ?hand_towel.n.01_1)
+            (folded hand_towel.n.01_1)
         )
     )
 )

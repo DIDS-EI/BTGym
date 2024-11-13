@@ -1,4 +1,4 @@
-(define (problem clean_carpets-0)
+(define (problem clean_carpets_0)
     (:domain omnigibson)
 
     (:objects
@@ -20,7 +20,7 @@
     (:goal 
         (and 
             (not 
-                (covered ?rug.n.01_1 ?dust.n.01_1)
+                (covered rug.n.01_1 dust.n.01_1)
             )
         )
     )

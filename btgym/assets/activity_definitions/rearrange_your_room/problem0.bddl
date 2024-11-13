@@ -1,4 +1,4 @@
-(define (problem rearrange_your_room-0)
+(define (problem rearrange_your_room_0)
     (:domain omnigibson)
 
     (:objects
@@ -22,11 +22,11 @@
     
     (:goal 
         (and 
-            (ontop ?mattress.n.01_1 ?bed.n.01_1) 
+            (ontop mattress.n.01_1 bed.n.01_1) 
             (forall 
                 (?pillow.n.01 - pillow.n.01) 
-                (ontop ?pillow.n.01 ?mattress.n.01_1)
-            ) 
+                (ontop ?pillow.n.01 mattress.n.01_1)
+            )
         )
     )
 )

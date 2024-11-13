@@ -1,4 +1,4 @@
-(define (problem clean_couch_pillows-0)
+(define (problem clean_couch_pillows_0)
     (:domain omnigibson)
 
     (:objects
@@ -32,9 +32,9 @@
             (forall 
                 (?pillow.n.01 - pillow.n.01) 
                 (not 
-                    (covered ?pillow.n.01 ?stain.n.01_1)
+                    (covered ?pillow.n.01 stain.n.01_1)
                 )
-            ) 
+            )
         )
     )
 )

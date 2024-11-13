@@ -473,7 +473,7 @@ def construct_bddl_from_parsed(behavior_activity, activity_definition, parsed_ob
 
 
 def build_goal(goal_expr):
-    if type(goal_expr[1]) == list:
+    if len(goal_expr) > 1 and type(goal_expr[1]) == list:
         return f"({goal_expr[0]} {' '.join([build_goal(subexpr) for subexpr in goal_expr[1:]])})"
     else: 
         return f"({' '.join(map(convert_goal_expr, goal_expr))})"
@@ -491,17 +491,22 @@ def convert_goal_expr(goal_expr):
 
 
 if __name__ == '__main__':
-    from btgym import ROOT_PATH
+    from btgym import get_activity_list,ROOT_PATH
 
-    with open('btgym/assets/task_names.txt', 'r') as f:
-        task_names = f.read().splitlines()
+    activity_list = get_activity_list()
 
+    from tqdm import tqdm
+    from multiprocessing import Pool
 
-
-    activity = "adding_chemicals_to_hot_tub"
-    __, objs, init, goal = parse_problem(activity, 0, "omnigibson")
-    reconstruction = construct_bddl_from_parsed(activity, 0, objs, init, goal, domain="omnigibson")
-    print(reconstruction)
+    with Pool() as pool:
+        tasks = [(activity, 0, "omnigibson") for activity in activity_list]
+        for activity in tqdm(activity_list, desc="处理活动"):
+            __, objs, init, goal = parse_problem(activity, 0, "omnigibson")
+            reconstruction = construct_bddl_from_parsed(activity, 0, objs, init, goal, domain="omnigibson")
+            import os
+            os.makedirs(f"{ROOT_PATH}/assets/activity_definitions/{activity}", exist_ok=True)
+            with open(f"{ROOT_PATH}/assets/activity_definitions/{activity}/problem0.bddl", "w") as f:
+                f.write(reconstruction)
     # with open(f"activity_definitions/{activity}/problem0.bddl", "r") as f:
     #     defn_lines = f.read().split("\n")
     # print("Length same:", len(defn_lines) == len(reconstruction_lines))

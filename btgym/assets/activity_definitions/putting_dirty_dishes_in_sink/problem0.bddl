@@ -1,4 +1,4 @@
-(define (problem putting_dirty_dishes_in_sink-0)
+(define (problem putting_dirty_dishes_in_sink_0)
     (:domain omnigibson)
 
     (:objects
@@ -33,12 +33,12 @@
         (and 
             (forall 
                 (?bowl.n.01 - bowl.n.01) 
-                (inside ?bowl.n.01 ?sink.n.01_1)
+                (inside ?bowl.n.01 sink.n.01_1)
             ) 
             (forall 
                 (?plate.n.04 - plate.n.04) 
-                (inside ?plate.n.04 ?sink.n.01_1)
-            ) 
+                (inside ?plate.n.04 sink.n.01_1)
+            )
         )
     )
 )

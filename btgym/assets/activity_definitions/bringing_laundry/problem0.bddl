@@ -1,4 +1,4 @@
-(define (problem bringing_laundry-0)
+(define (problem bringing_laundry_0)
     (:domain omnigibson)
 
     (:objects
@@ -19,7 +19,7 @@
         (ontop hamper.n.02_1 floor.n.01_2) 
         (ontop agent.n.01_1 floor.n.01_1) 
         (inroom washer.n.03_1 utility_room) 
-        (inroom floor.n.01_1 utility_room)
+        (inroom floor.n.01_1 utility_room) 
         (inroom floor.n.01_2 living_room)
     )
     
@@ -27,8 +27,8 @@
         (and 
             (forall 
                 (?garment.n.01 - garment.n.01) 
-                (inside ?garment.n.01 ?washer.n.03_1)
-            ) 
+                (inside ?garment.n.01 washer.n.03_1)
+            )
         )
     )
 )

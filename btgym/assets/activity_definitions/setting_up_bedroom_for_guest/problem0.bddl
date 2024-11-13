@@ -1,4 +1,4 @@
-(define (problem setting_up_bedroom_for_guest-0)
+(define (problem setting_up_bedroom_for_guest_0)
     (:domain omnigibson)
 
     (:objects
@@ -19,8 +19,8 @@
     
     (:goal 
         (and 
-            (ontop ?pillow.n.01_1 ?bed.n.01_1) 
-            (overlaid ?blanket.n.01_1 ?bed.n.01_1)
+            (ontop pillow.n.01_1 bed.n.01_1) 
+            (overlaid blanket.n.01_1 bed.n.01_1)
         )
     )
 )

@@ -1,4 +1,4 @@
-(define (problem buy_a_keg-0)
+(define (problem buy_a_keg_0)
     (:domain omnigibson)
 
     (:objects
@@ -21,8 +21,8 @@
     
     (:goal 
         (and 
-            (ontop ?beer_barrel.n.01_1 ?checkout.n.03_1) 
-            (ontop ?credit_card.n.01_1 ?checkout.n.03_1)
+            (ontop beer_barrel.n.01_1 checkout.n.03_1) 
+            (ontop credit_card.n.01_1 checkout.n.03_1)
         )
     )
 )

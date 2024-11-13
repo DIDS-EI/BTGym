@@ -1,4 +1,4 @@
-(define (problem make_gift_bags_for_baby_showers-0)
+(define (problem make_gift_bags_for_baby_showers_0)
     (:domain omnigibson)
 
     (:objects
@@ -31,7 +31,7 @@
         (and 
             (forall 
                 (?sack.n.01 - sack.n.01) 
-                (ontop ?sack.n.01 ?floor.n.01_1)
+                (ontop ?sack.n.01 floor.n.01_1)
             ) 
             (forpairs 
                 (?doll.n.01 - doll.n.01) 
@@ -42,7 +42,7 @@
                 (?wafer.n.02 - wafer.n.02) 
                 (?sack.n.01 - sack.n.01) 
                 (inside ?wafer.n.02 ?sack.n.01)
-            ) 
+            )
         )
     )
 )

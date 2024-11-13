@@ -1,4 +1,4 @@
-(define (problem clean_a_trumpet-0)
+(define (problem clean_a_trumpet_0)
     (:domain omnigibson)
 
     (:objects
@@ -22,7 +22,7 @@
     (:goal 
         (and 
             (not 
-                (covered ?cornet.n.01_1 ?dust.n.01_1)
+                (covered cornet.n.01_1 dust.n.01_1)
             )
         )
     )

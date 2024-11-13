@@ -1,4 +1,4 @@
-(define (problem clean_the_outside_of_a_house-0)
+(define (problem clean_the_outside_of_a_house_0)
     (:domain omnigibson)
 
     (:objects
@@ -32,10 +32,10 @@
     (:goal 
         (and 
             (not 
-                (covered ?wall.n.01_1 ?stain.n.01_1)
+                (covered wall.n.01_1 stain.n.01_1)
             ) 
             (not 
-                (covered ?wall.n.01_1 ?mildew.n.02_1)
+                (covered wall.n.01_1 mildew.n.02_1)
             )
         )
     )

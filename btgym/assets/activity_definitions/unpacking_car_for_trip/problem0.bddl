@@ -1,4 +1,4 @@
-(define (problem unpacking_car_for_trip-0)
+(define (problem unpacking_car_for_trip_0)
     (:domain omnigibson)
 
     (:objects
@@ -25,10 +25,10 @@
     
     (:goal 
         (and 
-            (inside ?packing_box.n.02_1 ?shelf.n.01_1) 
-            (inside ?baseball_glove.n.01_1 ?shelf.n.01_1) 
-            (nextto ?golf_club.n.02_1 ?shelf.n.01_1) 
-            (inside ?bag.n.06_1 ?shelf.n.01_1) 
+            (inside packing_box.n.02_1 shelf.n.01_1) 
+            (inside baseball_glove.n.01_1 shelf.n.01_1) 
+            (nextto golf_club.n.02_1 shelf.n.01_1) 
+            (inside bag.n.06_1 shelf.n.01_1)
         )
     )
 )

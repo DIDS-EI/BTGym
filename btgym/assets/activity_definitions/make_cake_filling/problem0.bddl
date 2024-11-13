@@ -1,4 +1,4 @@
-(define (problem make_cake_filling-0)
+(define (problem make_cake_filling_0)
     (:domain omnigibson)
 
     (:objects
@@ -61,8 +61,8 @@
     
     (:goal 
         (and 
-            (real ?cherry_filling.n.01_1) 
-            (contains ?mixing_bowl.n.01_1 ?cherry_filling.n.01_1)
+            (real cherry_filling.n.01_1) 
+            (contains mixing_bowl.n.01_1 cherry_filling.n.01_1)
         )
     )
 )

@@ -1,4 +1,4 @@
-(define (problem can_fruit-0)
+(define (problem can_fruit_0)
     (:domain omnigibson)
 
     (:objects
@@ -33,19 +33,19 @@
         (and 
             (forall 
                 (?mason_jar.n.01 - mason_jar.n.01) 
-                (and
-                    (inside ?mason_jar.n.01 ?cabinet.n.01_1)
-                    (forn
-                        (2)
-                        (?peach.n.03 - peach.n.03)
+                (and 
+                    (inside ?mason_jar.n.01 cabinet.n.01_1) 
+                    (forn 
+                        (2) 
+                        (?peach.n.03 - peach.n.03) 
                         (inside ?peach.n.03 ?mason_jar.n.01)
-                    )
-                    (filled ?mason_jar.n.01 ?water.n.06_1)
+                    ) 
+                    (filled ?mason_jar.n.01 water.n.06_1)
                 )
             ) 
             (forall 
-                (?mason_jar.n.01 - mason_jar.n.01)
-                (not
+                (?mason_jar.n.01 - mason_jar.n.01) 
+                (not 
                     (open ?mason_jar.n.01)
                 )
             )

@@ -1,4 +1,4 @@
-(define (problem laying_clothes_out-0)
+(define (problem laying_clothes_out_0)
     (:domain omnigibson)
 
     (:objects
@@ -12,18 +12,18 @@
     
     (:init 
         (inside jacket.n.01_1 wardrobe.n.01_1) 
-        (inside sandal.n.01_1 wardrobe.n.01_1)
-        (inroom wardrobe.n.01_1 closet)
+        (inside sandal.n.01_1 wardrobe.n.01_1) 
+        (inroom wardrobe.n.01_1 closet) 
         (inroom floor.n.01_1 closet) 
-        (inroom bed.n.01_1 bedroom)
-        (inroom floor.n.01_2 bedroom)
+        (inroom bed.n.01_1 bedroom) 
+        (inroom floor.n.01_2 bedroom) 
         (ontop agent.n.01_1 floor.n.01_1)
     )
     
     (:goal 
         (and 
-            (ontop ?jacket.n.01_1 ?bed.n.01_1) 
-            (ontop ?sandal.n.01_1 ?floor.n.01_2)
+            (ontop jacket.n.01_1 bed.n.01_1) 
+            (ontop sandal.n.01_1 floor.n.01_2)
         )
     )
 )

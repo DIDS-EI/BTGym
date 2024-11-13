@@ -1,4 +1,4 @@
-(define (problem treating_clothes-0)
+(define (problem treating_clothes_0)
     (:domain omnigibson)
 
     (:objects
@@ -15,12 +15,12 @@
     )
     
     (:init 
-        (covered long_trousers.n.01_1 wrinkle.n.01_1)
-        (ontop long_trousers.n.01_1 floor.n.01_1)
-        (ontop iron.n.04_1 floor.n.01_1)
-        (filled detergent__bottle.n.01_1 detergent.n.02_1)
-        (ontop detergent__bottle.n.01_1 floor.n.01_1)
-        (insource sink.n.01_1 water.n.06_1)
+        (covered long_trousers.n.01_1 wrinkle.n.01_1) 
+        (ontop long_trousers.n.01_1 floor.n.01_1) 
+        (ontop iron.n.04_1 floor.n.01_1) 
+        (filled detergent__bottle.n.01_1 detergent.n.02_1) 
+        (ontop detergent__bottle.n.01_1 floor.n.01_1) 
+        (insource sink.n.01_1 water.n.06_1) 
         (inroom shelf.n.01_1 living_room) 
         (inroom floor.n.01_1 living_room) 
         (inroom sink.n.01_1 kitchen) 
@@ -29,11 +29,11 @@
     
     (:goal 
         (and 
-            (draped ?long_trousers.n.01_1 ?shelf.n.01_1)
-            (not
-                (covered ?long_trousers.n.01_1 ?wrinkle.n.01_1)
-            )
-            (saturated ?long_trousers.n.01_1 ?detergent.n.02_1)
+            (draped long_trousers.n.01_1 shelf.n.01_1) 
+            (not 
+                (covered long_trousers.n.01_1 wrinkle.n.01_1)
+            ) 
+            (saturated long_trousers.n.01_1 detergent.n.02_1)
         )
     )
 )

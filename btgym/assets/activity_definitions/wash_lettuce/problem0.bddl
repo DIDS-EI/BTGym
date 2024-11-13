@@ -1,4 +1,4 @@
-(define (problem wash_lettuce-0)
+(define (problem wash_lettuce_0)
     (:domain omnigibson)
 
     (:objects
@@ -32,8 +32,8 @@
     (:goal 
         (and 
             (not 
-                (covered ?lettuce.n.03_1 ?dirt.n.02_1)
-            ) 
+                (covered lettuce.n.03_1 dirt.n.02_1)
+            )
         )
     )
 )

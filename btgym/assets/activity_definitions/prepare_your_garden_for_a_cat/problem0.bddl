@@ -1,4 +1,4 @@
-(define (problem prepare_your_garden_for_a_cat-0)
+(define (problem prepare_your_garden_for_a_cat_0)
     (:domain omnigibson)
 
     (:objects
@@ -14,7 +14,7 @@
     
     (:init 
         (filled disinfectant__bottle.n.01_1 disinfectant.n.01_1) 
-        (ontop disinfectant__bottle.n.01_1 lawn.n.01_1)
+        (ontop disinfectant__bottle.n.01_1 lawn.n.01_1) 
         (ontop mat.n.01_1 lawn.n.01_1) 
         (ontop litter_box.n.01_1 lawn.n.01_1) 
         (ontop water_bottle.n.01_1 lawn.n.01_1) 
@@ -25,11 +25,11 @@
     
     (:goal 
         (and 
-            (unfolded ?mat.n.01_1) 
-            (ontop ?mat.n.01_1 ?lawn.n.01_1) 
-            (nextto ?litter_box.n.01_1 ?mat.n.01_1) 
-            (nextto ?water_bottle.n.01_1 ?mat.n.01_1)
-            (covered ?litter_box.n.01_1 ?disinfectant.n.01_1)
+            (unfolded mat.n.01_1) 
+            (ontop mat.n.01_1 lawn.n.01_1) 
+            (nextto litter_box.n.01_1 mat.n.01_1) 
+            (nextto water_bottle.n.01_1 mat.n.01_1) 
+            (covered litter_box.n.01_1 disinfectant.n.01_1)
         )
     )
 )

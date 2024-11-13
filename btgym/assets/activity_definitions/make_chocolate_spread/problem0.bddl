@@ -1,4 +1,4 @@
-(define (problem make_chocolate_spread-0)
+(define (problem make_chocolate_spread_0)
     (:domain omnigibson)
 
     (:objects
@@ -38,8 +38,8 @@
     
     (:goal 
         (and 
-            (real ?chocolate_sauce.n.01_1) 
-            (contains ?mixing_bowl.n.01_1 ?chocolate_sauce.n.01_1)
+            (real chocolate_sauce.n.01_1) 
+            (contains mixing_bowl.n.01_1 chocolate_sauce.n.01_1)
         )
     )
 )

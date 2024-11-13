@@ -1,4 +1,4 @@
-(define (problem setting_the_fire-0)
+(define (problem setting_the_fire_0)
     (:domain omnigibson)
 
     (:objects
@@ -24,11 +24,11 @@
         (and 
             (forall 
                 (?firewood.n.01 - firewood.n.01) 
-                (and
-                    (on_fire ?firewood.n.01)
-                    (inside ?firewood.n.01 ?fireplace.n.01_1)
+                (and 
+                    (on_fire ?firewood.n.01) 
+                    (inside ?firewood.n.01 fireplace.n.01_1)
                 )
-            ) 
+            )
         )
     )
 )

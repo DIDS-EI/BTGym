@@ -1,4 +1,4 @@
-(define (problem clean_stucco-0)
+(define (problem clean_stucco_0)
     (:domain omnigibson)
 
     (:objects
@@ -32,7 +32,7 @@
     (:goal 
         (and 
             (not 
-                (covered ?wall.n.01_1 ?mold.n.05_1)
+                (covered wall.n.01_1 mold.n.05_1)
             )
         )
     )

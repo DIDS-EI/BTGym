@@ -1,4 +1,4 @@
-(define (problem buy_a_air_conditioner-0)
+(define (problem buy_a_air_conditioner_0)
     (:domain omnigibson)
 
     (:objects
@@ -21,8 +21,8 @@
     
     (:goal 
         (and 
-            (ontop ?money.n.01_1 ?checkout.n.03_1) 
-            (ontop ?air_conditioner.n.01_1 ?checkout.n.03_1) 
+            (ontop money.n.01_1 checkout.n.03_1) 
+            (ontop air_conditioner.n.01_1 checkout.n.03_1)
         )
     )
 )

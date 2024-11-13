@@ -1,4 +1,4 @@
-(define (problem staining_wood_furniture-0)
+(define (problem staining_wood_furniture_0)
     (:domain omnigibson)
 
     (:objects
@@ -12,7 +12,7 @@
     
     (:init 
         (filled ink__bottle.n.01_1 ink.n.01_1) 
-        (ontop ink__bottle.n.01_1 coffee_table.n.01_1)
+        (ontop ink__bottle.n.01_1 coffee_table.n.01_1) 
         (ontop paintbrush.n.01_1 coffee_table.n.01_1) 
         (not 
             (covered coffee_table.n.01_1 ink.n.01_1)
@@ -24,7 +24,7 @@
     
     (:goal 
         (and 
-            (covered ?coffee_table.n.01_1 ?ink.n.01_1) 
+            (covered coffee_table.n.01_1 ink.n.01_1)
         )
     )
 )

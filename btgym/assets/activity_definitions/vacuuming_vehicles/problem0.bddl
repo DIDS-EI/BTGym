@@ -1,12 +1,12 @@
-(define (problem vacuuming_vehicles-0)
+(define (problem vacuuming_vehicles_0)
     (:domain omnigibson)
 
     (:objects
-     	car.n.01_1 - car.n.01
-    	floor.n.01_1 - floor.n.01
-    	vacuum.n.04_1 - vacuum.n.04
-    	dust.n.01_1 - dust.n.01
-    	agent.n.01_1 - agent.n.01
+        car.n.01_1 - car.n.01
+        floor.n.01_1 - floor.n.01
+        vacuum.n.04_1 - vacuum.n.04
+        dust.n.01_1 - dust.n.01
+        agent.n.01_1 - agent.n.01
     )
     
     (:init 
@@ -20,9 +20,9 @@
     (:goal 
         (and 
             (and 
-                (ontop ?car.n.01_1 ?floor.n.01_1) 
+                (ontop car.n.01_1 floor.n.01_1) 
                 (not 
-                    (covered ?car.n.01_1 ?dust.n.01_1)
+                    (covered car.n.01_1 dust.n.01_1)
                 )
             )
         )

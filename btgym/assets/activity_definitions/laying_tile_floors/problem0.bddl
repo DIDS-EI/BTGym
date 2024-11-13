@@ -1,4 +1,4 @@
-(define (problem laying_tile_floors-0)
+(define (problem laying_tile_floors_0)
     (:domain omnigibson)
 
     (:objects
@@ -21,7 +21,7 @@
         (and 
             (forall 
                 (?tile.n.01 - tile.n.01) 
-                (ontop ?tile.n.01 ?floor.n.01_2)
+                (ontop ?tile.n.01 floor.n.01_2)
             )
         )
     )

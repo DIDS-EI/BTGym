@@ -1,4 +1,4 @@
-(define (problem hanging_up_curtains-0)
+(define (problem hanging_up_curtains_0)
     (:domain omnigibson)
 
     (:objects
@@ -11,15 +11,15 @@
     
     (:init 
         (ontop curtain.n.01_1 floor.n.01_1) 
-        (attached curtain_rod.n.01_1 wall_nail.n.01_1)
-        (inroom floor.n.01_1 living_room)
-        (inroom wall_nail.n.01_1 living_room)
+        (attached curtain_rod.n.01_1 wall_nail.n.01_1) 
+        (inroom floor.n.01_1 living_room) 
+        (inroom wall_nail.n.01_1 living_room) 
         (ontop agent.n.01_1 floor.n.01_1)
     )
     
     (:goal 
         (and 
-            (draped ?curtain.n.01_1 ?curtain_rod.n.01_1)
+            (draped curtain.n.01_1 curtain_rod.n.01_1)
         )
     )
 )

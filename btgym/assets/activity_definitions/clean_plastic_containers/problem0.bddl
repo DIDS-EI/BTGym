@@ -1,4 +1,4 @@
-(define (problem clean_plastic_containers-0)
+(define (problem clean_plastic_containers_0)
     (:domain omnigibson)
 
     (:objects
@@ -33,10 +33,10 @@
     (:goal 
         (and 
             (not 
-                (covered ?bowl.n.01_1 ?adhesive_material.n.01_1)
-            )
+                (covered bowl.n.01_1 adhesive_material.n.01_1)
+            ) 
             (not 
-                (covered ?lid.n.02_1 ?adhesive_material.n.01_1)
+                (covered lid.n.02_1 adhesive_material.n.01_1)
             )
         )
     )

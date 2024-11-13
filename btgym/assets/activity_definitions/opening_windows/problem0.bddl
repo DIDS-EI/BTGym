@@ -1,4 +1,4 @@
-(define (problem opening_windows-0)
+(define (problem opening_windows_0)
     (:domain omnigibson)
 
     (:objects
@@ -7,13 +7,13 @@
         agent.n.01_1 - agent.n.01
     )
     
-    (:init
-        (not
+    (:init 
+        (not 
             (open window.n.01_1)
-        )
-        (not
+        ) 
+        (not 
             (open window.n.01_2)
-        )
+        ) 
         (inroom floor.n.01_1 living_room) 
         (inroom window.n.01_1 living_room) 
         (inroom window.n.01_2 living_room) 
@@ -22,8 +22,8 @@
     
     (:goal 
         (and 
-            (forall
-                (?window.n.01 - window.n.01)
+            (forall 
+                (?window.n.01 - window.n.01) 
                 (open ?window.n.01)
             )
         )

@@ -1,4 +1,4 @@
-(define (problem dispose_of_a_pizza_box-0)
+(define (problem dispose_of_a_pizza_box_0)
     (:domain omnigibson)
 
     (:objects
@@ -21,10 +21,10 @@
     
     (:goal 
         (and 
-            (ontop ?ashcan.n.01_1 ?floor.n.01_1) 
+            (ontop ashcan.n.01_1 floor.n.01_1) 
             (and 
-                (inside ?pizza_box.n.01_1 ?ashcan.n.01_1) 
-                (inside ?pizza.n.01_1 ?ashcan.n.01_1)
+                (inside pizza_box.n.01_1 ashcan.n.01_1) 
+                (inside pizza.n.01_1 ashcan.n.01_1)
             )
         )
     )

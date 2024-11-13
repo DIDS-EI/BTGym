@@ -1,4 +1,4 @@
-(define (problem organizing_office_documents-0)
+(define (problem organizing_office_documents_0)
     (:domain omnigibson)
 
     (:objects
@@ -23,11 +23,11 @@
     (:goal 
         (and 
             (forall 
-                (?legal_document.n.01 - legal_document.n.01)
-                (inside ?legal_document.n.01 ?folder.n.02_1)
-            )
-            (inside ?folder.n.02_1 ?cabinet.n.01_1) 
-            (ontop ?post-it.n.01_1 ?folder.n.02_1) 
+                (?legal_document.n.01 - legal_document.n.01) 
+                (inside ?legal_document.n.01 folder.n.02_1)
+            ) 
+            (inside folder.n.02_1 cabinet.n.01_1) 
+            (ontop post-it.n.01_1 folder.n.02_1)
         )
     )
 )

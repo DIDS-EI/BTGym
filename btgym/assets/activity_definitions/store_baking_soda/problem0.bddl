@@ -1,4 +1,4 @@
-(define (problem store_baking_soda-0)
+(define (problem store_baking_soda_0)
     (:domain omnigibson)
 
     (:objects
@@ -21,10 +21,10 @@
     (:goal 
         (and 
             (forall 
-                (?box__of__baking_soda.n.01 - box__of__baking_soda.n.01)
-                (inside ?box__of__baking_soda.n.01 ?cabinet.n.01_1)
-            )
-            (nextto ?box__of__baking_soda.n.01_2 ?box__of__baking_soda.n.01_1)
+                (?box__of__baking_soda.n.01 - box__of__baking_soda.n.01) 
+                (inside ?box__of__baking_soda.n.01 cabinet.n.01_1)
+            ) 
+            (nextto box__of__baking_soda.n.01_2 box__of__baking_soda.n.01_1)
         )
     )
 )

@@ -1,4 +1,4 @@
-(define (problem putting_clean_laundry_away-0)
+(define (problem putting_clean_laundry_away_0)
     (:domain omnigibson)
 
     (:objects
@@ -17,25 +17,25 @@
         (inside bath_towel.n.01_2 wicker_basket.n.01_1) 
         (ontop wicker_basket.n.01_1 floor.n.01_1) 
         (ontop agent.n.01_1 floor.n.01_1) 
-        (inroom floor.n.01_1 bedroom)
-        (inroom towel_rack.n.01_1 bathroom)
+        (inroom floor.n.01_1 bedroom) 
+        (inroom towel_rack.n.01_1 bathroom) 
         (inroom floor.n.01_2 bathroom)
     )
     
     (:goal 
         (and 
             (forall 
-                (?hand_towel.n.01 - hand_towel.n.01)
-                (draped ?hand_towel.n.01 ?towel_rack.n.01_1)
-            )
+                (?hand_towel.n.01 - hand_towel.n.01) 
+                (draped ?hand_towel.n.01 towel_rack.n.01_1)
+            ) 
             (forall 
-                (?bath_towel.n.01 - bath_towel.n.01)
+                (?bath_towel.n.01 - bath_towel.n.01) 
                 (and 
-                    (folded ?bath_towel.n.01)
-                    (inside ?bath_towel.n.01 ?wicker_basket.n.01_1)
+                    (folded ?bath_towel.n.01) 
+                    (inside ?bath_towel.n.01 wicker_basket.n.01_1)
                 )
-            )
-            (ontop ?wicker_basket.n.01_1 ?floor.n.01_2)
+            ) 
+            (ontop wicker_basket.n.01_1 floor.n.01_2)
         )
     )
 )

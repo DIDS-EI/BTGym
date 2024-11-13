@@ -1,4 +1,4 @@
-(define (problem collecting_wood-0)
+(define (problem collecting_wood_0)
     (:domain omnigibson)
 
     (:objects
@@ -21,8 +21,8 @@
         (and 
             (forall 
                 (?log.n.01 - log.n.01) 
-                (ontop ?log.n.01_1 ?floor.n.01_2)
-            ) 
+                (ontop log.n.01_1 floor.n.01_2)
+            )
         )
     )
 )

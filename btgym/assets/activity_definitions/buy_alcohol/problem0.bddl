@@ -1,4 +1,4 @@
-(define (problem buy_alcohol-0)
+(define (problem buy_alcohol_0)
     (:domain omnigibson)
 
     (:objects
@@ -27,10 +27,10 @@
     
     (:goal 
         (and 
-            (ontop ?bottle__of__beer.n.01_1 ?checkout.n.03_1) 
-            (ontop ?bottle__of__wine.n.01_1 ?checkout.n.03_1) 
-            (ontop ?bottle__of__vodka.n.01_1 ?checkout.n.03_1) 
-            (ontop ?money.n.01_1 ?checkout.n.03_1)
+            (ontop bottle__of__beer.n.01_1 checkout.n.03_1) 
+            (ontop bottle__of__wine.n.01_1 checkout.n.03_1) 
+            (ontop bottle__of__vodka.n.01_1 checkout.n.03_1) 
+            (ontop money.n.01_1 checkout.n.03_1)
         )
     )
 )

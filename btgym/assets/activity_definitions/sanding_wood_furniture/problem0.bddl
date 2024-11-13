@@ -1,4 +1,4 @@
-(define (problem sanding_wood_furniture-0)
+(define (problem sanding_wood_furniture_0)
     (:domain omnigibson)
 
     (:objects
@@ -20,7 +20,7 @@
     (:goal 
         (and 
             (not 
-                (covered ?shelf.n.01_1 ?incision.n.01_1)
+                (covered shelf.n.01_1 incision.n.01_1)
             )
         )
     )

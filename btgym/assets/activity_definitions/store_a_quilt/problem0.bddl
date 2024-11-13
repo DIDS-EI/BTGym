@@ -1,4 +1,4 @@
-(define (problem store_a_quilt-0)
+(define (problem store_a_quilt_0)
     (:domain omnigibson)
 
     (:objects
@@ -19,8 +19,8 @@
     
     (:goal 
         (and 
-            (inside ?quilt.n.01_1 ?shelf.n.01_1)
-            (folded ?quilt.n.01_1)
+            (inside quilt.n.01_1 shelf.n.01_1) 
+            (folded quilt.n.01_1)
         )
     )
 )

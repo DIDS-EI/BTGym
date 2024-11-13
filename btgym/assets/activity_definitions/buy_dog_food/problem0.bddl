@@ -1,4 +1,4 @@
-(define (problem buy_dog_food-0)
+(define (problem buy_dog_food_0)
     (:domain omnigibson)
 
     (:objects
@@ -23,8 +23,8 @@
     
     (:goal 
         (and 
-            (ontop ?can__of__dog_food.n.01_1 ?checkout.n.03_1) 
-            (ontop ?money.n.01_1 ?checkout.n.03_1)
+            (ontop can__of__dog_food.n.01_1 checkout.n.03_1) 
+            (ontop money.n.01_1 checkout.n.03_1)
         )
     )
 )

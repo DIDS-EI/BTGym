@@ -1,4 +1,4 @@
-(define (problem set_up_a_mouse_cage-0)
+(define (problem set_up_a_mouse_cage_0)
     (:domain omnigibson)
 
     (:objects
@@ -15,7 +15,7 @@
     )
     
     (:init 
-        (filled petfood__bag.n.01_1 petfood.n.01_1)
+        (filled petfood__bag.n.01_1 petfood.n.01_1) 
         (ontop petfood__bag.n.01_1 floor.n.01_1) 
         (ontop hand_towel.n.01_1 floor.n.01_1) 
         (ontop hamster_wheel.n.01_1 floor.n.01_1) 
@@ -29,12 +29,12 @@
     
     (:goal 
         (and 
-            (filled ?bowl.n.01_1 ?petfood.n.01_1) 
-            (overlaid ?hand_towel.n.01_1 ?hutch.n.01_1)
-            (inside ?hamster_wheel.n.01_1 ?hutch.n.01_1) 
-            (inside ?water_bottle.n.01_1 ?hutch.n.01_1) 
-            (ontop ?hutch.n.01_1 ?coffee_table.n.01_1) 
-            (inside ?bowl.n.01_1 ?hutch.n.01_1)
+            (filled bowl.n.01_1 petfood.n.01_1) 
+            (overlaid hand_towel.n.01_1 hutch.n.01_1) 
+            (inside hamster_wheel.n.01_1 hutch.n.01_1) 
+            (inside water_bottle.n.01_1 hutch.n.01_1) 
+            (ontop hutch.n.01_1 coffee_table.n.01_1) 
+            (inside bowl.n.01_1 hutch.n.01_1)
         )
     )
 )

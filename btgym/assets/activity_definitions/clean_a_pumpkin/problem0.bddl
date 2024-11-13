@@ -1,4 +1,4 @@
-(define (problem clean_a_pumpkin-0)
+(define (problem clean_a_pumpkin_0)
     (:domain omnigibson)
 
     (:objects
@@ -22,7 +22,7 @@
     (:goal 
         (and 
             (not 
-                (covered ?pumpkin.n.02_1 ?dust.n.01_1)
+                (covered pumpkin.n.02_1 dust.n.01_1)
             )
         )
     )

@@ -1,4 +1,4 @@
-(define (problem clean_a_sieve-0)
+(define (problem clean_a_sieve_0)
     (:domain omnigibson)
 
     (:objects
@@ -32,8 +32,8 @@
     (:goal 
         (and 
             (not 
-                (covered ?sieve.n.01_1 ?adhesive_material.n.01_1)
-            ) 
+                (covered sieve.n.01_1 adhesive_material.n.01_1)
+            )
         )
     )
 )

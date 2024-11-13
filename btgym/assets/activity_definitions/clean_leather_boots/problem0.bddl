@@ -1,4 +1,4 @@
-(define (problem clean_leather_boots-0)
+(define (problem clean_leather_boots_0)
     (:domain omnigibson)
 
     (:objects
@@ -24,7 +24,7 @@
             (forall 
                 (?boot.n.01 - boot.n.01) 
                 (not 
-                    (covered ?boot.n.01 ?dust.n.01_1)
+                    (covered ?boot.n.01 dust.n.01_1)
                 )
             )
         )

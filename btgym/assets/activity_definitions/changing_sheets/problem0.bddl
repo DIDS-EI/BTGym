@@ -1,4 +1,4 @@
-(define (problem changing_sheets-0)
+(define (problem changing_sheets_0)
     (:domain omnigibson)
 
     (:objects
@@ -18,8 +18,8 @@
     
     (:goal 
         (and 
-            (ontop ?sheet.n.03_1 ?floor.n.01_1) 
-            (overlaid ?sheet.n.03_2 ?bed.n.01_1)
+            (ontop sheet.n.03_1 floor.n.01_1) 
+            (overlaid sheet.n.03_2 bed.n.01_1)
         )
     )
 )

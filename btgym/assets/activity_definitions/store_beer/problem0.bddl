@@ -1,4 +1,4 @@
-(define (problem store_beer-0)
+(define (problem store_beer_0)
     (:domain omnigibson)
 
     (:objects
@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?beer_bottle.n.01 - beer_bottle.n.01)
-                (inside ?beer_bottle.n.01 ?electric_refrigerator.n.01_1)
+                (?beer_bottle.n.01 - beer_bottle.n.01) 
+                (inside ?beer_bottle.n.01 electric_refrigerator.n.01_1)
             )
         )
     )

@@ -1,10 +1,10 @@
-(define (problem loading_the_dishwasher-0)
+(define (problem loading_the_dishwasher_0)
     (:domain omnigibson)
 
     (:objects
         stain.n.01_1 - stain.n.01
         plate.n.04_1 plate.n.04_2 plate.n.04_3 - plate.n.04
-       countertop.n.01_1 - countertop.n.01
+        countertop.n.01_1 - countertop.n.01
         mug.n.04_1 - mug.n.04
         bowl.n.01_1 bowl.n.01_2 - bowl.n.01
         dishwasher.n.01_1 - dishwasher.n.01
@@ -35,14 +35,13 @@
         (and 
             (forall 
                 (?plate.n.04 - plate.n.04) 
-                (inside ?plate.n.04 ?dishwasher.n.01_1)
+                (inside ?plate.n.04 dishwasher.n.01_1)
             ) 
             (forall 
                 (?bowl.n.01 - bowl.n.01) 
-                (inside ?bowl.n.01 ?dishwasher.n.01_1)
+                (inside ?bowl.n.01 dishwasher.n.01_1)
             ) 
-            (inside ?mug.n.04_1 ?dishwasher.n.01_1)
+            (inside mug.n.04_1 dishwasher.n.01_1)
         )
     )
 )
-

@@ -1,4 +1,4 @@
-(define (problem clean_a_knife-0)
+(define (problem clean_a_knife_0)
     (:domain omnigibson)
 
     (:objects
@@ -32,10 +32,10 @@
     (:goal 
         (and 
             (not 
-                (covered ?knife.n.01_1 ?stain.n.01_1)
+                (covered knife.n.01_1 stain.n.01_1)
             ) 
             (not 
-                (covered ?knife.n.01_1 ?cooking_oil.n.01_1)
+                (covered knife.n.01_1 cooking_oil.n.01_1)
             )
         )
     )

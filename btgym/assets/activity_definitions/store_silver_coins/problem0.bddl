@@ -1,4 +1,4 @@
-(define (problem store_silver_coins-0)
+(define (problem store_silver_coins_0)
     (:domain omnigibson)
 
     (:objects
@@ -12,9 +12,9 @@
     )
     
     (:init 
-        (ontop silver.n.02_1 breakfast_table.n.01_1)
-        (ontop silver.n.02_2 breakfast_table.n.01_1)
-        (ontop hand_towel.n.01_1 breakfast_table.n.01_1)
+        (ontop silver.n.02_1 breakfast_table.n.01_1) 
+        (ontop silver.n.02_2 breakfast_table.n.01_1) 
+        (ontop hand_towel.n.01_1 breakfast_table.n.01_1) 
         (ontop cup.n.01_1 breakfast_table.n.01_1) 
         (inroom cabinet.n.01_1 private_office) 
         (inroom breakfast_table.n.01_1 private_office) 
@@ -26,9 +26,9 @@
         (and 
             (forall 
                 (?silver.n.02 - silver.n.02) 
-                (inside ?silver.n.02 ?cup.n.01_1)
+                (inside ?silver.n.02 cup.n.01_1)
             ) 
-            (inside ?cup.n.01_1 ?cabinet.n.01_1)
+            (inside cup.n.01_1 cabinet.n.01_1)
         )
     )
 )

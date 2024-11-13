@@ -1,4 +1,4 @@
-(define (problem freeze_pies-0)
+(define (problem freeze_pies_0)
     (:domain omnigibson)
 
     (:objects
@@ -45,7 +45,7 @@
             ) 
             (forall 
                 (?tupperware.n.01 - tupperware.n.01) 
-                (inside ?tupperware.n.01 ?electric_refrigerator.n.01_1)
+                (inside ?tupperware.n.01 electric_refrigerator.n.01_1)
             ) 
             (forall 
                 (?apple_pie.n.01 - apple_pie.n.01) 

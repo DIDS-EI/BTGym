@@ -1,4 +1,4 @@
-(define (problem store_feta_cheese-0)
+(define (problem store_feta_cheese_0)
     (:domain omnigibson)
 
     (:objects
@@ -23,9 +23,9 @@
     
     (:goal 
         (and 
-            (inside ?feta.n.01_1 ?tupperware.n.01_1) 
-            (overlaid ?plastic_wrap.n.01_1 ?feta.n.01_1) 
-            (inside ?tupperware.n.01_1 ?electric_refrigerator.n.01_1)
+            (inside feta.n.01_1 tupperware.n.01_1) 
+            (overlaid plastic_wrap.n.01_1 feta.n.01_1) 
+            (inside tupperware.n.01_1 electric_refrigerator.n.01_1)
         )
     )
 )

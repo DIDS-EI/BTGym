@@ -1,4 +1,4 @@
-(define (problem make_lemonade-0)
+(define (problem make_lemonade_0)
     (:domain omnigibson)
 
     (:objects
@@ -37,8 +37,8 @@
     
     (:goal 
         (and 
-            (real ?lemonade.n.01_1) 
-            (contains ?pitcher.n.02_1 ?lemonade.n.01_1)
+            (real lemonade.n.01_1) 
+            (contains pitcher.n.02_1 lemonade.n.01_1)
         )
     )
 )

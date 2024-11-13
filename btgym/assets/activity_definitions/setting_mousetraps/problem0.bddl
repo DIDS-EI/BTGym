@@ -1,13 +1,13 @@
-(define (problem setting_mousetraps-0)
+(define (problem setting_mousetraps_0)
     (:domain omnigibson)
 
     (:objects
-     	mousetrap.n.01_1 mousetrap.n.01_2 mousetrap.n.01_3 mousetrap.n.01_4 - mousetrap.n.01
-    	sink.n.01_1 - sink.n.01
-    	floor.n.01_1 floor.n.01_2 - floor.n.01
-    	toilet.n.02_1 - toilet.n.02
+        mousetrap.n.01_1 mousetrap.n.01_2 mousetrap.n.01_3 mousetrap.n.01_4 - mousetrap.n.01
+        sink.n.01_1 - sink.n.01
+        floor.n.01_1 floor.n.01_2 - floor.n.01
+        toilet.n.02_1 - toilet.n.02
         bed.n.01_1 - bed.n.01
-    	agent.n.01_1 - agent.n.01
+        agent.n.01_1 - agent.n.01
     )
     
     (:init 
@@ -25,10 +25,10 @@
     
     (:goal 
         (and 
-            (ontop ?mousetrap.n.01_1 ?floor.n.01_1) 
-            (ontop ?mousetrap.n.01_2 ?floor.n.01_1) 
-            (nextto ?mousetrap.n.01_3 ?toilet.n.02_1) 
-            (nextto ?mousetrap.n.01_4 ?toilet.n.02_1)
+            (ontop mousetrap.n.01_1 floor.n.01_1) 
+            (ontop mousetrap.n.01_2 floor.n.01_1) 
+            (nextto mousetrap.n.01_3 toilet.n.02_1) 
+            (nextto mousetrap.n.01_4 toilet.n.02_1)
         )
     )
 )

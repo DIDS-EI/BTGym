@@ -1,4 +1,4 @@
-(define (problem paying_for_purchases-0)
+(define (problem paying_for_purchases_0)
     (:domain omnigibson)
 
     (:objects
@@ -22,8 +22,8 @@
     
     (:goal 
         (and 
-            (ontop ?shopping_basket.n.01_1 ?checkout.n.03_1) 
-            (ontop ?money.n.01_1 ?checkout.n.03_1)
+            (ontop shopping_basket.n.01_1 checkout.n.03_1) 
+            (ontop money.n.01_1 checkout.n.03_1)
         )
     )
 )

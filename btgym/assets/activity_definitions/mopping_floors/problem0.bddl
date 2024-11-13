@@ -1,4 +1,4 @@
-(define (problem mopping_floors-0)
+(define (problem mopping_floors_0)
     (:domain omnigibson)
 
     (:objects
@@ -26,11 +26,11 @@
         (ontop agent.n.01_1 floor.n.01_1)
     )
     
-    (:goal
+    (:goal 
         (and 
             (not 
-                (covered ?floor.n.01_1 ?stain.n.01_1)
-            ) 
+                (covered floor.n.01_1 stain.n.01_1)
+            )
         )
     )
 )
