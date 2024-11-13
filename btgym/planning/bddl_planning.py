@@ -32,8 +32,14 @@ def plan_single_task(task_path, domain_path, task_name):
 
     print(updated_content)
     print(task_name)
-    # print(plan)
-
+    print(plan)
+    if plan!=None:
+        print("Plan found:")
+        for step in plan:
+            print(step)
+    else:
+        print("No plan found.")
+    return plan
 
 
 
@@ -47,11 +53,17 @@ def plan_multi_task(num_tasks):
         task_list = file.readlines()
         task_list.sort()
 
+    plan_success_count = 1
     for task_name_raw in task_list[:num_tasks]:
         task_name = task_name_raw.strip()
         task_path = f"{ROOT_PATH}/assets/activity_definitions/{task_name.strip()}/problem0.bddl"
-        plan_single_task(task_path, domain_path, task_name)
+        plan_result = plan_single_task(task_path, domain_path, task_name)
+        
+        if plan_result != None:
+            plan_success_count += 1
 
+    print(f"Plan success count: {plan_success_count}")
+    print(f"Plan success rate: {plan_success_count/num_tasks}")
 
 if __name__ == "__main__":
-    plan_multi_task(2)
+    plan_multi_task(1016)

@@ -19,4 +19,5 @@ task_name_list = sorted(task_name_list)
 
 task_name = 'problem0'
 problem_file =  f'{ROOT_PATH}/../examples/bddl/problem0.bddl'
-run_fast_downward(domain_file, problem_file,f'outputs/{task_name}')    
+plan = run_fast_downward(domain_file, problem_file,f'outputs/{task_name}')    
+print(plan)
