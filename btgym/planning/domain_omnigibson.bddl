@@ -31,83 +31,159 @@
         (grasped ?obj1 ?obj2)
     )
     
-
-    ;; Place the currently grasped object on top of another object
-    (:action place_on_top
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (covered ?obj1 ?obj2) ;;cover ontop
+    (:action cook
+        :parameters (?obj1)
+        :precondition (not (cooked ?obj1))
+        :effect (cooked ?obj1)
     )
 
-
-
-    #|
-    ;; Grasp an object
-    (:action grasp
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (grasped ?obj1 ?obj2)
+    (:action freeze
+        :parameters (?obj1)
+        :precondition (not (frozen ?obj1))
+        :effect (frozen ?obj1)
     )
 
-    ;; Place the currently grasped object on top of another object
-    (:action place_on_top
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (covered ?obj1 ?obj2) ;;cover ontop
+    (:action open
+        :parameters (?obj1)
+        :precondition (not (open ?obj1))
+        :effect (open ?obj1)
     )
 
-
-    ;; Place the currently grasped object inside another object
-    (:action place_inside
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (contains ?obj1 ?obj2) ;;contains inside
+    (:action fold
+        :parameters (?obj1)
+        :precondition (not (folded ?obj1))
+        :effect (folded ?obj1)
     )
 
-    ;; Open an object
-    (:action open_object
-        :parameters (?obj)
-        :precondition ()
-        :effect (open ?obj)
-    )
-    
-    ;; Navigate to an object
-    (:action navigate_to
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (inroom ?obj1 ?obj2) 
+    (:action unfold
+        :parameters (?obj1)
+        :precondition (not (unfolded ?obj1))
+        :effect (unfolded ?obj1)
     )
 
-    ;; Toggle an object on
     (:action toggle_on
         :parameters (?obj1)
-        :precondition ()
+        :precondition (not (toggled_on ?obj1))
         :effect (toggled_on ?obj1)
     )
 
+    (:action heat_up
+        :parameters (?obj1)
+        :precondition (not (hot ?obj1))
+        :effect (hot ?obj1)
+    )
 
+    (:action ignite
+        :parameters (?obj1)
+        :precondition (not (on_fire ?obj1))
+        :effect (on_fire ?obj1)
+    )
 
+    (:action mark_future
+        :parameters (?obj1)
+        :precondition (not (future ?obj1))
+        :effect (future ?obj1)
+    )
 
+    (:action make_real
+        :parameters (?obj1)
+        :precondition (not (real ?obj1))
+        :effect (real ?obj1)
+    )
 
-    
+    (:action saturate
+        :parameters (?obj1 ?obj2)
+        :precondition (not (saturated ?obj1 ?obj2))
+        :effect (saturated ?obj1 ?obj2)
+    )
+
+    (:action cover
+        :parameters (?obj1 ?obj2)
+        :precondition (not (covered ?obj1 ?obj2))
+        :effect (covered ?obj1 ?obj2)
+    )
+
     (:action fill
         :parameters (?obj1 ?obj2)
-        :precondition ()
+        :precondition (not (filled ?obj1 ?obj2))
         :effect (filled ?obj1 ?obj2)
     )
 
     (:action put_in
         :parameters (?obj1 ?obj2)
-        :precondition ()
+        :precondition (not (contains ?obj1 ?obj2))
         :effect (contains ?obj1 ?obj2)
     )
 
-    (:action cover
+    (:action place_ontop
         :parameters (?obj1 ?obj2)
         :precondition ()
-        :effect (and (covered ?obj1 ?obj2))
+        :effect (ontop ?obj1 ?obj2)
     )
-    |#
 
+    (:action place_nextto
+        :parameters (?obj1 ?obj2)
+        :precondition (not (nextto ?obj1 ?obj2))
+        :effect (nextto ?obj1 ?obj2)
+    )
 
+    (:action place_under
+        :parameters (?obj1 ?obj2)
+        :precondition (not (under ?obj1 ?obj2))
+        :effect (under ?obj1 ?obj2)
+    )
+
+    (:action touch
+        :parameters (?obj1 ?obj2)
+        :precondition (not (touching ?obj1 ?obj2))
+        :effect (touching ?obj1 ?obj2)
+    )
+
+    (:action place_inside
+        :parameters (?obj1 ?obj2)
+        :precondition (not (inside ?obj1 ?obj2))
+        :effect (inside ?obj1 ?obj2)
+    )
+
+    (:action overlay
+        :parameters (?obj1 ?obj2)
+        :precondition (not (overlaid ?obj1 ?obj2))
+        :effect (overlaid ?obj1 ?obj2)
+    )
+
+    (:action attach
+        :parameters (?obj1 ?obj2)
+        :precondition (not (attached ?obj1 ?obj2))
+        :effect (attached ?obj1 ?obj2)
+    )
+
+    (:action drape
+        :parameters (?obj1 ?obj2)
+        :precondition (not (draped ?obj1 ?obj2))
+        :effect (draped ?obj1 ?obj2)
+    )
+
+    (:action move_into_source
+        :parameters (?obj1 ?obj2)
+        :precondition (not (insource ?obj1 ?obj2))
+        :effect (insource ?obj1 ?obj2)
+    )
+
+    (:action enter_room
+        :parameters (?obj1 ?obj2)
+        :precondition (not (inroom ?obj1 ?obj2))
+        :effect (inroom ?obj1 ?obj2)
+    )
+
+    (:action break
+        :parameters (?obj1)
+        :precondition (not (broken ?obj1))
+        :effect (broken ?obj1)
+    )
+
+    (:action grasp
+        :parameters (?obj1 ?obj2)
+        :precondition (not (grasped ?obj1 ?obj2))
+        :effect (grasped ?obj1 ?obj2)
+    )
 )

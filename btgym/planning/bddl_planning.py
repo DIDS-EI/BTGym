@@ -53,8 +53,10 @@ def plan_multi_task(num_tasks):
         task_list = file.readlines()
         task_list.sort()
 
-    plan_success_count = 1
+    plan_success_count = 0
+    # for task_name_raw in task_list[9:10]:
     for task_name_raw in task_list[:num_tasks]:
+        print(task_name_raw)
         task_name = task_name_raw.strip()
         task_path = f"{ROOT_PATH}/assets/activity_definitions/{task_name.strip()}/problem0.bddl"
         plan_result = plan_single_task(task_path, domain_path, task_name)
@@ -66,5 +68,5 @@ def plan_multi_task(num_tasks):
     print(f"Plan success rate: {plan_success_count/num_tasks}")
 
 if __name__ == "__main__":
-    plan_multi_task(10)
+    plan_multi_task(1016)
     # plan_multi_task(1)
