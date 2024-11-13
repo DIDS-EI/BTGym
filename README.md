@@ -140,3 +140,8 @@ cd btgym/planning/downward
 ```
 
 
+
+## vscode 有波浪线导包错误
+选择正确的 python 解释器 'ctrl+shift+p'
+在 vscode 中对 Pylance 重新禁用再启用
+
