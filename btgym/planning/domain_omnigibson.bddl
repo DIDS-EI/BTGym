@@ -32,6 +32,16 @@
     )
     
 
+    ;; Place the currently grasped object on top of another object
+    (:action place_on_top
+        :parameters (?obj1 ?obj2)
+        :precondition ()
+        :effect (covered ?obj1 ?obj2) ;;cover ontop
+    )
+
+
+
+    #|
     ;; Grasp an object
     (:action grasp
         :parameters (?obj1 ?obj2)
@@ -43,14 +53,15 @@
     (:action place_on_top
         :parameters (?obj1 ?obj2)
         :precondition ()
-        :effect (ontop ?obj1 ?obj2)
+        :effect (covered ?obj1 ?obj2) ;;cover ontop
     )
+
 
     ;; Place the currently grasped object inside another object
     (:action place_inside
         :parameters (?obj1 ?obj2)
         :precondition ()
-        :effect (inside ?obj1 ?obj2)
+        :effect (contains ?obj1 ?obj2) ;;contains inside
     )
 
     ;; Open an object
@@ -78,7 +89,7 @@
 
 
 
-    #|
+    
     (:action fill
         :parameters (?obj1 ?obj2)
         :precondition ()

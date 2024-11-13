@@ -66,5 +66,5 @@ def plan_multi_task(num_tasks):
     print(f"Plan success rate: {plan_success_count/num_tasks}")
 
 if __name__ == "__main__":
-    # plan_multi_task(1016)
     plan_multi_task(10)
+    # plan_multi_task(1)
