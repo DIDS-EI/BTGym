@@ -41,16 +41,16 @@
 
     ;; Place the currently grasped object on top of another object
     (:action place_on_top
-        :parameters (?obj1 ?obj2 ?obj3)
+        :parameters (?obj1 ?obj2)
         :precondition ()
-        :effect (and (ontop ?obj2 ?obj3) (not (grasped ?obj1 ?obj2)))
+        :effect (ontop ?obj1 ?obj2)
     )
 
     ;; Place the currently grasped object inside another object
     (:action place_inside
-        :parameters (?obj1 ?obj2 ?obj3)
+        :parameters (?obj1 ?obj2)
         :precondition ()
-        :effect (and (inside ?obj2 ?obj3) (not (grasped ?obj1 ?obj2)))
+        :effect (inside ?obj1 ?obj2)
     )
 
     ;; Open an object
@@ -59,14 +59,7 @@
         :precondition ()
         :effect (open ?obj)
     )
-
-    ;; Close an object
-    (:action close_object
-        :parameters (?obj)
-        :precondition ()
-        :effect (not (open ?obj))
-    )
-
+    
     ;; Navigate to an object
     (:action navigate_to
         :parameters (?obj1 ?obj2)
@@ -74,25 +67,11 @@
         :effect (inroom ?obj1 ?obj2) 
     )
 
-    ;; Release an object, letting it fall to the ground
-    (:action release
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (not (grasped ?obj1 ?obj2))
-    )
-
     ;; Toggle an object on
     (:action toggle_on
-        :parameters (?obj)
+        :parameters (?obj1)
         :precondition ()
-        :effect (toggled_on ?obj)
-    )
-
-    ;; Toggle an object off
-    (:action toggle_off
-        :parameters (?obj)
-        :precondition ()
-        :effect (not (toggled_on ?obj))
+        :effect (toggled_on ?obj1)
     )
 
 
