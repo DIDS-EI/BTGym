@@ -6,7 +6,7 @@ import shutil
 import os
 
 
-def plan_single_task(task_path, domain_path, task_name,sas_file, debug=True):
+def plan_single_task(task_path, domain_path, task_name,sas_file=None, debug=True):
     if not os.path.exists(task_path):
         return 
     activity_definition = 0                         # the specific definition you want to use. As of BEHAVIOR100 2021, this should always be 0.
@@ -116,10 +116,10 @@ def plan_multi_task(num_tasks, debug=True):
 
 
 if __name__ == "__main__":
-    # task_name = "assembling_furniture"
+    # task_name = "passing_out_drinks"
     # task_path = f"{ROOT_PATH}/assets/activity_definitions/{task_name}/problem0.bddl"
     # domain_path = f"{ROOT_PATH}/planning/domain_omnigibson.bddl"
-    # plan_single_task(task_path, domain_path, task_name)
+    # plan_single_task(task_path, domain_path,task_name)
     # exit()
 
 

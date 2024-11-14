@@ -34,66 +34,59 @@
 
 
     ;; Open an object
-    (:action open_object
+    (:action open
         :parameters (?obj1)
-        :precondition ()
+        :precondition (forall (?obj2) (not (grasped agent.n.01_1 ?obj2)))
         :effect (open ?obj1)
+    )
+
+    (:action close
+        :parameters (?obj1)
+        :precondition (forall (?obj2) (not (grasped agent.n.01_1 ?obj2)))
+        :effect (not (open ?obj1))
     )
 
     ;; Grasp an object
     (:action grasp
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (grasped ?obj1 ?obj2)
+        :parameters (?obj1)
+        :precondition (forall (?obj2) (not (grasped agent.n.01_1 ?obj2)))
+        :effect (grasped agent.n.01_1 ?obj1)
+    )
+
+    ;; Release an object
+    (:action release
+        :parameters (?obj1)
+        :precondition (grasped agent.n.01_1 ?obj1)
+        :effect (not (grasped agent.n.01_1 ?obj1))
     )
 
     ;; Place the currently grasped object on top of another object
     (:action place_on_top
         :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (ontop ?obj1 ?obj2)        ;;(and (covered ?obj1 ?obj2) (ontop ?obj1 ?obj2))  cover ontop
+        :precondition (grasped agent.n.01_1  ?obj1)
+        :effect (and (ontop ?obj1 ?obj2) (covered ?obj1 ?obj2) (not (grasped agent.n.01_1 ?obj1))) 
     )
 
     ;; Place the currently grasped object inside another object
     (:action place_inside
         :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (inside ?obj1 ?obj2)        ;;contains inside
+        :precondition (grasped agent.n.01_1 ?obj1)
+        :effect (and (contains ?obj1 ?obj2) (inside ?obj1 ?obj2) (not (grasped agent.n.01_1 ?obj1)))        ;;contains inside
     )
 
-    ;; Navigate to an object
-    (:action navigate_to
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (inroom ?obj1 ?obj2) 
-    )
 
     ;; Toggle an object on
     (:action toggle_on
         :parameters (?obj1)
-        :precondition ()
+        :precondition (forall (?obj2) (not (grasped agent.n.01_1 ?obj2)))
         :effect (toggled_on ?obj1)
     )
 
-
-
-
-        
-    (:action fill
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (filled ?obj1 ?obj2)
+    ;; Toggle an object off
+    (:action toggle_off
+        :parameters (?obj1)
+        :precondition (forall (?obj2) (not (grasped agent.n.01_1 ?obj2)))
+        :effect (not (toggled_on ?obj1))
     )
 
-    (:action put_in
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (contains ?obj1 ?obj2)
-    )
-
-    (:action cover
-        :parameters (?obj1 ?obj2)
-        :precondition ()
-        :effect (and (covered ?obj1 ?obj2))
-    )
 )

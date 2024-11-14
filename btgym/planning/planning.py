@@ -10,7 +10,7 @@ def run_fast_downward(domain_file, problem_file, output_file,sas_file=None,  deb
     
     command = [f'{ROOT_PATH}/planning/downward/fast-downward.py',
                     '--plan-file', output_file,
-                '--search-time-limit', '10',
+                '--search-time-limit', '1',
                 '--sas-file', sas_file,
 
                 domain_file,
