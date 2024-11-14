@@ -41,26 +41,26 @@
     (:goal 
         (and 
             (forall 
-                (?lingerie.n.01 - lingerie.n.01) 
+                (?lingerie.n.01_x - lingerie.n.01) 
                 (and 
                     (not 
-                        (covered ?lingerie.n.01 stain.n.01_1)
+                        (covered ?lingerie.n.01_x stain.n.01_1)
                     ) 
                     (not 
-                        (covered ?lingerie.n.01 dust.n.01_1)
+                        (covered ?lingerie.n.01_x dust.n.01_1)
                     )
                 )
             ) 
             (forall 
-                (?sweater.n.01 - sweater.n.01) 
+                (?sweater.n.01_x - sweater.n.01) 
                 (not 
-                    (covered ?sweater.n.01 stain.n.01_1)
+                    (covered ?sweater.n.01_x stain.n.01_1)
                 )
             ) 
             (forall 
-                (?underwear.n.01 - underwear.n.01) 
+                (?underwear.n.01_x - underwear.n.01) 
                 (not 
-                    (covered ?underwear.n.01 stain.n.01_1)
+                    (covered ?underwear.n.01_x stain.n.01_1)
                 )
             )
         )

@@ -30,40 +30,40 @@
     (:goal 
         (and 
             (exists 
-                (?carton.n.02 - carton.n.02) 
+                (?carton.n.02_x - carton.n.02) 
                 (and 
                     (forall 
-                        (?jigsaw_puzzle.n.01 - jigsaw_puzzle.n.01) 
-                        (inside ?jigsaw_puzzle.n.01 ?carton.n.02)
+                        (?jigsaw_puzzle.n.01_x - jigsaw_puzzle.n.01) 
+                        (inside ?jigsaw_puzzle.n.01_x ?carton.n.02_x)
                     ) 
                     (forall 
-                        (?board_game.n.01 - board_game.n.01) 
+                        (?board_game.n.01_x - board_game.n.01) 
                         (not 
-                            (inside ?board_game.n.01 ?carton.n.02)
+                            (inside ?board_game.n.01_x ?carton.n.02_x)
                         )
                     )
                 )
             ) 
             (exists 
-                (?carton.n.02 - carton.n.02) 
+                (?carton.n.02_x - carton.n.02) 
                 (and 
                     (forall 
-                        (?board_game.n.01 - board_game.n.01) 
-                        (inside ?board_game.n.01 ?carton.n.02)
+                        (?board_game.n.01_x - board_game.n.01) 
+                        (inside ?board_game.n.01_x ?carton.n.02_x)
                     ) 
                     (forall 
-                        (?jigsaw_puzzle.n.01 - jigsaw_puzzle.n.01) 
+                        (?jigsaw_puzzle.n.01_x - jigsaw_puzzle.n.01) 
                         (not 
-                            (inside ?jigsaw_puzzle.n.01 ?carton.n.02)
+                            (inside ?jigsaw_puzzle.n.01_x ?carton.n.02_x)
                         )
                     )
                 )
             ) 
             (forall 
-                (?carton.n.02 - carton.n.02) 
+                (?carton.n.02_x - carton.n.02) 
                 (exists 
-                    (?shelf.n.01 - shelf.n.01) 
-                    (ontop ?carton.n.02 ?shelf.n.01)
+                    (?shelf.n.01_x - shelf.n.01) 
+                    (ontop ?carton.n.02_x ?shelf.n.01_x)
                 )
             )
         )

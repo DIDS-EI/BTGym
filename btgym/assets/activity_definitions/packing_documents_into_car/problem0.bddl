@@ -26,8 +26,8 @@
     (:goal 
         (and 
             (forall 
-                (?legal_document.n.01 - legal_document.n.01) 
-                (inside ?legal_document.n.01 car.n.01_1)
+                (?legal_document.n.01_x - legal_document.n.01) 
+                (inside ?legal_document.n.01_x car.n.01_1)
             ) 
             (inside book.n.02_1 car.n.01_1)
         )

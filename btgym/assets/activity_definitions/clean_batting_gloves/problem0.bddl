@@ -30,16 +30,16 @@
     (:goal 
         (and 
             (forall 
-                (?batting_glove.n.01 - batting_glove.n.01) 
+                (?batting_glove.n.01_x - batting_glove.n.01) 
                 (and 
                     (not 
-                        (covered ?batting_glove.n.01 mud.n.03_1)
+                        (covered ?batting_glove.n.01_x mud.n.03_1)
                     ) 
                     (not 
-                        (covered ?batting_glove.n.01 water.n.06_1)
+                        (covered ?batting_glove.n.01_x water.n.06_1)
                     ) 
                     (not 
-                        (saturated ?batting_glove.n.01 water.n.06_1)
+                        (saturated ?batting_glove.n.01_x water.n.06_1)
                     )
                 )
             )

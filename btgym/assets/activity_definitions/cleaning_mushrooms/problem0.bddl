@@ -36,9 +36,9 @@
     (:goal 
         (and 
             (forall 
-                (?mushroom.n.05 - mushroom.n.05) 
+                (?mushroom.n.05_x - mushroom.n.05) 
                 (not 
-                    (covered ?mushroom.n.05 dust.n.01_1)
+                    (covered ?mushroom.n.05_x dust.n.01_1)
                 )
             )
         )

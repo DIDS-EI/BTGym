@@ -63,10 +63,10 @@
             (real chocolate_biscuit.n.01_5) 
             (real chocolate_biscuit.n.01_6) 
             (forall 
-                (?chocolate_biscuit.n.01 - chocolate_biscuit.n.01) 
+                (?chocolate_biscuit.n.01_x - chocolate_biscuit.n.01) 
                 (and 
-                    (cooked ?chocolate_biscuit.n.01) 
-                    (ontop ?chocolate_biscuit.n.01 cookie_sheet.n.01_1)
+                    (cooked ?chocolate_biscuit.n.01_x) 
+                    (ontop ?chocolate_biscuit.n.01_x cookie_sheet.n.01_1)
                 )
             )
         )

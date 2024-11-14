@@ -24,12 +24,12 @@
     (:goal 
         (and 
             (forall 
-                (?pomegranate.n.02 - pomegranate.n.02) 
-                (inside ?pomegranate.n.02 electric_refrigerator.n.01_1)
+                (?pomegranate.n.02_x - pomegranate.n.02) 
+                (inside ?pomegranate.n.02_x electric_refrigerator.n.01_1)
             ) 
             (forall 
-                (?mango.n.02 - mango.n.02) 
-                (inside ?mango.n.02 electric_refrigerator.n.01_1)
+                (?mango.n.02_x - mango.n.02) 
+                (inside ?mango.n.02_x electric_refrigerator.n.01_1)
             )
         )
     )

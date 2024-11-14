@@ -33,12 +33,12 @@
             (inside sweater.n.01_1 carton.n.02_1) 
             (inside dress.n.01_1 carton.n.02_1) 
             (forall 
-                (?boot.n.01 - boot.n.01) 
-                (inside ?boot.n.01 carton.n.02_1)
+                (?boot.n.01_x - boot.n.01) 
+                (inside ?boot.n.01_x carton.n.02_1)
             ) 
             (forall 
-                (?sandal.n.01 - sandal.n.01) 
-                (inside ?sandal.n.01 carton.n.02_1)
+                (?sandal.n.01_x - sandal.n.01) 
+                (inside ?sandal.n.01_x carton.n.02_1)
             ) 
             (inside jersey.n.03_1 carton.n.02_1)
         )

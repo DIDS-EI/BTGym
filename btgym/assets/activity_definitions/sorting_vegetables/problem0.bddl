@@ -41,55 +41,55 @@
     (:goal 
         (and 
             (exists 
-                (?mixing_bowl.n.01 - mixing_bowl.n.01) 
+                (?mixing_bowl.n.01_x - mixing_bowl.n.01) 
                 (and 
                     (forall 
-                        (?bok_choy.n.02 - bok_choy.n.02) 
-                        (inside ?bok_choy.n.02 ?mixing_bowl.n.01)
+                        (?bok_choy.n.02_x - bok_choy.n.02) 
+                        (inside ?bok_choy.n.02_x ?mixing_bowl.n.01_x)
                     ) 
                     (forall 
-                        (?chard.n.02 - chard.n.02) 
-                        (inside ?chard.n.02 ?mixing_bowl.n.01)
+                        (?chard.n.02_x - chard.n.02) 
+                        (inside ?chard.n.02_x ?mixing_bowl.n.01_x)
                     ) 
                     (not 
-                        (inside sweet_corn.n.02_1 ?mixing_bowl.n.01)
+                        (inside sweet_corn.n.02_1 ?mixing_bowl.n.01_x)
                     ) 
                     (not 
-                        (inside leek.n.02_1 ?mixing_bowl.n.01)
+                        (inside leek.n.02_1 ?mixing_bowl.n.01_x)
                     )
                 )
             ) 
             (exists 
-                (?mixing_bowl.n.01 - mixing_bowl.n.01) 
+                (?mixing_bowl.n.01_x - mixing_bowl.n.01) 
                 (and 
                     (forall 
-                        (?leek.n.02 - leek.n.02) 
-                        (inside ?leek.n.02 ?mixing_bowl.n.01)
+                        (?leek.n.02_x - leek.n.02) 
+                        (inside ?leek.n.02_x ?mixing_bowl.n.01_x)
                     ) 
                     (forall 
-                        (?artichoke.n.02 - artichoke.n.02) 
-                        (inside ?artichoke.n.02 ?mixing_bowl.n.01)
+                        (?artichoke.n.02_x - artichoke.n.02) 
+                        (inside ?artichoke.n.02_x ?mixing_bowl.n.01_x)
                     ) 
                     (not 
-                        (inside sweet_corn.n.02_1 ?mixing_bowl.n.01)
+                        (inside sweet_corn.n.02_1 ?mixing_bowl.n.01_x)
                     ) 
                     (not 
-                        (inside bok_choy.n.02_1 ?mixing_bowl.n.01)
+                        (inside bok_choy.n.02_1 ?mixing_bowl.n.01_x)
                     )
                 )
             ) 
             (exists 
-                (?mixing_bowl.n.01 - mixing_bowl.n.01) 
+                (?mixing_bowl.n.01_x - mixing_bowl.n.01) 
                 (and 
                     (forall 
-                        (?sweet_corn.n.02 - sweet_corn.n.02) 
-                        (inside ?sweet_corn.n.02 ?mixing_bowl.n.01)
+                        (?sweet_corn.n.02_x - sweet_corn.n.02) 
+                        (inside ?sweet_corn.n.02_x ?mixing_bowl.n.01_x)
                     ) 
                     (not 
-                        (inside artichoke.n.02_1 ?mixing_bowl.n.01)
+                        (inside artichoke.n.02_1 ?mixing_bowl.n.01_x)
                     ) 
                     (not 
-                        (inside bok_choy.n.02_1 ?mixing_bowl.n.01)
+                        (inside bok_choy.n.02_1 ?mixing_bowl.n.01_x)
                     )
                 )
             )

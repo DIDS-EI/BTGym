@@ -27,16 +27,16 @@
     (:goal 
         (and 
             (exists 
-                (?wicker_basket.n.01 - wicker_basket.n.01) 
-                (inside artichoke.n.02_1 ?wicker_basket.n.01)
+                (?wicker_basket.n.01_x - wicker_basket.n.01) 
+                (inside artichoke.n.02_1 ?wicker_basket.n.01_x)
             ) 
             (exists 
-                (?wicker_basket.n.01 - wicker_basket.n.01) 
-                (inside chard.n.02_1 ?wicker_basket.n.01)
+                (?wicker_basket.n.01_x - wicker_basket.n.01) 
+                (inside chard.n.02_1 ?wicker_basket.n.01_x)
             ) 
             (exists 
-                (?wicker_basket.n.01 - wicker_basket.n.01) 
-                (inside beet.n.02_1 ?wicker_basket.n.01)
+                (?wicker_basket.n.01_x - wicker_basket.n.01) 
+                (inside beet.n.02_1 ?wicker_basket.n.01_x)
             )
         )
     )

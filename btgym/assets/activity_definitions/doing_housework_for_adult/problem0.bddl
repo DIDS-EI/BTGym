@@ -46,17 +46,17 @@
                 (covered rug.n.01_1 dust.n.01_1)
             ) 
             (forall 
-                (?pillow.n.01 - pillow.n.01) 
-                (ontop ?pillow.n.01 sofa.n.01_1)
+                (?pillow.n.01_x - pillow.n.01) 
+                (ontop ?pillow.n.01_x sofa.n.01_1)
             ) 
             (not 
                 (covered window.n.01_1 dust.n.01_1)
             ) 
             (forall 
-                (?mug.n.04 - mug.n.04) 
+                (?mug.n.04_x - mug.n.04) 
                 (or 
-                    (inside ?mug.n.04 sink.n.01_1) 
-                    (nextto ?mug.n.04 sink.n.01_1)
+                    (inside ?mug.n.04_x sink.n.01_1) 
+                    (nextto ?mug.n.04_x sink.n.01_1)
                 )
             )
         )

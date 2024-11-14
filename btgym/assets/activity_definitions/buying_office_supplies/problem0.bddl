@@ -30,24 +30,24 @@
     (:goal 
         (and 
             (forall 
-                (?pen.n.01 - pen.n.01) 
-                (ontop ?pen.n.01 checkout.n.03_1)
+                (?pen.n.01_x - pen.n.01) 
+                (ontop ?pen.n.01_x checkout.n.03_1)
             ) 
             (forall 
-                (?pencil.n.01 - pencil.n.01) 
-                (ontop ?pencil.n.01 checkout.n.03_1)
+                (?pencil.n.01_x - pencil.n.01) 
+                (ontop ?pencil.n.01_x checkout.n.03_1)
             ) 
             (forall 
-                (?tape.n.01 - tape.n.01) 
-                (ontop ?tape.n.01 checkout.n.03_1)
+                (?tape.n.01_x - tape.n.01) 
+                (ontop ?tape.n.01_x checkout.n.03_1)
             ) 
             (forall 
-                (?eraser.n.01 - eraser.n.01) 
-                (ontop ?eraser.n.01 checkout.n.03_1)
+                (?eraser.n.01_x - eraser.n.01) 
+                (ontop ?eraser.n.01_x checkout.n.03_1)
             ) 
             (forall 
-                (?credit_card.n.01 - credit_card.n.01) 
-                (ontop ?credit_card.n.01 checkout.n.03_1)
+                (?credit_card.n.01_x - credit_card.n.01) 
+                (ontop ?credit_card.n.01_x checkout.n.03_1)
             )
         )
     )

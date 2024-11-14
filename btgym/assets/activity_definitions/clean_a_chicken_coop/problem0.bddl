@@ -41,8 +41,8 @@
                 (covered chicken_coop.n.01_1 stain.n.01_1)
             ) 
             (forall 
-                (?feather.n.01 - feather.n.01) 
-                (inside ?feather.n.01 ashcan.n.01_1)
+                (?feather.n.01_x - feather.n.01) 
+                (inside ?feather.n.01_x ashcan.n.01_1)
             )
         )
     )

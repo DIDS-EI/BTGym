@@ -20,8 +20,8 @@
     (:goal 
         (and 
             (forall 
-                (?tile.n.01 - tile.n.01) 
-                (ontop ?tile.n.01 floor.n.01_2)
+                (?tile.n.01_x - tile.n.01) 
+                (ontop ?tile.n.01_x floor.n.01_2)
             )
         )
     )

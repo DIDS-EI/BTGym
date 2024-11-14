@@ -21,11 +21,11 @@
     (:goal 
         (and 
             (exists 
-                (?lasagna.n.01 - lasagna.n.01) 
-                (ontop ?lasagna.n.01 oven.n.01_1)
+                (?lasagna.n.01_x - lasagna.n.01) 
+                (ontop ?lasagna.n.01_x oven.n.01_1)
             ) 
             (forall 
-                (?lasagna.n.01 - lasagna.n.01) 
+                (?lasagna.n.01_x - lasagna.n.01) 
                 (cooked lasagna.n.01_1)
             )
         )

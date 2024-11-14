@@ -35,8 +35,8 @@
     (:goal 
         (and 
             (forall 
-                (?ski.n.01 - ski.n.01) 
-                (ontop ?ski.n.01 shelf.n.01_1)
+                (?ski.n.01_x - ski.n.01) 
+                (ontop ?ski.n.01_x shelf.n.01_1)
             ) 
             (nextto bicycle.n.01_1 door.n.01_1) 
             (nextto carton.n.02_1 door.n.01_1) 

@@ -43,8 +43,8 @@
                 (inside sunglasses.n.02_1 bag.n.06_3)
             ) 
             (forall 
-                (?bag.n.06 - bag.n.06) 
-                (inside ?bag.n.06 car.n.01_1)
+                (?bag.n.06_x - bag.n.06) 
+                (inside ?bag.n.06_x car.n.01_1)
             )
         )
     )

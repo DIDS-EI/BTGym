@@ -49,17 +49,17 @@
                 (covered cabinet.n.01_1 stain.n.01_1)
             ) 
             (forall 
-                (?newspaper.n.03 - newspaper.n.03) 
+                (?newspaper.n.03_x - newspaper.n.03) 
                 (or 
-                    (inside ?newspaper.n.03 recycling_bin.n.01_1) 
+                    (inside ?newspaper.n.03_x recycling_bin.n.01_1) 
                     (not 
-                        (ontop ?newspaper.n.03 floor.n.01_1)
+                        (ontop ?newspaper.n.03_x floor.n.01_1)
                     )
                 )
             ) 
             (forall 
-                (?bottle.n.01 - bottle.n.01) 
-                (ontop ?bottle.n.01 table.n.02_1)
+                (?bottle.n.01_x - bottle.n.01) 
+                (ontop ?bottle.n.01_x table.n.02_1)
             )
         )
     )

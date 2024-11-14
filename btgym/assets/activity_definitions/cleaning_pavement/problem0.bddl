@@ -24,9 +24,9 @@
     (:goal 
         (and 
             (forall 
-                (?paving_stone.n.01 - paving_stone.n.01) 
+                (?paving_stone.n.01_x - paving_stone.n.01) 
                 (not 
-                    (covered ?paving_stone.n.01 dust.n.01_1)
+                    (covered ?paving_stone.n.01_x dust.n.01_1)
                 )
             )
         )

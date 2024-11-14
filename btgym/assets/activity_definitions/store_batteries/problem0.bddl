@@ -21,8 +21,8 @@
     (:goal 
         (and 
             (forall 
-                (?battery.n.02 - battery.n.02) 
-                (inside ?battery.n.02 chest_of_drawers.n.01_1)
+                (?battery.n.02_x - battery.n.02) 
+                (inside ?battery.n.02_x chest_of_drawers.n.01_1)
             )
         )
     )

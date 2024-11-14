@@ -21,8 +21,8 @@
     (:goal 
         (and 
             (forall 
-                (?box__of__baking_soda.n.01 - box__of__baking_soda.n.01) 
-                (inside ?box__of__baking_soda.n.01 cabinet.n.01_1)
+                (?box__of__baking_soda.n.01_x - box__of__baking_soda.n.01) 
+                (inside ?box__of__baking_soda.n.01_x cabinet.n.01_1)
             ) 
             (nextto box__of__baking_soda.n.01_2 box__of__baking_soda.n.01_1)
         )

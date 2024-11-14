@@ -23,9 +23,9 @@
     (:goal 
         (and 
             (forall 
-                (?mug.n.04 - mug.n.04) 
+                (?mug.n.04_x - mug.n.04) 
                 (not 
-                    (filled ?mug.n.04 drip_coffee.n.01_1)
+                    (filled ?mug.n.04_x drip_coffee.n.01_1)
                 )
             ) 
             (inside mug.n.04_1 dishwasher.n.01_1) 

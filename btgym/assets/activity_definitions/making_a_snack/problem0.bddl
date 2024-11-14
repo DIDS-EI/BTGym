@@ -56,15 +56,15 @@
             ) 
             (real melted__grated_cheese.n.01_1) 
             (forall 
-                (?tortilla_chip.n.01 - tortilla_chip.n.01) 
+                (?tortilla_chip.n.01_x - tortilla_chip.n.01) 
                 (and 
-                    (ontop ?tortilla_chip.n.01 platter.n.01_1) 
+                    (ontop ?tortilla_chip.n.01_x platter.n.01_1) 
                     (or 
-                        (covered ?tortilla_chip.n.01 diced__beefsteak_tomato.n.01_1) 
-                        (covered ?tortilla_chip.n.01 cooked__diced__beefsteak_tomato.n.01_1)
+                        (covered ?tortilla_chip.n.01_x diced__beefsteak_tomato.n.01_1) 
+                        (covered ?tortilla_chip.n.01_x cooked__diced__beefsteak_tomato.n.01_1)
                     ) 
-                    (covered ?tortilla_chip.n.01 melted__grated_cheese.n.01_1) 
-                    (covered ?tortilla_chip.n.01 cooked__black_bean.n.01_1)
+                    (covered ?tortilla_chip.n.01_x melted__grated_cheese.n.01_1) 
+                    (covered ?tortilla_chip.n.01_x cooked__black_bean.n.01_1)
                 )
             )
         )

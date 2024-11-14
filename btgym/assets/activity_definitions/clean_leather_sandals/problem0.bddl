@@ -34,12 +34,12 @@
     (:goal 
         (and 
             (forall 
-                (?sandal.n.01 - sandal.n.01) 
+                (?sandal.n.01_x - sandal.n.01) 
                 (and 
                     (not 
-                        (covered ?sandal.n.01 stain.n.01_1)
+                        (covered ?sandal.n.01_x stain.n.01_1)
                     ) 
-                    (covered ?sandal.n.01 conditioner.n.03_1)
+                    (covered ?sandal.n.01_x conditioner.n.03_1)
                 )
             )
         )

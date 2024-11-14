@@ -38,19 +38,19 @@
     (:goal 
         (and 
             (forall 
-                (?scrub.n.01 - scrub.n.01) 
+                (?scrub.n.01_x - scrub.n.01) 
                 (exists 
-                    (?icicle_lights.n.01 - icicle_lights.n.01) 
-                    (ontop ?icicle_lights.n.01 ?scrub.n.01)
+                    (?icicle_lights.n.01_x - icicle_lights.n.01) 
+                    (ontop ?icicle_lights.n.01_x ?scrub.n.01_x)
                 )
             ) 
             (exists 
-                (?icicle_lights.n.01 - icicle_lights.n.01) 
-                (attached ?icicle_lights.n.01 wall_nail.n.01_1)
+                (?icicle_lights.n.01_x - icicle_lights.n.01) 
+                (attached ?icicle_lights.n.01_x wall_nail.n.01_1)
             ) 
             (forall 
-                (?icicle_lights.n.01 - icicle_lights.n.01) 
-                (toggled_on ?icicle_lights.n.01)
+                (?icicle_lights.n.01_x - icicle_lights.n.01) 
+                (toggled_on ?icicle_lights.n.01_x)
             )
         )
     )

@@ -59,8 +59,8 @@
             (real bap.n.01_3) 
             (real bap.n.01_4) 
             (forall 
-                (?bap.n.01 - bap.n.01) 
-                (cooked ?bap.n.01)
+                (?bap.n.01_x - bap.n.01) 
+                (cooked ?bap.n.01_x)
             )
         )
     )

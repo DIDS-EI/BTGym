@@ -36,15 +36,15 @@
     (:goal 
         (and 
             (forall 
-                (?mug.n.04 - mug.n.04) 
+                (?mug.n.04_x - mug.n.04) 
                 (not 
-                    (covered ?mug.n.04 low-fat_milk.n.01_1)
+                    (covered ?mug.n.04_x low-fat_milk.n.01_1)
                 )
             ) 
             (forall 
-                (?teacup.n.02 - teacup.n.02) 
+                (?teacup.n.02_x - teacup.n.02) 
                 (not 
-                    (covered ?teacup.n.02 tea.n.01_1)
+                    (covered ?teacup.n.02_x tea.n.01_1)
                 )
             )
         )

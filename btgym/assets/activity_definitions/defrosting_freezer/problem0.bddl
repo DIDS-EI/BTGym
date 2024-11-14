@@ -39,8 +39,8 @@
             (ontop towel.n.01_1 countertop.n.01_1) 
             (inside rag.n.01_1 sink.n.01_1) 
             (forall 
-                (?crayfish.n.02 - crayfish.n.02) 
-                (inside ?crayfish.n.02 bucket.n.01_1)
+                (?crayfish.n.02_x - crayfish.n.02) 
+                (inside ?crayfish.n.02_x bucket.n.01_1)
             )
         )
     )

@@ -32,9 +32,9 @@
     (:goal 
         (and 
             (forall 
-                (?clam.n.03 - clam.n.03) 
+                (?clam.n.03_x - clam.n.03) 
                 (not 
-                    (covered ?clam.n.03 sand.n.04_1)
+                    (covered ?clam.n.03_x sand.n.04_1)
                 )
             )
         )

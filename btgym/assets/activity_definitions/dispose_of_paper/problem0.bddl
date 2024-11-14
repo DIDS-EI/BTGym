@@ -27,8 +27,8 @@
             (inside newspaper.n.03_1 recycling_bin.n.01_1) 
             (inside wrapping_paper.n.01_1 recycling_bin.n.01_1) 
             (forall 
-                (?paper.n.01 - paper.n.01) 
-                (inside ?paper.n.01 recycling_bin.n.01_1)
+                (?paper.n.01_x - paper.n.01) 
+                (inside ?paper.n.01_x recycling_bin.n.01_1)
             )
         )
     )

@@ -29,9 +29,9 @@
         (and 
             (and 
                 (forall 
-                    (?curtain.n.01 - curtain.n.01) 
+                    (?curtain.n.01_x - curtain.n.01) 
                     (not 
-                        (covered ?curtain.n.01 stain.n.01_1)
+                        (covered ?curtain.n.01_x stain.n.01_1)
                     )
                 )
             )

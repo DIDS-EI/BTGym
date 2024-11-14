@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?door.n.01 - door.n.01) 
-                (open ?door.n.01)
+                (?door.n.01_x - door.n.01) 
+                (open ?door.n.01_x)
             )
         )
     )

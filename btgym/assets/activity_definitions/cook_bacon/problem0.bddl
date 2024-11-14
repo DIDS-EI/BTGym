@@ -47,8 +47,8 @@
     (:goal 
         (and 
             (forall 
-                (?bacon.n.01 - bacon.n.01) 
-                (cooked ?bacon.n.01)
+                (?bacon.n.01_x - bacon.n.01) 
+                (cooked ?bacon.n.01_x)
             )
         )
     )

@@ -62,25 +62,25 @@
             (real cooked__orzo.n.01_1) 
             (filled bowl.n.01_1 cooked__orzo.n.01_1) 
             (forall 
-                (?brownie.n.03 - brownie.n.03) 
-                (ontop ?brownie.n.03 plate.n.04_1)
+                (?brownie.n.03_x - brownie.n.03) 
+                (ontop ?brownie.n.03_x plate.n.04_1)
             ) 
             (cooked salmon.n.03_1) 
             (exists 
-                (?platter.n.01 - platter.n.01) 
+                (?platter.n.01_x - platter.n.01) 
                 (and 
-                    (ontop salmon.n.03_1 ?platter.n.01) 
+                    (ontop salmon.n.03_1 ?platter.n.01_x) 
                     (not 
-                        (ontop baguet.n.01_1 ?platter.n.01)
+                        (ontop baguet.n.01_1 ?platter.n.01_x)
                     )
                 )
             ) 
             (exists 
-                (?platter.n.01 - platter.n.01) 
+                (?platter.n.01_x - platter.n.01) 
                 (and 
-                    (ontop baguet.n.01_1 ?platter.n.01) 
+                    (ontop baguet.n.01_1 ?platter.n.01_x) 
                     (not 
-                        (ontop salmon.n.03_1 ?platter.n.01)
+                        (ontop salmon.n.03_1 ?platter.n.01_x)
                     )
                 )
             )

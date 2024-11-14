@@ -22,8 +22,8 @@
     (:goal 
         (and 
             (forall 
-                (?blackberry.n.01 - blackberry.n.01) 
-                (inside ?blackberry.n.01 wicker_basket.n.01_1)
+                (?blackberry.n.01_x - blackberry.n.01) 
+                (inside ?blackberry.n.01_x wicker_basket.n.01_1)
             )
         )
     )

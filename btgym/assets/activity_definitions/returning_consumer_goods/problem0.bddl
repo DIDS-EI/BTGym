@@ -28,8 +28,8 @@
         (and 
             (inside money.n.01_1 shoulder_bag.n.01_1) 
             (forall 
-                (?bottle__of__soda.n.01 - bottle__of__soda.n.01) 
-                (ontop ?bottle__of__soda.n.01 checkout.n.03_1)
+                (?bottle__of__soda.n.01_x - bottle__of__soda.n.01) 
+                (ontop ?bottle__of__soda.n.01_x checkout.n.03_1)
             )
         )
     )

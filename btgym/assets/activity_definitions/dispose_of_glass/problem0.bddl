@@ -25,8 +25,8 @@
     (:goal 
         (and 
             (forall 
-                (?water_glass.n.02 - water_glass.n.02) 
-                (inside ?water_glass.n.02 recycling_bin.n.01_1)
+                (?water_glass.n.02_x - water_glass.n.02) 
+                (inside ?water_glass.n.02_x recycling_bin.n.01_1)
             )
         )
     )

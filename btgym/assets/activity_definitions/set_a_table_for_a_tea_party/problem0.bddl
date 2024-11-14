@@ -61,20 +61,20 @@
         (and 
             (ontop place_mat.n.01_1 breakfast_table.n.01_1) 
             (forall 
-                (?danish.n.02 - danish.n.02) 
-                (ontop ?danish.n.02 tray.n.01_1)
+                (?danish.n.02_x - danish.n.02) 
+                (ontop ?danish.n.02_x tray.n.01_1)
             ) 
             (ontop scone.n.01_1 tray.n.01_1) 
             (ontop sugar_cookie.n.01_1 tray.n.01_1) 
             (ontop jar__of__honey.n.01_1 tray.n.01_1) 
             (exists 
-                (?table_knife.n.01 - table_knife.n.01) 
-                (touching ?table_knife.n.01 jar__of__honey.n.01_1)
+                (?table_knife.n.01_x - table_knife.n.01) 
+                (touching ?table_knife.n.01_x jar__of__honey.n.01_1)
             ) 
             (ontop jar__of__jam.n.01_1 tray.n.01_1) 
             (exists 
-                (?table_knife.n.01 - table_knife.n.01) 
-                (touching ?table_knife.n.01 jar__of__jam.n.01_1)
+                (?table_knife.n.01_x - table_knife.n.01) 
+                (touching ?table_knife.n.01_x jar__of__jam.n.01_1)
             ) 
             (ontop tray.n.01_1 breakfast_table.n.01_1) 
             (nextto teacup.n.02_1 plate.n.04_1) 

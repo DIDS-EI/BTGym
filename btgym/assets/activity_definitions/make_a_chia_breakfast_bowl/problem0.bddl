@@ -43,12 +43,12 @@
             (contains bowl.n.01_2 granola.n.01_1) 
             (contains bowl.n.01_2 yogurt.n.01_1) 
             (forall 
-                (?blackberry.n.01 - blackberry.n.01) 
-                (inside ?blackberry.n.01 bowl.n.01_2)
+                (?blackberry.n.01_x - blackberry.n.01) 
+                (inside ?blackberry.n.01_x bowl.n.01_2)
             ) 
             (forall 
-                (?raspberry.n.02 - raspberry.n.02) 
-                (inside ?raspberry.n.02 bowl.n.01_2)
+                (?raspberry.n.02_x - raspberry.n.02) 
+                (inside ?raspberry.n.02_x bowl.n.01_2)
             ) 
             (contains bowl.n.01_2 blueberry.n.02_1) 
             (ontop bowl.n.01_2 breakfast_table.n.01_1) 

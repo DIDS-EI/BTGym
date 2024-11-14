@@ -60,10 +60,10 @@
     (:goal 
         (and 
             (forall 
-                (?chorizo.n.01 - chorizo.n.01) 
+                (?chorizo.n.01_x - chorizo.n.01) 
                 (and 
-                    (cooked ?chorizo.n.01) 
-                    (hot ?chorizo.n.01)
+                    (cooked ?chorizo.n.01_x) 
+                    (hot ?chorizo.n.01_x)
                 )
             )
         )

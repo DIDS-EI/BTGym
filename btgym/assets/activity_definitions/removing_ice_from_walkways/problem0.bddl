@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?ice.n.01 - ice.n.01) 
+                (?ice.n.01_x - ice.n.01) 
                 (not 
-                    (ontop ?ice.n.01 driveway.n.01_1)
+                    (ontop ?ice.n.01_x driveway.n.01_1)
                 )
             )
         )

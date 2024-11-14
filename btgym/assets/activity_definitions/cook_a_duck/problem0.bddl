@@ -42,11 +42,11 @@
             (cooked duck.n.03_1) 
             (covered duck.n.03_1 wine_sauce.n.01_1) 
             (forall 
-                (?clove.n.03 - clove.n.03) 
+                (?clove.n.03_x - clove.n.03) 
                 (and 
-                    (touching ?clove.n.03 duck.n.03_1) 
-                    (cooked ?clove.n.03) 
-                    (covered ?clove.n.03 wine_sauce.n.01_1)
+                    (touching ?clove.n.03_x duck.n.03_1) 
+                    (cooked ?clove.n.03_x) 
+                    (covered ?clove.n.03_x wine_sauce.n.01_1)
                 )
             )
         )

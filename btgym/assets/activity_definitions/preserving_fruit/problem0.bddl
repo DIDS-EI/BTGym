@@ -56,10 +56,10 @@
         (and 
             (real sugar_syrup.n.01_1) 
             (forall 
-                (?strawberry.n.01 - strawberry.n.01) 
+                (?strawberry.n.01_x - strawberry.n.01) 
                 (and 
-                    (cooked ?strawberry.n.01) 
-                    (inside ?strawberry.n.01 mason_jar.n.01_1)
+                    (cooked ?strawberry.n.01_x) 
+                    (inside ?strawberry.n.01_x mason_jar.n.01_1)
                 )
             ) 
             (contains mason_jar.n.01_1 sugar_syrup.n.01_1) 

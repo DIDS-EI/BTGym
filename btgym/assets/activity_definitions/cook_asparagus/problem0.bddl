@@ -67,12 +67,12 @@
     (:goal 
         (and 
             (forall 
-                (?asparagus.n.02 - asparagus.n.02) 
+                (?asparagus.n.02_x - asparagus.n.02) 
                 (and 
-                    (covered ?asparagus.n.02 lemon_juice.n.01_1) 
-                    (covered ?asparagus.n.02 olive_oil.n.01_1) 
-                    (covered ?asparagus.n.02 salt.n.02_1) 
-                    (cooked ?asparagus.n.02)
+                    (covered ?asparagus.n.02_x lemon_juice.n.01_1) 
+                    (covered ?asparagus.n.02_x olive_oil.n.01_1) 
+                    (covered ?asparagus.n.02_x salt.n.02_1) 
+                    (cooked ?asparagus.n.02_x)
                 )
             )
         )

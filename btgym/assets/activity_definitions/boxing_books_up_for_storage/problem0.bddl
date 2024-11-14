@@ -26,8 +26,8 @@
     (:goal 
         (and 
             (forall 
-                (?book.n.02 - book.n.02) 
-                (inside ?book.n.02 carton.n.02_1)
+                (?book.n.02_x - book.n.02) 
+                (inside ?book.n.02_x carton.n.02_1)
             )
         )
     )

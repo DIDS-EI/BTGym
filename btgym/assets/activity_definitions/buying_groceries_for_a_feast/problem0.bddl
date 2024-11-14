@@ -34,12 +34,12 @@
     (:goal 
         (and 
             (forall 
-                (?grocery.n.02 - grocery.n.02) 
-                (inside ?grocery.n.02 shopping_cart.n.01_1)
+                (?grocery.n.02_x - grocery.n.02) 
+                (inside ?grocery.n.02_x shopping_cart.n.01_1)
             ) 
             (forall 
-                (?money.n.01 - money.n.01) 
-                (inside ?money.n.01 cash_register.n.01_1)
+                (?money.n.01_x - money.n.01) 
+                (inside ?money.n.01_x cash_register.n.01_1)
             )
         )
     )

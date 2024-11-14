@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?bread_slice.n.01 - bread_slice.n.01) 
-                (cooked ?bread_slice.n.01)
+                (?bread_slice.n.01_x - bread_slice.n.01) 
+                (cooked ?bread_slice.n.01_x)
             )
         )
     )

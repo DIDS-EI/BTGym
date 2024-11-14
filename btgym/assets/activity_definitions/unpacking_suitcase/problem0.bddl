@@ -28,8 +28,8 @@
         (and 
             (ontop carton.n.02_1 floor.n.01_1) 
             (forall 
-                (?sock.n.01 - sock.n.01) 
-                (ontop ?sock.n.01 sofa.n.01_1)
+                (?sock.n.01_x - sock.n.01) 
+                (ontop ?sock.n.01_x sofa.n.01_1)
             ) 
             (ontop bottle__of__perfume.n.01_1 sofa.n.01_1) 
             (ontop toothbrush.n.01_1 sofa.n.01_1) 

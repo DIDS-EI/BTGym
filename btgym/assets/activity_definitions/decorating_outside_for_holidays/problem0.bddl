@@ -31,16 +31,16 @@
     (:goal 
         (and 
             (exists 
-                (?wall_nail.n.01 - wall_nail.n.01) 
-                (attached wreath.n.01_1 ?wall_nail.n.01)
+                (?wall_nail.n.01_x - wall_nail.n.01) 
+                (attached wreath.n.01_1 ?wall_nail.n.01_x)
             ) 
             (exists 
-                (?wall_nail.n.01 - wall_nail.n.01) 
-                (attached bow.n.08_1 ?wall_nail.n.01)
+                (?wall_nail.n.01_x - wall_nail.n.01) 
+                (attached bow.n.08_1 ?wall_nail.n.01_x)
             ) 
             (exists 
-                (?wall_nail.n.01 - wall_nail.n.01) 
-                (attached holly.n.03_1 ?wall_nail.n.01)
+                (?wall_nail.n.01_x - wall_nail.n.01) 
+                (attached holly.n.03_1 ?wall_nail.n.01_x)
             )
         )
     )

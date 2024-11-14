@@ -27,8 +27,8 @@
     (:goal 
         (and 
             (forall 
-                (?candlestick.n.01 - candlestick.n.01) 
-                (ontop ?candlestick.n.01 checkout.n.03_1)
+                (?candlestick.n.01_x - candlestick.n.01) 
+                (ontop ?candlestick.n.01_x checkout.n.03_1)
             ) 
             (ontop paraffin.n.01_1 checkout.n.03_1) 
             (ontop money.n.01_1 checkout.n.03_1)

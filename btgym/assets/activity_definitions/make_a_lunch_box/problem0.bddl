@@ -24,20 +24,20 @@
     (:goal 
         (and 
             (forall 
-                (?club_sandwich.n.01 - club_sandwich.n.01) 
-                (ontop ?club_sandwich.n.01 sack.n.01_1)
+                (?club_sandwich.n.01_x - club_sandwich.n.01) 
+                (ontop ?club_sandwich.n.01_x sack.n.01_1)
             ) 
             (forall 
-                (?bottle__of__apple_juice.n.01 - bottle__of__apple_juice.n.01) 
-                (ontop ?bottle__of__apple_juice.n.01 sack.n.01_1)
+                (?bottle__of__apple_juice.n.01_x - bottle__of__apple_juice.n.01) 
+                (ontop ?bottle__of__apple_juice.n.01_x sack.n.01_1)
             ) 
             (forall 
-                (?sack.n.01 - sack.n.01) 
-                (ontop ?sack.n.01 countertop.n.01_1)
+                (?sack.n.01_x - sack.n.01) 
+                (ontop ?sack.n.01_x countertop.n.01_1)
             ) 
             (forall 
-                (?plastic_wrap.n.01 - plastic_wrap.n.01) 
-                (overlaid ?plastic_wrap.n.01 club_sandwich.n.01_1)
+                (?plastic_wrap.n.01_x - plastic_wrap.n.01) 
+                (overlaid ?plastic_wrap.n.01_x club_sandwich.n.01_1)
             )
         )
     )

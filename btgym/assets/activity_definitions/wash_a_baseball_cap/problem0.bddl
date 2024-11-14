@@ -30,9 +30,9 @@
     (:goal 
         (and 
             (forall 
-                (?baseball_cap.n.01 - baseball_cap.n.01) 
+                (?baseball_cap.n.01_x - baseball_cap.n.01) 
                 (not 
-                    (covered ?baseball_cap.n.01 stain.n.01_1)
+                    (covered ?baseball_cap.n.01_x stain.n.01_1)
                 )
             )
         )

@@ -42,18 +42,18 @@
             (inside money.n.01_1 shoulder_bag.n.01_1) 
             (inside lip_balm.n.01_1 shoulder_bag.n.01_1) 
             (forall 
-                (?bath_towel.n.01 - bath_towel.n.01) 
+                (?bath_towel.n.01_x - bath_towel.n.01) 
                 (and 
-                    (folded ?bath_towel.n.01) 
-                    (inside ?bath_towel.n.01 duffel_bag.n.01_1)
+                    (folded ?bath_towel.n.01_x) 
+                    (inside ?bath_towel.n.01_x duffel_bag.n.01_1)
                 )
             ) 
             (inside life_jacket.n.01_1 duffel_bag.n.01_1) 
             (folded swimsuit.n.01_1) 
             (inside swimsuit.n.01_1 duffel_bag.n.01_1) 
             (forall 
-                (?water_bottle.n.01 - water_bottle.n.01) 
-                (inside ?water_bottle.n.01 cooler.n.01_1)
+                (?water_bottle.n.01_x - water_bottle.n.01) 
+                (inside ?water_bottle.n.01_x cooler.n.01_1)
             )
         )
     )

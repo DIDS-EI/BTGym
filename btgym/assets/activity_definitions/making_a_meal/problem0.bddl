@@ -65,10 +65,10 @@
             (real cooked__marinara.n.01_1) 
             (real cooked__penne.n.01_1) 
             (forall 
-                (?meatball.n.01 - meatball.n.01) 
+                (?meatball.n.01_x - meatball.n.01) 
                 (and 
-                    (cooked ?meatball.n.01) 
-                    (inside ?meatball.n.01 bowl.n.01_1)
+                    (cooked ?meatball.n.01_x) 
+                    (inside ?meatball.n.01_x bowl.n.01_1)
                 )
             ) 
             (contains bowl.n.01_1 cooked__penne.n.01_1) 

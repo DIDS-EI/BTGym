@@ -31,12 +31,12 @@
         (and 
             (ontop marker.n.03_1 table.n.02_1) 
             (forall 
-                (?document.n.01 - document.n.01) 
-                (inside ?document.n.01 cabinet.n.01_1)
+                (?document.n.01_x - document.n.01) 
+                (inside ?document.n.01_x cabinet.n.01_1)
             ) 
             (forall 
-                (?folder.n.02 - folder.n.02) 
-                (inside ?folder.n.02 cabinet.n.01_1)
+                (?folder.n.02_x - folder.n.02) 
+                (inside ?folder.n.02_x cabinet.n.01_1)
             )
         )
     )

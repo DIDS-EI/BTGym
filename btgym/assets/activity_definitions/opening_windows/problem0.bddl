@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?window.n.01 - window.n.01) 
-                (open ?window.n.01)
+                (?window.n.01_x - window.n.01) 
+                (open ?window.n.01_x)
             )
         )
     )

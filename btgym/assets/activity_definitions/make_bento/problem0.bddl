@@ -32,12 +32,12 @@
     (:goal 
         (and 
             (forall 
-                (?sushi.n.01 - sushi.n.01) 
-                (inside ?sushi.n.01 tupperware.n.01_1)
+                (?sushi.n.01_x - sushi.n.01) 
+                (inside ?sushi.n.01_x tupperware.n.01_1)
             ) 
             (forall 
-                (?pickle.n.01 - pickle.n.01) 
-                (inside ?pickle.n.01 tupperware.n.01_1)
+                (?pickle.n.01_x - pickle.n.01) 
+                (inside ?pickle.n.01_x tupperware.n.01_1)
             ) 
             (contains tupperware.n.01_1 white_rice.n.01_1)
         )

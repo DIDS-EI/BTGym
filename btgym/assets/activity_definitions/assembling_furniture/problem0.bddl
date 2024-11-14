@@ -24,8 +24,8 @@
         (and 
             (attached desk_bracket.n.01_1 desk_top.n.01_1) 
             (forall 
-                (?desk_leg.n.01 - desk_leg.n.01) 
-                (attached ?desk_leg.n.01 desk_bracket.n.01_1)
+                (?desk_leg.n.01_x - desk_leg.n.01) 
+                (attached ?desk_leg.n.01_x desk_bracket.n.01_1)
             )
         )
     )

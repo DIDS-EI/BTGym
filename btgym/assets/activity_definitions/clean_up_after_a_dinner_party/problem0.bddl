@@ -32,33 +32,33 @@
         (and 
             (inside wine_bottle.n.01_1 electric_refrigerator.n.01_1) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
+                (?tupperware.n.01_x - tupperware.n.01) 
                 (and 
                     (forall 
-                        (?hamburger.n.01 - hamburger.n.01) 
+                        (?hamburger.n.01_x - hamburger.n.01) 
                         (and 
-                            (inside ?hamburger.n.01 ?tupperware.n.01)
+                            (inside ?hamburger.n.01_x ?tupperware.n.01_x)
                         )
                     ) 
                     (not 
-                        (inside burrito.n.01_1 ?tupperware.n.01)
+                        (inside burrito.n.01_1 ?tupperware.n.01_x)
                     ) 
-                    (inside ?tupperware.n.01 electric_refrigerator.n.01_1)
+                    (inside ?tupperware.n.01_x electric_refrigerator.n.01_1)
                 )
             ) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
+                (?tupperware.n.01_x - tupperware.n.01) 
                 (and 
                     (forall 
-                        (?burrito.n.01 - burrito.n.01) 
+                        (?burrito.n.01_x - burrito.n.01) 
                         (and 
-                            (inside ?burrito.n.01 ?tupperware.n.01)
+                            (inside ?burrito.n.01_x ?tupperware.n.01_x)
                         )
                     ) 
                     (not 
-                        (inside hamburger.n.01_1 ?tupperware.n.01)
+                        (inside hamburger.n.01_1 ?tupperware.n.01_x)
                     ) 
-                    (inside ?tupperware.n.01 electric_refrigerator.n.01_1)
+                    (inside ?tupperware.n.01_x electric_refrigerator.n.01_1)
                 )
             )
         )

@@ -98,21 +98,21 @@
                 (real cooked__salt.n.01_1)
             ) 
             (forall 
-                (?chicken_wing.n.01 - chicken_wing.n.01) 
+                (?chicken_wing.n.01_x - chicken_wing.n.01) 
                 (and 
-                    (cooked ?chicken_wing.n.01) 
+                    (cooked ?chicken_wing.n.01_x) 
                     (or 
-                        (covered ?chicken_wing.n.01 lemon-pepper_seasoning.n.01_1) 
-                        (covered ?chicken_wing.n.01 cooked__lemon-pepper_seasoning.n.01_1)
+                        (covered ?chicken_wing.n.01_x lemon-pepper_seasoning.n.01_1) 
+                        (covered ?chicken_wing.n.01_x cooked__lemon-pepper_seasoning.n.01_1)
                     ) 
                     (or 
-                        (covered ?chicken_wing.n.01 olive_oil.n.01_1) 
-                        (covered ?chicken_wing.n.01 cooked__olive_oil.n.01_1)
+                        (covered ?chicken_wing.n.01_x olive_oil.n.01_1) 
+                        (covered ?chicken_wing.n.01_x cooked__olive_oil.n.01_1)
                     ) 
-                    (covered ?chicken_wing.n.01 melted__butter.n.01_1) 
+                    (covered ?chicken_wing.n.01_x melted__butter.n.01_1) 
                     (or 
-                        (covered ?chicken_wing.n.01 salt.n.02_1) 
-                        (covered ?chicken_wing.n.01 cooked__salt.n.01_1)
+                        (covered ?chicken_wing.n.01_x salt.n.02_1) 
+                        (covered ?chicken_wing.n.01_x cooked__salt.n.01_1)
                     )
                 )
             )

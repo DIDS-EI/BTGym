@@ -40,46 +40,46 @@
     (:goal 
         (and 
             (forall 
-                (?hamburger.n.01 - hamburger.n.01) 
+                (?hamburger.n.01_x - hamburger.n.01) 
                 (exists 
-                    (?bag.n.06 - bag.n.06) 
-                    (inside ?hamburger.n.01 ?bag.n.06)
+                    (?bag.n.06_x - bag.n.06) 
+                    (inside ?hamburger.n.01_x ?bag.n.06_x)
                 )
             ) 
             (forall 
-                (?tortilla_chip.n.01 - tortilla_chip.n.01) 
+                (?tortilla_chip.n.01_x - tortilla_chip.n.01) 
                 (exists 
-                    (?bag.n.06 - bag.n.06) 
-                    (inside ?tortilla_chip.n.01 ?bag.n.06)
+                    (?bag.n.06_x - bag.n.06) 
+                    (inside ?tortilla_chip.n.01_x ?bag.n.06_x)
                 )
             ) 
             (forall 
-                (?apple_pie.n.01 - apple_pie.n.01) 
+                (?apple_pie.n.01_x - apple_pie.n.01) 
                 (exists 
-                    (?bag.n.06 - bag.n.06) 
-                    (inside ?apple_pie.n.01 ?bag.n.06)
+                    (?bag.n.06_x - bag.n.06) 
+                    (inside ?apple_pie.n.01_x ?bag.n.06_x)
                 )
             ) 
             (forall 
-                (?crescent_roll.n.01 - crescent_roll.n.01) 
+                (?crescent_roll.n.01_x - crescent_roll.n.01) 
                 (exists 
-                    (?bag.n.06 - bag.n.06) 
-                    (inside ?crescent_roll.n.01 ?bag.n.06)
+                    (?bag.n.06_x - bag.n.06) 
+                    (inside ?crescent_roll.n.01_x ?bag.n.06_x)
                 )
             ) 
             (forall 
-                (?water_bottle.n.01 - water_bottle.n.01) 
+                (?water_bottle.n.01_x - water_bottle.n.01) 
                 (or 
                     (exists 
-                        (?bag.n.06 - bag.n.06) 
-                        (inside ?water_bottle.n.01 ?bag.n.06)
+                        (?bag.n.06_x - bag.n.06) 
+                        (inside ?water_bottle.n.01_x ?bag.n.06_x)
                     ) 
-                    (inside ?water_bottle.n.01 car.n.01_1)
+                    (inside ?water_bottle.n.01_x car.n.01_1)
                 )
             ) 
             (forall 
-                (?bag.n.06 - bag.n.06) 
-                (inside ?bag.n.06 car.n.01_1)
+                (?bag.n.06_x - bag.n.06) 
+                (inside ?bag.n.06_x car.n.01_1)
             )
         )
     )

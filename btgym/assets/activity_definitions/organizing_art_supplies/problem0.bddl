@@ -29,8 +29,8 @@
             (inside pencil.n.01_1 duffel_bag.n.01_1) 
             (inside paintbrush.n.01_1 duffel_bag.n.01_1) 
             (forall 
-                (?pen.n.01 - pen.n.01) 
-                (inside ?pen.n.01 duffel_bag.n.01_1)
+                (?pen.n.01_x - pen.n.01) 
+                (inside ?pen.n.01_x duffel_bag.n.01_1)
             ) 
             (ontop duffel_bag.n.01_1 sofa.n.01_1)
         )

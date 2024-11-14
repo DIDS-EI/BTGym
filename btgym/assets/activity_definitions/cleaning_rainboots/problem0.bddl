@@ -32,13 +32,13 @@
     (:goal 
         (and 
             (forall 
-                (?rubber_boot.n.01 - rubber_boot.n.01) 
+                (?rubber_boot.n.01_x - rubber_boot.n.01) 
                 (and 
                     (not 
-                        (covered ?rubber_boot.n.01 water.n.06_1)
+                        (covered ?rubber_boot.n.01_x water.n.06_1)
                     ) 
                     (not 
-                        (covered ?rubber_boot.n.01 mud.n.03_1)
+                        (covered ?rubber_boot.n.01_x mud.n.03_1)
                     )
                 )
             )

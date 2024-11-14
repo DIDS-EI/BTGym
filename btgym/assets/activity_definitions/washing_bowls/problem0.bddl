@@ -36,16 +36,16 @@
     (:goal 
         (and 
             (forall 
-                (?bowl.n.01 - bowl.n.01) 
+                (?bowl.n.01_x - bowl.n.01) 
                 (and 
                     (not 
-                        (covered ?bowl.n.01 stain.n.01_1)
+                        (covered ?bowl.n.01_x stain.n.01_1)
                     ) 
                     (not 
-                        (covered ?bowl.n.01 broth.n.01_1)
+                        (covered ?bowl.n.01_x broth.n.01_1)
                     ) 
                     (not 
-                        (covered ?bowl.n.01 milk.n.01_1)
+                        (covered ?bowl.n.01_x milk.n.01_1)
                     )
                 )
             )

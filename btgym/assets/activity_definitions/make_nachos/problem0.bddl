@@ -94,24 +94,24 @@
             ) 
             (real diced__avocado.n.01_1) 
             (forall 
-                (?tortilla_chip.n.01 - tortilla_chip.n.01) 
+                (?tortilla_chip.n.01_x - tortilla_chip.n.01) 
                 (and 
-                    (covered ?tortilla_chip.n.01 melted__grated_cheese.n.01_1) 
+                    (covered ?tortilla_chip.n.01_x melted__grated_cheese.n.01_1) 
                     (or 
-                        (covered ?tortilla_chip.n.01 diced__beefsteak_tomato.n.01_1) 
-                        (covered ?tortilla_chip.n.01 cooked__diced__beefsteak_tomato.n.01_1)
+                        (covered ?tortilla_chip.n.01_x diced__beefsteak_tomato.n.01_1) 
+                        (covered ?tortilla_chip.n.01_x cooked__diced__beefsteak_tomato.n.01_1)
                     ) 
                     (or 
-                        (covered ?tortilla_chip.n.01 diced__green_onion.n.01_1) 
-                        (covered ?tortilla_chip.n.01 cooked__diced__green_onion.n.01_1)
+                        (covered ?tortilla_chip.n.01_x diced__green_onion.n.01_1) 
+                        (covered ?tortilla_chip.n.01_x cooked__diced__green_onion.n.01_1)
                     ) 
                     (or 
-                        (covered ?tortilla_chip.n.01 paprika.n.02_1) 
-                        (covered ?tortilla_chip.n.01 cooked__paprika.n.01_1)
+                        (covered ?tortilla_chip.n.01_x paprika.n.02_1) 
+                        (covered ?tortilla_chip.n.01_x cooked__paprika.n.01_1)
                     ) 
                     (or 
-                        (covered ?tortilla_chip.n.01 salsa.n.01_1) 
-                        (covered ?tortilla_chip.n.01 cooked__salsa.n.01_1)
+                        (covered ?tortilla_chip.n.01_x salsa.n.01_1) 
+                        (covered ?tortilla_chip.n.01_x cooked__salsa.n.01_1)
                     ) 
                     (covered tortilla_chip.n.01_1 diced__avocado.n.01_1)
                 )

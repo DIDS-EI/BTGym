@@ -31,14 +31,14 @@
     (:goal 
         (and 
             (forall 
-                (?sweater.n.01 - sweater.n.01) 
+                (?sweater.n.01_x - sweater.n.01) 
                 (not 
-                    (covered ?sweater.n.01 dust.n.01_1)
+                    (covered ?sweater.n.01_x dust.n.01_1)
                 )
             ) 
             (forall 
-                (?sweater.n.01 - sweater.n.01) 
-                (ontop ?sweater.n.01 bed.n.01_1)
+                (?sweater.n.01_x - sweater.n.01) 
+                (ontop ?sweater.n.01_x bed.n.01_1)
             )
         )
     )

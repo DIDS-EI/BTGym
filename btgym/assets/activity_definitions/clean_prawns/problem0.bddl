@@ -36,9 +36,9 @@
     (:goal 
         (and 
             (forall 
-                (?prawn.n.01 - prawn.n.01) 
+                (?prawn.n.01_x - prawn.n.01) 
                 (not 
-                    (covered ?prawn.n.01 sand.n.04_1)
+                    (covered ?prawn.n.01_x sand.n.04_1)
                 )
             )
         )

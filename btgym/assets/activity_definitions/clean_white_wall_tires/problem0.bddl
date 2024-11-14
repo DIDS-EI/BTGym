@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?whitewall_tire.n.01 - whitewall_tire.n.01) 
+                (?whitewall_tire.n.01_x - whitewall_tire.n.01) 
                 (not 
-                    (covered ?whitewall_tire.n.01 mud.n.03_1)
+                    (covered ?whitewall_tire.n.01_x mud.n.03_1)
                 )
             )
         )

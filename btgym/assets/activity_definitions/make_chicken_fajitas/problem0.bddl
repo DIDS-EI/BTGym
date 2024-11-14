@@ -124,8 +124,8 @@
             (contains frying_pan.n.01_1 cooked__paprika.n.01_1) 
             (contains frying_pan.n.01_1 cooked__salsa.n.01_1) 
             (forall 
-                (?half__lime.n.01 - half__lime.n.01) 
-                (inside ?half__lime.n.01 frying_pan.n.01_1)
+                (?half__lime.n.01_x - half__lime.n.01) 
+                (inside ?half__lime.n.01_x frying_pan.n.01_1)
             )
         )
     )

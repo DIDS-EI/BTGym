@@ -22,7 +22,7 @@
     (:goal 
         (and 
             (forall 
-                (?paving_stone.n.01 - paving_stone.n.01) 
+                (?paving_stone.n.01_x - paving_stone.n.01) 
                 (and 
                     (ontop paving_stone.n.01_1 floor.n.01_1) 
                     (covered paving_stone.n.01_1 sealant.n.01_1)

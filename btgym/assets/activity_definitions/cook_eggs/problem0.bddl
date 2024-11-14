@@ -29,8 +29,8 @@
     (:goal 
         (and 
             (forall 
-                (?raw_egg.n.01 - raw_egg.n.01) 
-                (cooked ?raw_egg.n.01)
+                (?raw_egg.n.01_x - raw_egg.n.01) 
+                (cooked ?raw_egg.n.01_x)
             )
         )
     )

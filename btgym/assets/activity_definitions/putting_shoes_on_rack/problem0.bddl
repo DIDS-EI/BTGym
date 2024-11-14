@@ -22,12 +22,12 @@
     (:goal 
         (and 
             (forall 
-                (?sandal.n.01 - sandal.n.01) 
-                (ontop ?sandal.n.01 shelf.n.01_1)
+                (?sandal.n.01_x - sandal.n.01) 
+                (ontop ?sandal.n.01_x shelf.n.01_1)
             ) 
             (forall 
-                (?gym_shoe.n.01 - gym_shoe.n.01) 
-                (ontop ?gym_shoe.n.01 shelf.n.01_1)
+                (?gym_shoe.n.01_x - gym_shoe.n.01) 
+                (ontop ?gym_shoe.n.01_x shelf.n.01_1)
             )
         )
     )

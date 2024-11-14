@@ -55,8 +55,8 @@
     (:goal 
         (and 
             (forall 
-                (?brussels_sprouts.n.01 - brussels_sprouts.n.01) 
-                (cooked ?brussels_sprouts.n.01)
+                (?brussels_sprouts.n.01_x - brussels_sprouts.n.01) 
+                (cooked ?brussels_sprouts.n.01_x)
             )
         )
     )

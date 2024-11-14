@@ -28,16 +28,16 @@
     (:goal 
         (and 
             (exists 
-                (?hanger.n.02 - hanger.n.02) 
-                (draped sweater.n.01_1 ?hanger.n.02)
+                (?hanger.n.02_x - hanger.n.02) 
+                (draped sweater.n.01_1 ?hanger.n.02_x)
             ) 
             (exists 
-                (?hanger.n.02 - hanger.n.02) 
-                (draped dress.n.01_1 ?hanger.n.02)
+                (?hanger.n.02_x - hanger.n.02) 
+                (draped dress.n.01_1 ?hanger.n.02_x)
             ) 
             (exists 
-                (?hanger.n.02 - hanger.n.02) 
-                (draped skirt.n.01_1 ?hanger.n.02)
+                (?hanger.n.02_x - hanger.n.02) 
+                (draped skirt.n.01_1 ?hanger.n.02_x)
             )
         )
     )

@@ -30,17 +30,17 @@
     (:goal 
         (and 
             (forall 
-                (?shelf_shelf.n.01 - shelf_shelf.n.01) 
-                (attached ?shelf_shelf.n.01 shelf_back.n.01_1)
+                (?shelf_shelf.n.01_x - shelf_shelf.n.01) 
+                (attached ?shelf_shelf.n.01_x shelf_back.n.01_1)
             ) 
             (forall 
-                (?shelf_side.n.01 - shelf_side.n.01) 
-                (attached ?shelf_side.n.01 shelf_back.n.01_1)
+                (?shelf_side.n.01_x - shelf_side.n.01) 
+                (attached ?shelf_side.n.01_x shelf_back.n.01_1)
             ) 
             (attached shelf_top.n.01_1 shelf_back.n.01_1) 
             (exists 
-                (?shelf_side.n.01 - shelf_side.n.01) 
-                (attached shelf_baseboard.n.01_1 ?shelf_side.n.01)
+                (?shelf_side.n.01_x - shelf_side.n.01) 
+                (attached shelf_baseboard.n.01_1 ?shelf_side.n.01_x)
             )
         )
     )

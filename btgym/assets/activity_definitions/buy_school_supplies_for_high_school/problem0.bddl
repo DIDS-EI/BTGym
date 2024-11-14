@@ -47,8 +47,8 @@
             (ontop pencil.n.01_1 checkout.n.03_1) 
             (ontop notebook.n.01_1 checkout.n.03_1) 
             (forall 
-                (?money.n.01 - money.n.01) 
-                (inside ?money.n.01 cash_register.n.01_1)
+                (?money.n.01_x - money.n.01) 
+                (inside ?money.n.01_x cash_register.n.01_1)
             )
         )
     )

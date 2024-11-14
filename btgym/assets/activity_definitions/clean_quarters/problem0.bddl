@@ -58,13 +58,13 @@
     (:goal 
         (and 
             (forall 
-                (?quarter.n.10 - quarter.n.10) 
+                (?quarter.n.10_x - quarter.n.10) 
                 (and 
                     (not 
-                        (covered ?quarter.n.10 dirt.n.02_1)
+                        (covered ?quarter.n.10_x dirt.n.02_1)
                     ) 
                     (not 
-                        (covered ?quarter.n.10 adhesive_material.n.01_1)
+                        (covered ?quarter.n.10_x adhesive_material.n.01_1)
                     )
                 )
             )

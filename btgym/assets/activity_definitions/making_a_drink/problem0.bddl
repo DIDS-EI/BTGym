@@ -39,8 +39,8 @@
             (contains water_glass.n.02_1 granulated_sugar.n.01_1) 
             (filled water_glass.n.02_1 water.n.06_1) 
             (exists 
-                (?half__lemon.n.01 - half__lemon.n.01) 
-                (inside ?half__lemon.n.01 water_glass.n.02_1)
+                (?half__lemon.n.01_x - half__lemon.n.01) 
+                (inside ?half__lemon.n.01_x water_glass.n.02_1)
             )
         )
     )

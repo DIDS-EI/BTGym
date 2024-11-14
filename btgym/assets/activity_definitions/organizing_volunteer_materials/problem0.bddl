@@ -25,29 +25,29 @@
     (:goal 
         (and 
             (forall 
-                (?dress.n.01 - dress.n.01) 
+                (?dress.n.01_x - dress.n.01) 
                 (folded dress.n.01_1)
             ) 
             (exists 
-                (?packing_box.n.02 - packing_box.n.02) 
+                (?packing_box.n.02_x - packing_box.n.02) 
                 (forall 
-                    (?dress.n.01 - dress.n.01) 
+                    (?dress.n.01_x - dress.n.01) 
                     (and 
-                        (inside ?dress.n.01 ?packing_box.n.02) 
+                        (inside ?dress.n.01_x ?packing_box.n.02_x) 
                         (not 
-                            (inside walker.n.04_1 ?packing_box.n.02)
+                            (inside walker.n.04_1 ?packing_box.n.02_x)
                         )
                     )
                 )
             ) 
             (exists 
-                (?packing_box.n.02 - packing_box.n.02) 
+                (?packing_box.n.02_x - packing_box.n.02) 
                 (forall 
-                    (?walker.n.04 - walker.n.04) 
+                    (?walker.n.04_x - walker.n.04) 
                     (and 
-                        (inside ?walker.n.04 ?packing_box.n.02) 
+                        (inside ?walker.n.04_x ?packing_box.n.02_x) 
                         (not 
-                            (inside dress.n.01_1 ?packing_box.n.02)
+                            (inside dress.n.01_1 ?packing_box.n.02_x)
                         )
                     )
                 )

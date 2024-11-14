@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?sheet.n.03 - sheet.n.03) 
-                (draped ?sheet.n.03 clothesline.n.01_1)
+                (?sheet.n.03_x - sheet.n.03) 
+                (draped ?sheet.n.03_x clothesline.n.01_1)
             )
         )
     )

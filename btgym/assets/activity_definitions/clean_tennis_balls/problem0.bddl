@@ -35,13 +35,13 @@
     (:goal 
         (and 
             (forall 
-                (?tennis_ball.n.01 - tennis_ball.n.01) 
+                (?tennis_ball.n.01_x - tennis_ball.n.01) 
                 (and 
                     (not 
-                        (covered ?tennis_ball.n.01 stain.n.01_1)
+                        (covered ?tennis_ball.n.01_x stain.n.01_1)
                     ) 
                     (not 
-                        (covered ?tennis_ball.n.01 mud.n.03_1)
+                        (covered ?tennis_ball.n.01_x mud.n.03_1)
                     )
                 )
             )

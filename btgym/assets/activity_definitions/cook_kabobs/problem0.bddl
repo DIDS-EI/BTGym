@@ -47,12 +47,12 @@
     (:goal 
         (and 
             (forall 
-                (?kabob.n.01 - kabob.n.01) 
+                (?kabob.n.01_x - kabob.n.01) 
                 (and 
-                    (cooked ?kabob.n.01) 
-                    (covered ?kabob.n.01 cooking_oil.n.01_1) 
-                    (covered ?kabob.n.01 coriander.n.02_1) 
-                    (ontop ?kabob.n.01 plate.n.04_1)
+                    (cooked ?kabob.n.01_x) 
+                    (covered ?kabob.n.01_x cooking_oil.n.01_1) 
+                    (covered ?kabob.n.01_x coriander.n.02_1) 
+                    (ontop ?kabob.n.01_x plate.n.04_1)
                 )
             )
         )

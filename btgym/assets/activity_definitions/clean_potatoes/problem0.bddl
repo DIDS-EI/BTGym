@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?potato.n.01 - potato.n.01) 
+                (?potato.n.01_x - potato.n.01) 
                 (not 
-                    (covered ?potato.n.01 dirt.n.02_1)
+                    (covered ?potato.n.01_x dirt.n.02_1)
                 )
             )
         )

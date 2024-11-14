@@ -24,9 +24,9 @@
     (:goal 
         (and 
             (forall 
-                (?pill_bottle.n.01 - pill_bottle.n.01) 
+                (?pill_bottle.n.01_x - pill_bottle.n.01) 
                 (not 
-                    (contains ?pill_bottle.n.01 pill.n.02_1)
+                    (contains ?pill_bottle.n.01_x pill.n.02_1)
                 )
             ) 
             (contains ashcan.n.01_1 pill.n.02_1)

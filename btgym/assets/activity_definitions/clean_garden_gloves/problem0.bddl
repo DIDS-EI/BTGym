@@ -32,9 +32,9 @@
     (:goal 
         (and 
             (forall 
-                (?glove.n.02 - glove.n.02) 
+                (?glove.n.02_x - glove.n.02) 
                 (not 
-                    (covered ?glove.n.02 stain.n.01_1)
+                    (covered ?glove.n.02_x stain.n.01_1)
                 )
             )
         )

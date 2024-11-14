@@ -34,15 +34,15 @@
     (:goal 
         (and 
             (forall 
-                (?dixie_cup.n.01 - dixie_cup.n.01) 
+                (?dixie_cup.n.01_x - dixie_cup.n.01) 
                 (not 
-                    (inside ?dixie_cup.n.01 car.n.01_1)
+                    (inside ?dixie_cup.n.01_x car.n.01_1)
                 )
             ) 
             (forall 
-                (?entire_leaf.n.01 - entire_leaf.n.01) 
+                (?entire_leaf.n.01_x - entire_leaf.n.01) 
                 (not 
-                    (inside ?entire_leaf.n.01 car.n.01_1)
+                    (inside ?entire_leaf.n.01_x car.n.01_1)
                 )
             ) 
             (not 

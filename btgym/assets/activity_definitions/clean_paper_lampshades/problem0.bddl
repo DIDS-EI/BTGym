@@ -24,9 +24,9 @@
     (:goal 
         (and 
             (forall 
-                (?lampshade.n.01 - lampshade.n.01) 
+                (?lampshade.n.01_x - lampshade.n.01) 
                 (not 
-                    (covered ?lampshade.n.01 dust.n.01_1)
+                    (covered ?lampshade.n.01_x dust.n.01_1)
                 )
             )
         )

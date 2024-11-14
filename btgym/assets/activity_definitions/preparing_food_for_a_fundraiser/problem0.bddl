@@ -40,27 +40,27 @@
             (inside bottle__of__hot_sauce.n.01_1 carton.n.02_1) 
             (inside bottle__of__soup.n.01_1 carton.n.02_1) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
+                (?tupperware.n.01_x - tupperware.n.01) 
                 (forall 
-                    (?cheddar.n.02 - cheddar.n.02) 
-                    (inside ?cheddar.n.02 ?tupperware.n.01)
+                    (?cheddar.n.02_x - cheddar.n.02) 
+                    (inside ?cheddar.n.02_x ?tupperware.n.01_x)
                 )
             ) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside bread_slice.n.01_1 ?tupperware.n.01)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside bread_slice.n.01_1 ?tupperware.n.01_x)
             ) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside bratwurst.n.01_1 ?tupperware.n.01)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside bratwurst.n.01_1 ?tupperware.n.01_x)
             ) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside lasagna.n.01_1 ?tupperware.n.01)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside lasagna.n.01_1 ?tupperware.n.01_x)
             ) 
             (forall 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside ?tupperware.n.01 carton.n.02_1)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside ?tupperware.n.01_x carton.n.02_1)
             )
         )
     )

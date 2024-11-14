@@ -33,12 +33,12 @@
     (:goal 
         (and 
             (forall 
-                (?pill_bottle.n.01 - pill_bottle.n.01) 
-                (inside ?pill_bottle.n.01 sack.n.01_1)
+                (?pill_bottle.n.01_x - pill_bottle.n.01) 
+                (inside ?pill_bottle.n.01_x sack.n.01_1)
             ) 
             (forall 
-                (?bottle__of__antihistamines.n.01 - bottle__of__antihistamines.n.01) 
-                (inside ?bottle__of__antihistamines.n.01 sack.n.01_1)
+                (?bottle__of__antihistamines.n.01_x - bottle__of__antihistamines.n.01) 
+                (inside ?bottle__of__antihistamines.n.01_x sack.n.01_1)
             )
         )
     )

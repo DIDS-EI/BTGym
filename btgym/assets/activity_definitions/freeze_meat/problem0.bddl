@@ -39,38 +39,38 @@
     (:goal 
         (and 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
+                (?tupperware.n.01_x - tupperware.n.01) 
                 (exists 
-                    (?wax_paper.n.01 - wax_paper.n.01) 
+                    (?wax_paper.n.01_x - wax_paper.n.01) 
                     (forall 
-                        (?steak.n.01 - steak.n.01) 
+                        (?steak.n.01_x - steak.n.01) 
                         (and 
-                            (inside ?steak.n.01 ?tupperware.n.01) 
-                            (ontop ?wax_paper.n.01 steak.n.01_1)
+                            (inside ?steak.n.01_x ?tupperware.n.01_x) 
+                            (ontop ?wax_paper.n.01_x steak.n.01_1)
                         )
                     )
                 )
             ) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
+                (?tupperware.n.01_x - tupperware.n.01) 
                 (exists 
-                    (?wax_paper.n.01 - wax_paper.n.01) 
+                    (?wax_paper.n.01_x - wax_paper.n.01) 
                     (forall 
-                        (?chicken.n.01 - chicken.n.01) 
+                        (?chicken.n.01_x - chicken.n.01) 
                         (and 
-                            (inside ?chicken.n.01 ?tupperware.n.01) 
-                            (ontop ?wax_paper.n.01 ?chicken.n.01)
+                            (inside ?chicken.n.01_x ?tupperware.n.01_x) 
+                            (ontop ?wax_paper.n.01_x ?chicken.n.01_x)
                         )
                     )
                 )
             ) 
             (forall 
-                (?steak.n.01 - steak.n.01) 
-                (frozen ?steak.n.01)
+                (?steak.n.01_x - steak.n.01) 
+                (frozen ?steak.n.01_x)
             ) 
             (forall 
-                (?chicken.n.01 - chicken.n.01) 
-                (frozen ?chicken.n.01)
+                (?chicken.n.01_x - chicken.n.01) 
+                (frozen ?chicken.n.01_x)
             )
         )
     )

@@ -30,9 +30,9 @@
     (:goal 
         (and 
             (forall 
-                (?shutter.n.02 - shutter.n.02) 
+                (?shutter.n.02_x - shutter.n.02) 
                 (not 
-                    (covered ?shutter.n.02 tarnish.n.02_1)
+                    (covered ?shutter.n.02_x tarnish.n.02_1)
                 )
             )
         )

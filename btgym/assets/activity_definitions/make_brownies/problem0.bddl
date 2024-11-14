@@ -82,10 +82,10 @@
             (real brownie.n.03_5) 
             (real brownie.n.03_6) 
             (forall 
-                (?brownie.n.03 - brownie.n.03) 
+                (?brownie.n.03_x - brownie.n.03) 
                 (and 
-                    (ontop ?brownie.n.03 cookie_sheet.n.01_1) 
-                    (cooked ?brownie.n.03)
+                    (ontop ?brownie.n.03_x cookie_sheet.n.01_1) 
+                    (cooked ?brownie.n.03_x)
                 )
             )
         )

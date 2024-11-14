@@ -32,9 +32,9 @@
     (:goal 
         (and 
             (forall 
-                (?pallet.n.02 - pallet.n.02) 
+                (?pallet.n.02_x - pallet.n.02) 
                 (not 
-                    (covered ?pallet.n.02 stain.n.01_1)
+                    (covered ?pallet.n.02_x stain.n.01_1)
                 )
             )
         )

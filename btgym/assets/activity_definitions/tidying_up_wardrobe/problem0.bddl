@@ -28,20 +28,20 @@
     (:goal 
         (and 
             (exists 
-                (?hanger.n.02 - hanger.n.02) 
+                (?hanger.n.02_x - hanger.n.02) 
                 (and 
-                    (draped jersey.n.03_1 ?hanger.n.02) 
+                    (draped jersey.n.03_1 ?hanger.n.02_x) 
                     (not 
-                        (draped underwear.n.01_1 ?hanger.n.02)
+                        (draped underwear.n.01_1 ?hanger.n.02_x)
                     )
                 )
             ) 
             (exists 
-                (?hanger.n.02 - hanger.n.02) 
+                (?hanger.n.02_x - hanger.n.02) 
                 (and 
-                    (draped underwear.n.01_1 ?hanger.n.02) 
+                    (draped underwear.n.01_1 ?hanger.n.02_x) 
                     (not 
-                        (draped jersey.n.03_1 ?hanger.n.02)
+                        (draped jersey.n.03_1 ?hanger.n.02_x)
                     )
                 )
             ) 

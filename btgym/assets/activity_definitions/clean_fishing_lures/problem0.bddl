@@ -30,10 +30,10 @@
     (:goal 
         (and 
             (forall 
-                (?bait.n.01 - bait.n.01) 
+                (?bait.n.01_x - bait.n.01) 
                 (and 
                     (not 
-                        (covered ?bait.n.01 stain.n.01_1)
+                        (covered ?bait.n.01_x stain.n.01_1)
                     )
                 )
             )

@@ -30,12 +30,12 @@
     (:goal 
         (and 
             (forall 
-                (?lace.n.01 - lace.n.01) 
-                (inside ?lace.n.01 duffel_bag.n.01_1)
+                (?lace.n.01_x - lace.n.01) 
+                (inside ?lace.n.01_x duffel_bag.n.01_1)
             ) 
             (forall 
-                (?ice_skate.n.01 - ice_skate.n.01) 
-                (inside ?ice_skate.n.01 duffel_bag.n.01_1)
+                (?ice_skate.n.01_x - ice_skate.n.01) 
+                (inside ?ice_skate.n.01_x duffel_bag.n.01_1)
             ) 
             (inside helmet.n.01_1 duffel_bag.n.01_1) 
             (inside puck.n.02_1 duffel_bag.n.01_1) 

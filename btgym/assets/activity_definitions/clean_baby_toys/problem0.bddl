@@ -32,9 +32,9 @@
     (:goal 
         (and 
             (forall 
-                (?teddy.n.01 - teddy.n.01) 
+                (?teddy.n.01_x - teddy.n.01) 
                 (not 
-                    (covered ?teddy.n.01 stain.n.01_1)
+                    (covered ?teddy.n.01_x stain.n.01_1)
                 )
             )
         )

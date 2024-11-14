@@ -44,23 +44,23 @@
     (:goal 
         (and 
             (forall 
-                (?meatball.n.01 - meatball.n.01) 
+                (?meatball.n.01_x - meatball.n.01) 
                 (exists 
-                    (?tupperware.n.01 - tupperware.n.01) 
-                    (inside ?meatball.n.01 ?tupperware.n.01)
+                    (?tupperware.n.01_x - tupperware.n.01) 
+                    (inside ?meatball.n.01_x ?tupperware.n.01_x)
                 )
             ) 
             (forall 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside ?tupperware.n.01 electric_refrigerator.n.01_1)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside ?tupperware.n.01_x electric_refrigerator.n.01_1)
             ) 
             (forall 
-                (?plate.n.04 - plate.n.04) 
-                (inside ?plate.n.04 dishwasher.n.01_1)
+                (?plate.n.04_x - plate.n.04) 
+                (inside ?plate.n.04_x dishwasher.n.01_1)
             ) 
             (forall 
-                (?tablefork.n.01 - tablefork.n.01) 
-                (inside ?tablefork.n.01 dishwasher.n.01_1)
+                (?tablefork.n.01_x - tablefork.n.01) 
+                (inside ?tablefork.n.01_x dishwasher.n.01_1)
             )
         )
     )

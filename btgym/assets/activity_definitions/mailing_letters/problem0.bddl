@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?envelope.n.01 - envelope.n.01) 
-                (inside ?envelope.n.01 mailbox.n.01_1)
+                (?envelope.n.01_x - envelope.n.01) 
+                (inside ?envelope.n.01_x mailbox.n.01_1)
             )
         )
     )

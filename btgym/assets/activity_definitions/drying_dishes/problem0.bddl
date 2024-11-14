@@ -44,15 +44,15 @@
     (:goal 
         (and 
             (forall 
-                (?plate.n.04 - plate.n.04) 
+                (?plate.n.04_x - plate.n.04) 
                 (not 
-                    (covered ?plate.n.04 water.n.06_1)
+                    (covered ?plate.n.04_x water.n.06_1)
                 )
             ) 
             (forall 
-                (?saucer.n.02 - saucer.n.02) 
+                (?saucer.n.02_x - saucer.n.02) 
                 (not 
-                    (covered ?saucer.n.02 water.n.06_1)
+                    (covered ?saucer.n.02_x water.n.06_1)
                 )
             ) 
             (not 

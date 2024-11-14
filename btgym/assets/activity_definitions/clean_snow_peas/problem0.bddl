@@ -40,19 +40,19 @@
     (:goal 
         (and 
             (forall 
-                (?pea_pod.n.01 - pea_pod.n.01) 
+                (?pea_pod.n.01_x - pea_pod.n.01) 
                 (not 
-                    (covered ?pea_pod.n.01 dirt.n.02_1)
+                    (covered ?pea_pod.n.01_x dirt.n.02_1)
                 )
             ) 
             (or 
                 (forall 
-                    (?pea_pod.n.01 - pea_pod.n.01) 
-                    (inside ?pea_pod.n.01 bowl.n.01_1)
+                    (?pea_pod.n.01_x - pea_pod.n.01) 
+                    (inside ?pea_pod.n.01_x bowl.n.01_1)
                 ) 
                 (forall 
-                    (?pea_pod.n.01 - pea_pod.n.01) 
-                    (inside ?pea_pod.n.01 colander.n.01_1)
+                    (?pea_pod.n.01_x - pea_pod.n.01) 
+                    (inside ?pea_pod.n.01_x colander.n.01_1)
                 )
             )
         )

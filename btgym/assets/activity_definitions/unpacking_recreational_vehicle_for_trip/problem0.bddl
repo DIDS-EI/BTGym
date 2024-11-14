@@ -22,8 +22,8 @@
     (:goal 
         (and 
             (forall 
-                (?bicycle.n.01 - bicycle.n.01) 
-                (nextto ?bicycle.n.01 shelf.n.01_1)
+                (?bicycle.n.01_x - bicycle.n.01) 
+                (nextto ?bicycle.n.01_x shelf.n.01_1)
             )
         )
     )

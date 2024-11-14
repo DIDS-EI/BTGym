@@ -22,8 +22,8 @@
     (:goal 
         (and 
             (forall 
-                (?envelope.n.01 - envelope.n.01) 
-                (ontop ?envelope.n.01 coffee_table.n.01_1)
+                (?envelope.n.01_x - envelope.n.01) 
+                (ontop ?envelope.n.01_x coffee_table.n.01_1)
             )
         )
     )

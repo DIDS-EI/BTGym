@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?cookie_sheet.n.01 - cookie_sheet.n.01) 
-                (covered ?cookie_sheet.n.01 cooking_oil.n.01_1)
+                (?cookie_sheet.n.01_x - cookie_sheet.n.01) 
+                (covered ?cookie_sheet.n.01_x cooking_oil.n.01_1)
             )
         )
     )

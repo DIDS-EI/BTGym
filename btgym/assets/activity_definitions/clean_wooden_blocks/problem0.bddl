@@ -38,13 +38,13 @@
     (:goal 
         (and 
             (forall 
-                (?chopping_block.n.01 - chopping_block.n.01) 
+                (?chopping_block.n.01_x - chopping_block.n.01) 
                 (and 
                     (not 
-                        (covered ?chopping_block.n.01 stain.n.01_1)
+                        (covered ?chopping_block.n.01_x stain.n.01_1)
                     ) 
                     (not 
-                        (covered ?chopping_block.n.01 dust.n.01_1)
+                        (covered ?chopping_block.n.01_x dust.n.01_1)
                     )
                 )
             )

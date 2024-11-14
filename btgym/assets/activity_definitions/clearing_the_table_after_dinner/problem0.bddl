@@ -32,22 +32,22 @@
     (:goal 
         (and 
             (forall 
-                (?cup.n.01 - cup.n.01) 
+                (?cup.n.01_x - cup.n.01) 
                 (exists 
-                    (?bucket.n.01 - bucket.n.01) 
-                    (inside ?cup.n.01 ?bucket.n.01)
+                    (?bucket.n.01_x - bucket.n.01) 
+                    (inside ?cup.n.01_x ?bucket.n.01_x)
                 )
             ) 
             (forall 
-                (?bowl.n.01 - bowl.n.01) 
+                (?bowl.n.01_x - bowl.n.01) 
                 (exists 
-                    (?bucket.n.01 - bucket.n.01) 
-                    (inside ?bowl.n.01 ?bucket.n.01)
+                    (?bucket.n.01_x - bucket.n.01) 
+                    (inside ?bowl.n.01_x ?bucket.n.01_x)
                 )
             ) 
             (exists 
-                (?bucket.n.01 - bucket.n.01) 
-                (inside bottle__of__catsup.n.01_1 ?bucket.n.01)
+                (?bucket.n.01_x - bucket.n.01) 
+                (inside bottle__of__catsup.n.01_1 ?bucket.n.01_x)
             )
         )
     )

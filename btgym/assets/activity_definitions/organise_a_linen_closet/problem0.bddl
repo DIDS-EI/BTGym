@@ -29,34 +29,34 @@
     (:goal 
         (and 
             (forall 
-                (?sheet.n.03 - sheet.n.03) 
-                (folded ?sheet.n.03)
+                (?sheet.n.03_x - sheet.n.03) 
+                (folded ?sheet.n.03_x)
             ) 
             (exists 
-                (?cedar_chest.n.01 - cedar_chest.n.01) 
+                (?cedar_chest.n.01_x - cedar_chest.n.01) 
                 (and 
                     (forall 
-                        (?sheet.n.03 - sheet.n.03) 
-                        (inside ?sheet.n.03 ?cedar_chest.n.01)
+                        (?sheet.n.03_x - sheet.n.03) 
+                        (inside ?sheet.n.03_x ?cedar_chest.n.01_x)
                     ) 
                     (not 
-                        (inside bath_towel.n.01_1 ?cedar_chest.n.01)
+                        (inside bath_towel.n.01_1 ?cedar_chest.n.01_x)
                     )
                 )
             ) 
             (forall 
-                (?bath_towel.n.01 - bath_towel.n.01) 
-                (folded ?bath_towel.n.01)
+                (?bath_towel.n.01_x - bath_towel.n.01) 
+                (folded ?bath_towel.n.01_x)
             ) 
             (exists 
-                (?cedar_chest.n.01 - cedar_chest.n.01) 
+                (?cedar_chest.n.01_x - cedar_chest.n.01) 
                 (and 
                     (forall 
-                        (?bath_towel.n.01 - bath_towel.n.01) 
-                        (inside ?bath_towel.n.01 ?cedar_chest.n.01)
+                        (?bath_towel.n.01_x - bath_towel.n.01) 
+                        (inside ?bath_towel.n.01_x ?cedar_chest.n.01_x)
                     ) 
                     (not 
-                        (inside sheet.n.03_1 ?cedar_chest.n.01)
+                        (inside sheet.n.03_1 ?cedar_chest.n.01_x)
                     )
                 )
             )

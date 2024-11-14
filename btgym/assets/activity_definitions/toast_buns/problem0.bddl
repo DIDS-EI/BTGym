@@ -47,10 +47,10 @@
     (:goal 
         (and 
             (forall 
-                (?bap.n.01 - bap.n.01) 
+                (?bap.n.01_x - bap.n.01) 
                 (and 
-                    (hot ?bap.n.01) 
-                    (cooked ?bap.n.01)
+                    (hot ?bap.n.01_x) 
+                    (cooked ?bap.n.01_x)
                 )
             )
         )

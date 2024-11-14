@@ -36,12 +36,12 @@
     (:goal 
         (and 
             (forall 
-                (?tray.n.01 - tray.n.01) 
+                (?tray.n.01_x - tray.n.01) 
                 (and 
                     (not 
-                        (covered ?tray.n.01 adhesive_material.n.01_1)
+                        (covered ?tray.n.01_x adhesive_material.n.01_1)
                     ) 
-                    (covered ?tray.n.01 disinfectant.n.01_1)
+                    (covered ?tray.n.01_x disinfectant.n.01_1)
                 )
             )
         )

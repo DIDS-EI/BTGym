@@ -49,10 +49,10 @@
     (:goal 
         (and 
             (forall 
-                (?bottle.n.03 - bottle.n.03) 
+                (?bottle.n.03_x - bottle.n.03) 
                 (and 
-                    (inside ?bottle.n.03 dishwasher.n.01_1) 
-                    (covered ?bottle.n.03 disinfectant.n.01_1)
+                    (inside ?bottle.n.03_x dishwasher.n.01_1) 
+                    (covered ?bottle.n.03_x disinfectant.n.01_1)
                 )
             )
         )

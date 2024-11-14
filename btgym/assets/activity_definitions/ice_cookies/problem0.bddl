@@ -26,8 +26,8 @@
     (:goal 
         (and 
             (forall 
-                (?sugar_cookie.n.01 - sugar_cookie.n.01) 
-                (covered ?sugar_cookie.n.01 frosting.n.01_1)
+                (?sugar_cookie.n.01_x - sugar_cookie.n.01) 
+                (covered ?sugar_cookie.n.01_x frosting.n.01_1)
             )
         )
     )

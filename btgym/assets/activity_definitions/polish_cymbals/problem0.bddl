@@ -35,12 +35,12 @@
     (:goal 
         (and 
             (forall 
-                (?cymbal.n.01 - cymbal.n.01) 
+                (?cymbal.n.01_x - cymbal.n.01) 
                 (and 
                     (not 
-                        (covered ?cymbal.n.01 stain.n.01_1)
+                        (covered ?cymbal.n.01_x stain.n.01_1)
                     ) 
-                    (covered ?cymbal.n.01 polish.n.03_1)
+                    (covered ?cymbal.n.01_x polish.n.03_1)
                 )
             )
         )

@@ -27,10 +27,10 @@
     (:goal 
         (and 
             (forall 
-                (?can.n.01 - can.n.01) 
+                (?can.n.01_x - can.n.01) 
                 (and 
-                    (filled ?can.n.01 black_bean.n.01_1) 
-                    (inside ?can.n.01 cabinet.n.01_1)
+                    (filled ?can.n.01_x black_bean.n.01_1) 
+                    (inside ?can.n.01_x cabinet.n.01_1)
                 )
             )
         )

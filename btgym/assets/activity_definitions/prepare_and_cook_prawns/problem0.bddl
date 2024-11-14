@@ -72,18 +72,18 @@
     (:goal 
         (and 
             (forall 
-                (?prawn.n.01 - prawn.n.01) 
+                (?prawn.n.01_x - prawn.n.01) 
                 (and 
-                    (cooked ?prawn.n.01) 
-                    (ontop ?prawn.n.01 plate.n.04_1) 
-                    (covered ?prawn.n.01 salt.n.02_1)
+                    (cooked ?prawn.n.01_x) 
+                    (ontop ?prawn.n.01_x plate.n.04_1) 
+                    (covered ?prawn.n.01_x salt.n.02_1)
                 )
             ) 
             (forall 
-                (?clove.n.03 - clove.n.03) 
+                (?clove.n.03_x - clove.n.03) 
                 (and 
-                    (cooked ?clove.n.03) 
-                    (ontop ?clove.n.03 plate.n.04_1)
+                    (cooked ?clove.n.03_x) 
+                    (ontop ?clove.n.03_x plate.n.04_1)
                 )
             ) 
             (ontop butter.n.01_1 plate.n.04_1)

@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?scrub.n.01 - scrub.n.01) 
-                (saturated ?scrub.n.01 water.n.06_1)
+                (?scrub.n.01_x - scrub.n.01) 
+                (saturated ?scrub.n.01_x water.n.06_1)
             ) 
             (covered flower.n.02_1 water.n.06_1)
         )

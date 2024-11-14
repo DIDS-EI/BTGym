@@ -22,8 +22,8 @@
     (:goal 
         (and 
             (forall 
-                (?water_bottle.n.01 - water_bottle.n.01) 
-                (inside ?water_bottle.n.01 cabinet.n.01_1)
+                (?water_bottle.n.01_x - water_bottle.n.01) 
+                (inside ?water_bottle.n.01_x cabinet.n.01_1)
             )
         )
     )

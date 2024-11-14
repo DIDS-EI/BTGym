@@ -25,9 +25,9 @@
     (:goal 
         (and 
             (forall 
-                (?turf.n.01 - turf.n.01) 
+                (?turf.n.01_x - turf.n.01) 
                 (not 
-                    (ontop ?turf.n.01 lawn.n.01_1)
+                    (ontop ?turf.n.01_x lawn.n.01_1)
                 )
             )
         )

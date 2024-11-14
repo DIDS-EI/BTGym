@@ -36,40 +36,40 @@
         (and 
             (nextto credit_card.n.01_1 cash_register.n.01_1) 
             (exists 
-                (?sack.n.01 - sack.n.01) 
+                (?sack.n.01_x - sack.n.01) 
                 (forall 
-                    (?bottle__of__milk.n.01 - bottle__of__milk.n.01) 
-                    (inside ?bottle__of__milk.n.01 ?sack.n.01)
+                    (?bottle__of__milk.n.01_x - bottle__of__milk.n.01) 
+                    (inside ?bottle__of__milk.n.01_x ?sack.n.01_x)
                 )
             ) 
             (exists 
-                (?sack.n.01 - sack.n.01) 
+                (?sack.n.01_x - sack.n.01) 
                 (and 
                     (forall 
-                        (?apple.n.01 - apple.n.01) 
-                        (inside ?apple.n.01 ?sack.n.01)
+                        (?apple.n.01_x - apple.n.01) 
+                        (inside ?apple.n.01_x ?sack.n.01_x)
                     ) 
                     (forall 
-                        (?pineapple.n.02 - pineapple.n.02) 
-                        (inside ?pineapple.n.02 ?sack.n.01)
+                        (?pineapple.n.02_x - pineapple.n.02) 
+                        (inside ?pineapple.n.02_x ?sack.n.01_x)
                     )
                 )
             ) 
             (forall 
-                (?apple.n.01 - apple.n.01) 
+                (?apple.n.01_x - apple.n.01) 
                 (forall 
-                    (?bottle__of__milk.n.01 - bottle__of__milk.n.01) 
+                    (?bottle__of__milk.n.01_x - bottle__of__milk.n.01) 
                     (not 
-                        (nextto ?apple.n.01 ?bottle__of__milk.n.01)
+                        (nextto ?apple.n.01_x ?bottle__of__milk.n.01_x)
                     )
                 )
             ) 
             (forall 
-                (?pineapple.n.02 - pineapple.n.02) 
+                (?pineapple.n.02_x - pineapple.n.02) 
                 (forall 
-                    (?bottle__of__milk.n.01 - bottle__of__milk.n.01) 
+                    (?bottle__of__milk.n.01_x - bottle__of__milk.n.01) 
                     (not 
-                        (nextto ?pineapple.n.02 ?bottle__of__milk.n.01)
+                        (nextto ?pineapple.n.02_x ?bottle__of__milk.n.01_x)
                     )
                 )
             )

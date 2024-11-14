@@ -26,8 +26,8 @@
     (:goal 
         (and 
             (forall 
-                (?garment.n.01 - garment.n.01) 
-                (inside ?garment.n.01 washer.n.03_1)
+                (?garment.n.01_x - garment.n.01) 
+                (inside ?garment.n.01_x washer.n.03_1)
             )
         )
     )

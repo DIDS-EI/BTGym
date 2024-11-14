@@ -24,8 +24,8 @@
     (:goal 
         (and 
             (forall 
-                (?videodisk.n.01 - videodisk.n.01) 
-                (inside ?videodisk.n.01 shelf.n.01_1)
+                (?videodisk.n.01_x - videodisk.n.01) 
+                (inside ?videodisk.n.01_x shelf.n.01_1)
             )
         )
     )

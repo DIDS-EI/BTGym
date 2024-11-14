@@ -19,7 +19,7 @@
     (:goal 
         (and 
             (forall 
-                (?log.n.01 - log.n.01) 
+                (?log.n.01_x - log.n.01) 
                 (inside log.n.01_1 fireplace.n.01_1)
             )
         )

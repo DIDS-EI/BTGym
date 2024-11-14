@@ -40,16 +40,16 @@
     (:goal 
         (and 
             (forall 
-                (?carving_knife.n.01 - carving_knife.n.01) 
+                (?carving_knife.n.01_x - carving_knife.n.01) 
                 (and 
                     (not 
-                        (covered ?carving_knife.n.01 barbecue_sauce.n.01_1)
+                        (covered ?carving_knife.n.01_x barbecue_sauce.n.01_1)
                     ) 
                     (not 
-                        (covered ?carving_knife.n.01 breadcrumb.n.01_1)
+                        (covered ?carving_knife.n.01_x breadcrumb.n.01_1)
                     ) 
                     (not 
-                        (covered ?carving_knife.n.01 melted__butter.n.01_1)
+                        (covered ?carving_knife.n.01_x melted__butter.n.01_1)
                     )
                 )
             ) 

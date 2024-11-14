@@ -32,12 +32,12 @@
     (:goal 
         (and 
             (forall 
-                (?bowl.n.01 - bowl.n.01) 
-                (inside ?bowl.n.01 sink.n.01_1)
+                (?bowl.n.01_x - bowl.n.01) 
+                (inside ?bowl.n.01_x sink.n.01_1)
             ) 
             (forall 
-                (?plate.n.04 - plate.n.04) 
-                (inside ?plate.n.04 sink.n.01_1)
+                (?plate.n.04_x - plate.n.04) 
+                (inside ?plate.n.04_x sink.n.01_1)
             )
         )
     )

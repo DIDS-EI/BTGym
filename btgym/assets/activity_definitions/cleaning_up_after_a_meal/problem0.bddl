@@ -56,35 +56,35 @@
     (:goal 
         (and 
             (forall 
-                (?bowl.n.01 - bowl.n.01) 
+                (?bowl.n.01_x - bowl.n.01) 
                 (not 
-                    (covered ?bowl.n.01 stain.n.01_1)
+                    (covered ?bowl.n.01_x stain.n.01_1)
                 )
             ) 
             (forall 
-                (?plate.n.04 - plate.n.04) 
+                (?plate.n.04_x - plate.n.04) 
                 (not 
-                    (covered ?plate.n.04 stain.n.01_1)
+                    (covered ?plate.n.04_x stain.n.01_1)
                 )
             ) 
             (forall 
-                (?cup.n.01 - cup.n.01) 
+                (?cup.n.01_x - cup.n.01) 
                 (not 
-                    (covered ?cup.n.01 stain.n.01_1)
+                    (covered ?cup.n.01_x stain.n.01_1)
                 )
             ) 
             (forall 
-                (?hamburger.n.01 - hamburger.n.01) 
-                (inside ?hamburger.n.01 sack.n.01_1)
+                (?hamburger.n.01_x - hamburger.n.01) 
+                (inside ?hamburger.n.01_x sack.n.01_1)
             ) 
             (ontop sack.n.01_1 floor.n.01_1) 
             (not 
                 (covered table.n.02_1 stain.n.01_1)
             ) 
             (forall 
-                (?chair.n.01 - chair.n.01) 
+                (?chair.n.01_x - chair.n.01) 
                 (not 
-                    (covered ?chair.n.01 stain.n.01_1)
+                    (covered ?chair.n.01_x stain.n.01_1)
                 )
             )
         )

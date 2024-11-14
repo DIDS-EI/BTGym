@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?geode.n.01 - geode.n.01) 
+                (?geode.n.01_x - geode.n.01) 
                 (not 
-                    (covered ?geode.n.01 mud.n.03_1)
+                    (covered ?geode.n.01_x mud.n.03_1)
                 )
             )
         )

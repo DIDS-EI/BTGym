@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?rope.n.01 - rope.n.01) 
-                (ontop ?rope.n.01 kayak.n.01_1)
+                (?rope.n.01_x - rope.n.01) 
+                (ontop ?rope.n.01_x kayak.n.01_1)
             ) 
             (ontop kayak.n.01_1 driveway.n.01_1) 
             (overlaid tarpaulin.n.01_1 kayak.n.01_1)

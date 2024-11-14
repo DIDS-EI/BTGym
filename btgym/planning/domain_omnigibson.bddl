@@ -30,7 +30,72 @@
         (broken ?obj1)
         (grasped ?obj1 ?obj2)
     )
-    
+
+    (:action uncook
+        :parameters (?obj1)
+        :precondition (cooked ?obj1)
+        :effect (not (cooked ?obj1))
+    )
+
+    (:action unfreeze 
+        :parameters (?obj1)
+        :precondition (frozen ?obj1)
+        :effect (not (frozen ?obj1))
+    )
+
+    (:action toggle_off
+        :parameters (?obj1)
+        :precondition (toggled_on ?obj1)
+        :effect (not (toggled_on ?obj1))
+    )
+
+    (:action cool_down
+        :parameters (?obj1)
+        :precondition (hot ?obj1)
+        :effect (not (hot ?obj1))
+    )
+
+    (:action extinguish
+        :parameters (?obj1)
+        :precondition (on_fire ?obj1)
+        :effect (not (on_fire ?obj1))
+    )
+
+    (:action make_past
+        :parameters (?obj1)
+        :precondition (future ?obj1)
+        :effect (and
+            (not (future ?obj1))
+            (real ?obj1)
+        )
+    )
+
+    (:action make_future
+        :parameters (?obj1)
+        :precondition (real ?obj1)
+        :effect (and
+            (not (real ?obj1))
+            (future ?obj1)
+        )
+    )
+
+    (:action unsaturate
+        :parameters (?obj1 ?obj2)
+        :precondition (saturated ?obj1 ?obj2)
+        :effect (not (saturated ?obj1 ?obj2))
+    )
+
+    (:action uncover
+        :parameters (?obj1 ?obj2)
+        :precondition (covered ?obj1 ?obj2)
+        :effect (not (covered ?obj1 ?obj2))
+    )
+
+    (:action empty
+        :parameters (?obj1 ?obj2)
+        :precondition (filled ?obj1 ?obj2)
+        :effect (not (filled ?obj1 ?obj2))
+    )
     (:action cook
         :parameters (?obj1)
         :precondition (not (cooked ?obj1))
@@ -43,10 +108,16 @@
         :effect (frozen ?obj1)
     )
 
-    (:action open
+    (:action open_container
         :parameters (?obj1)
         :precondition (not (open ?obj1))
         :effect (open ?obj1)
+    )
+
+    (:action close_container
+        :parameters (?obj1)
+        :precondition (open ?obj1)
+        :effect (not (open ?obj1))
     )
 
     (:action fold
@@ -117,7 +188,7 @@
 
     (:action place_ontop
         :parameters (?obj1 ?obj2)
-        :precondition ()
+        :precondition (not (ontop ?obj1 ?obj2))
         :effect (ontop ?obj1 ?obj2)
     )
 
@@ -186,4 +257,31 @@
         :precondition (not (grasped ?obj1 ?obj2))
         :effect (grasped ?obj1 ?obj2)
     )
+
+
+    (:action uncover
+        :parameters (?obj1 ?obj2)
+        :precondition (covered ?obj1 ?obj2)
+        :effect (not (covered ?obj1 ?obj2))
+    )
+
+    (:action take_out
+        :parameters (?obj1 ?obj2)
+        :precondition (contains ?obj1 ?obj2)
+        :effect (not (contains ?obj1 ?obj2))
+    )
+
+    (:action uninside
+        :parameters (?obj1 ?obj2)
+        :precondition (inside ?obj1 ?obj2)
+        :effect (not (inside ?obj1 ?obj2))
+    )
+
+    (:action unattach
+        :parameters (?obj1 ?obj2)
+        :precondition (attached ?obj1 ?obj2)
+        :effect (not (attached ?obj1 ?obj2))
+    )
+
+
 )

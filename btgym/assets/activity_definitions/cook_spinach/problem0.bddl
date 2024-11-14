@@ -37,10 +37,10 @@
     (:goal 
         (and 
             (forall 
-                (?spinach.n.02 - spinach.n.02) 
+                (?spinach.n.02_x - spinach.n.02) 
                 (and 
-                    (cooked ?spinach.n.02) 
-                    (covered ?spinach.n.02 black_pepper.n.02_1)
+                    (cooked ?spinach.n.02_x) 
+                    (covered ?spinach.n.02_x black_pepper.n.02_1)
                 )
             )
         )

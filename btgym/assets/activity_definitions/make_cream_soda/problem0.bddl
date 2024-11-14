@@ -43,8 +43,8 @@
             (real cream_soda.n.01_1) 
             (contains water_glass.n.02_1 cream_soda.n.01_1) 
             (forall 
-                (?ice_cube.n.01 - ice_cube.n.01) 
-                (inside ?ice_cube.n.01 water_glass.n.02_1)
+                (?ice_cube.n.01_x - ice_cube.n.01) 
+                (inside ?ice_cube.n.01_x water_glass.n.02_1)
             )
         )
     )

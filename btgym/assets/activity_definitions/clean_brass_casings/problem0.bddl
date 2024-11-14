@@ -28,9 +28,9 @@
     (:goal 
         (and 
             (forall 
-                (?jacket.n.05 - jacket.n.05) 
+                (?jacket.n.05_x - jacket.n.05) 
                 (not 
-                    (covered ?jacket.n.05 stain.n.01_1)
+                    (covered ?jacket.n.05_x stain.n.01_1)
                 )
             )
         )

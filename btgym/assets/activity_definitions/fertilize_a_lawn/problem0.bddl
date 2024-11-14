@@ -22,8 +22,8 @@
     (:goal 
         (and 
             (forall 
-                (?scrub.n.01 - scrub.n.01) 
-                (covered ?scrub.n.01 fertilizer.n.01_1)
+                (?scrub.n.01_x - scrub.n.01) 
+                (covered ?scrub.n.01_x fertilizer.n.01_1)
             )
         )
     )

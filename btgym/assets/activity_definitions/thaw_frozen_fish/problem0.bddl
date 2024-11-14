@@ -27,9 +27,9 @@
     (:goal 
         (and 
             (forall 
-                (?crayfish.n.02 - crayfish.n.02) 
+                (?crayfish.n.02_x - crayfish.n.02) 
                 (not 
-                    (frozen ?crayfish.n.02)
+                    (frozen ?crayfish.n.02_x)
                 )
             )
         )

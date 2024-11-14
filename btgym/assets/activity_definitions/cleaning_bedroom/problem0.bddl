@@ -40,10 +40,10 @@
     (:goal 
         (and 
             (forall 
-                (?trouser.n.01 - trouser.n.01) 
+                (?trouser.n.01_x - trouser.n.01) 
                 (exists 
-                    (?cabinet.n.01 - cabinet.n.01) 
-                    (inside ?trouser.n.01 ?cabinet.n.01)
+                    (?cabinet.n.01_x - cabinet.n.01) 
+                    (inside ?trouser.n.01_x ?cabinet.n.01_x)
                 )
             ) 
             (and 
@@ -52,9 +52,9 @@
             ) 
             (ontop sheet.n.03_1 bed.n.01_1) 
             (forall 
-                (?cabinet.n.01 - cabinet.n.01) 
+                (?cabinet.n.01_x - cabinet.n.01) 
                 (not 
-                    (covered ?cabinet.n.01 dust.n.01_1)
+                    (covered ?cabinet.n.01_x dust.n.01_1)
                 )
             ) 
             (nextto vacuum.n.04_1 bed.n.01_1) 

@@ -19,8 +19,8 @@
     (:goal 
         (and 
             (forall 
-                (?bottle__of__vodka.n.01 - bottle__of__vodka.n.01) 
-                (inside ?bottle__of__vodka.n.01 cabinet.n.01_1)
+                (?bottle__of__vodka.n.01_x - bottle__of__vodka.n.01) 
+                (inside ?bottle__of__vodka.n.01_x cabinet.n.01_1)
             ) 
             (nextto bottle__of__vodka.n.01_1 bottle__of__vodka.n.01_2)
         )

@@ -33,12 +33,12 @@
     (:goal 
         (and 
             (forall 
-                (?sports_equipment.n.01 - sports_equipment.n.01) 
-                (inside ?sports_equipment.n.01 car.n.01_1)
+                (?sports_equipment.n.01_x - sports_equipment.n.01) 
+                (inside ?sports_equipment.n.01_x car.n.01_1)
             ) 
             (forall 
-                (?sock.n.01 - sock.n.01) 
-                (inside ?sock.n.01 car.n.01_1)
+                (?sock.n.01_x - sock.n.01) 
+                (inside ?sock.n.01_x car.n.01_1)
             ) 
             (inside helmet.n.01_1 car.n.01_1)
         )

@@ -103,17 +103,17 @@
         (and 
             (real melted__butter.n.01_1) 
             (forall 
-                (?asparagus.n.02 - asparagus.n.02) 
+                (?asparagus.n.02_x - asparagus.n.02) 
                 (and 
-                    (cooked ?asparagus.n.02) 
-                    (covered ?asparagus.n.02 rosemary.n.02_1)
+                    (cooked ?asparagus.n.02_x) 
+                    (covered ?asparagus.n.02_x rosemary.n.02_1)
                 )
             ) 
             (forall 
-                (?green_bean.n.01 - green_bean.n.01) 
+                (?green_bean.n.01_x - green_bean.n.01) 
                 (and 
-                    (cooked ?green_bean.n.01) 
-                    (covered ?green_bean.n.01 melted__butter.n.01_1)
+                    (cooked ?green_bean.n.01_x) 
+                    (covered ?green_bean.n.01_x melted__butter.n.01_1)
                 )
             )
         )

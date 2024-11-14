@@ -41,12 +41,12 @@
             (ontop pitcher.n.02_1 countertop.n.01_1) 
             (ontop box__of__cream.n.01_1 breakfast_table.n.01_1) 
             (forall 
-                (?napkin.n.01 - napkin.n.01) 
-                (ontop ?napkin.n.01 breakfast_table.n.01_1)
+                (?napkin.n.01_x - napkin.n.01) 
+                (ontop ?napkin.n.01_x breakfast_table.n.01_1)
             ) 
             (forall 
-                (?teaspoon.n.02 - teaspoon.n.02) 
-                (ontop ?teaspoon.n.02 breakfast_table.n.01_1)
+                (?teaspoon.n.02_x - teaspoon.n.02) 
+                (ontop ?teaspoon.n.02_x breakfast_table.n.01_1)
             ) 
             (ontop bowl.n.01_1 breakfast_table.n.01_1) 
             (filled bowl.n.01_1 granulated_sugar.n.01_1)

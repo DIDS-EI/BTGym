@@ -79,12 +79,12 @@
             (real half__bell_pepper.n.01_2) 
             (cooked brussels_sprouts.n.01_1) 
             (forall 
-                (?half__bell_pepper.n.01 - half__bell_pepper.n.01) 
-                (cooked ?half__bell_pepper.n.01)
+                (?half__bell_pepper.n.01_x - half__bell_pepper.n.01) 
+                (cooked ?half__bell_pepper.n.01_x)
             ) 
             (forall 
-                (?clove.n.03 - clove.n.03) 
-                (cooked ?clove.n.03)
+                (?clove.n.03_x - clove.n.03) 
+                (cooked ?clove.n.03_x)
             )
         )
     )

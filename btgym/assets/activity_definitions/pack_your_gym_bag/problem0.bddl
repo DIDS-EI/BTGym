@@ -30,12 +30,12 @@
             (inside muffin.n.01_1 duffel_bag.n.01_1) 
             (inside tank_top.n.01_1 duffel_bag.n.01_1) 
             (forall 
-                (?gym_shoe.n.01 - gym_shoe.n.01) 
-                (inside ?gym_shoe.n.01 duffel_bag.n.01_1)
+                (?gym_shoe.n.01_x - gym_shoe.n.01) 
+                (inside ?gym_shoe.n.01_x duffel_bag.n.01_1)
             ) 
             (forall 
-                (?sock.n.01 - sock.n.01) 
-                (inside ?sock.n.01 duffel_bag.n.01_1)
+                (?sock.n.01_x - sock.n.01) 
+                (inside ?sock.n.01_x duffel_bag.n.01_1)
             )
         )
     )

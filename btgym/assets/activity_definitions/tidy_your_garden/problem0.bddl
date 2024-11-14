@@ -37,8 +37,8 @@
                 (covered rail_fence.n.01_1 bunchgrass.n.01_1)
             ) 
             (forall 
-                (?dixie_cup.n.01 - dixie_cup.n.01) 
-                (inside ?dixie_cup.n.01 ashcan.n.01_1)
+                (?dixie_cup.n.01_x - dixie_cup.n.01) 
+                (inside ?dixie_cup.n.01_x ashcan.n.01_1)
             )
         )
     )

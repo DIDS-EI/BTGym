@@ -35,9 +35,9 @@
                 (covered electric_refrigerator.n.01_1 stain.n.01_1)
             ) 
             (forall 
-                (?prawn.n.01 - prawn.n.01) 
+                (?prawn.n.01_x - prawn.n.01) 
                 (not 
-                    (inside ?prawn.n.01 electric_refrigerator.n.01_1)
+                    (inside ?prawn.n.01_x electric_refrigerator.n.01_1)
                 )
             )
         )

@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?mug.n.04 - mug.n.04) 
+                (?mug.n.04_x - mug.n.04) 
                 (not 
-                    (covered ?mug.n.04 stain.n.01_1)
+                    (covered ?mug.n.04_x stain.n.01_1)
                 )
             )
         )

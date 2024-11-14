@@ -23,8 +23,8 @@
     (:goal 
         (and 
             (forall 
-                (?beer_bottle.n.01 - beer_bottle.n.01) 
-                (inside ?beer_bottle.n.01 electric_refrigerator.n.01_1)
+                (?beer_bottle.n.01_x - beer_bottle.n.01) 
+                (inside ?beer_bottle.n.01_x electric_refrigerator.n.01_1)
             )
         )
     )

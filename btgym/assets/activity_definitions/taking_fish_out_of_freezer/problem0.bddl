@@ -25,8 +25,8 @@
     (:goal 
         (and 
             (forall 
-                (?salmon.n.03 - salmon.n.03) 
-                (inside ?salmon.n.03 shopping_cart.n.01_1)
+                (?salmon.n.03_x - salmon.n.03) 
+                (inside ?salmon.n.03_x shopping_cart.n.01_1)
             )
         )
     )

@@ -48,40 +48,40 @@
         (and 
             (ontop carton__of__orange_juice.n.01_1 breakfast_table.n.01_1) 
             (exists 
-                (?platter.n.01 - platter.n.01) 
+                (?platter.n.01_x - platter.n.01) 
                 (forall 
-                    (?buttermilk_pancake.n.01 - buttermilk_pancake.n.01) 
-                    (ontop ?buttermilk_pancake.n.01 ?platter.n.01)
+                    (?buttermilk_pancake.n.01_x - buttermilk_pancake.n.01) 
+                    (ontop ?buttermilk_pancake.n.01_x ?platter.n.01_x)
                 )
             ) 
             (exists 
-                (?platter.n.01 - platter.n.01) 
+                (?platter.n.01_x - platter.n.01) 
                 (forall 
-                    (?waffle.n.01 - waffle.n.01) 
-                    (ontop ?waffle.n.01 ?platter.n.01)
+                    (?waffle.n.01_x - waffle.n.01) 
+                    (ontop ?waffle.n.01_x ?platter.n.01_x)
                 )
             ) 
             (exists 
-                (?platter.n.01 - platter.n.01) 
-                (ontop muffin.n.01_1 ?platter.n.01)
+                (?platter.n.01_x - platter.n.01) 
+                (ontop muffin.n.01_1 ?platter.n.01_x)
             ) 
             (exists 
-                (?platter.n.01 - platter.n.01) 
-                (ontop toast.n.01_1 ?platter.n.01)
+                (?platter.n.01_x - platter.n.01) 
+                (ontop toast.n.01_1 ?platter.n.01_x)
             ) 
             (exists 
-                (?platter.n.01 - platter.n.01) 
-                (ontop danish.n.02_1 ?platter.n.01)
+                (?platter.n.01_x - platter.n.01) 
+                (ontop danish.n.02_1 ?platter.n.01_x)
             ) 
             (exists 
-                (?platter.n.01 - platter.n.01) 
-                (ontop scone.n.01_1 ?platter.n.01)
+                (?platter.n.01_x - platter.n.01) 
+                (ontop scone.n.01_1 ?platter.n.01_x)
             ) 
             (forall 
-                (?platter.n.01 - platter.n.01) 
+                (?platter.n.01_x - platter.n.01) 
                 (or 
-                    (ontop ?platter.n.01 tray.n.01_1) 
-                    (ontop ?platter.n.01 breakfast_table.n.01_1)
+                    (ontop ?platter.n.01_x tray.n.01_1) 
+                    (ontop ?platter.n.01_x breakfast_table.n.01_1)
                 )
             ) 
             (ontop tray.n.01_1 breakfast_table.n.01_1)

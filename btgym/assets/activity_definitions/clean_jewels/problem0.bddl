@@ -36,9 +36,9 @@
     (:goal 
         (and 
             (forall 
-                (?diamond.n.01 - diamond.n.01) 
+                (?diamond.n.01_x - diamond.n.01) 
                 (not 
-                    (covered ?diamond.n.01 stain.n.01_1)
+                    (covered ?diamond.n.01_x stain.n.01_1)
                 )
             )
         )

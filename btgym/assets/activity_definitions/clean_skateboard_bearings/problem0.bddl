@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?skateboard_wheel.n.01 - skateboard_wheel.n.01) 
+                (?skateboard_wheel.n.01_x - skateboard_wheel.n.01) 
                 (not 
-                    (covered ?skateboard_wheel.n.01 grease.n.01_1)
+                    (covered ?skateboard_wheel.n.01_x grease.n.01_1)
                 )
             )
         )

@@ -42,17 +42,17 @@
     (:goal 
         (and 
             (forall 
-                (?wineglass.n.01 - wineglass.n.01) 
+                (?wineglass.n.01_x - wineglass.n.01) 
                 (or 
-                    (inside ?wineglass.n.01 sink.n.01_1) 
-                    (nextto ?wineglass.n.01 sink.n.01_1)
+                    (inside ?wineglass.n.01_x sink.n.01_1) 
+                    (nextto ?wineglass.n.01_x sink.n.01_1)
                 )
             ) 
             (forall 
-                (?beer_glass.n.01 - beer_glass.n.01) 
+                (?beer_glass.n.01_x - beer_glass.n.01) 
                 (or 
-                    (inside ?beer_glass.n.01 sink.n.01_1) 
-                    (nextto ?beer_glass.n.01 sink.n.01_1)
+                    (inside ?beer_glass.n.01_x sink.n.01_1) 
+                    (nextto ?beer_glass.n.01_x sink.n.01_1)
                 )
             )
         )

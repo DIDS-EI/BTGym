@@ -24,8 +24,8 @@
     (:goal 
         (and 
             (forall 
-                (?walnut.n.01 - walnut.n.01) 
-                (inside ?walnut.n.01 mason_jar.n.01_1)
+                (?walnut.n.01_x - walnut.n.01) 
+                (inside ?walnut.n.01_x mason_jar.n.01_1)
             ) 
             (inside mason_jar.n.01_1 cabinet.n.01_1)
         )

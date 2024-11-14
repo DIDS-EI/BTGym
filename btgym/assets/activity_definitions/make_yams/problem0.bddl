@@ -27,8 +27,8 @@
     (:goal 
         (and 
             (forall 
-                (?yam.n.03 - yam.n.03) 
-                (cooked ?yam.n.03)
+                (?yam.n.03_x - yam.n.03) 
+                (cooked ?yam.n.03_x)
             )
         )
     )

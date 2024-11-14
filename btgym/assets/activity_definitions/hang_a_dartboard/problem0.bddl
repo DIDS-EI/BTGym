@@ -27,8 +27,8 @@
         (and 
             (attached dartboard.n.01_1 wall_nail.n.01_1) 
             (forall 
-                (?dart.n.01 - dart.n.01) 
-                (inside ?dart.n.01 packing_box.n.02_1)
+                (?dart.n.01_x - dart.n.01) 
+                (inside ?dart.n.01_x packing_box.n.02_1)
             )
         )
     )

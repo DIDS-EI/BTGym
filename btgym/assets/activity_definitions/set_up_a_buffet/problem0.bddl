@@ -66,98 +66,98 @@
             (real cooked__diced__broccoli.n.01_1) 
             (real cooked__quinoa.n.01_1) 
             (forall 
-                (?napkin.n.01 - napkin.n.01) 
+                (?napkin.n.01_x - napkin.n.01) 
                 (and 
-                    (folded ?napkin.n.01) 
-                    (ontop ?napkin.n.01 breakfast_table.n.01_1)
+                    (folded ?napkin.n.01_x) 
+                    (ontop ?napkin.n.01_x breakfast_table.n.01_1)
                 )
             ) 
             (forall 
-                (?water_glass.n.02 - water_glass.n.02) 
-                (ontop ?water_glass.n.02 breakfast_table.n.01_1)
+                (?water_glass.n.02_x - water_glass.n.02) 
+                (ontop ?water_glass.n.02_x breakfast_table.n.01_1)
             ) 
             (exists 
-                (?casserole.n.02 - casserole.n.02) 
+                (?casserole.n.02_x - casserole.n.02) 
                 (and 
                     (exists 
-                        (?ladle.n.01 - ladle.n.01) 
-                        (inside ?ladle.n.01 ?casserole.n.02)
+                        (?ladle.n.01_x - ladle.n.01) 
+                        (inside ?ladle.n.01_x ?casserole.n.02_x)
                     ) 
-                    (contains ?casserole.n.02 cooked__diced__broccoli.n.01_1) 
+                    (contains ?casserole.n.02_x cooked__diced__broccoli.n.01_1) 
                     (not 
-                        (inside chicken_leg.n.01_1 ?casserole.n.02)
-                    ) 
-                    (not 
-                        (contains ?casserole.n.02 cooked__quinoa.n.01_1)
+                        (inside chicken_leg.n.01_1 ?casserole.n.02_x)
                     ) 
                     (not 
-                        (inside chocolate_biscuit.n.01_1 ?casserole.n.02)
+                        (contains ?casserole.n.02_x cooked__quinoa.n.01_1)
+                    ) 
+                    (not 
+                        (inside chocolate_biscuit.n.01_1 ?casserole.n.02_x)
                     )
                 )
             ) 
             (exists 
-                (?casserole.n.02 - casserole.n.02) 
+                (?casserole.n.02_x - casserole.n.02) 
                 (and 
                     (exists 
-                        (?tongs.n.01 - tongs.n.01) 
-                        (inside ?tongs.n.01 ?casserole.n.02)
+                        (?tongs.n.01_x - tongs.n.01) 
+                        (inside ?tongs.n.01_x ?casserole.n.02_x)
                     ) 
                     (forall 
-                        (?chicken_leg.n.01 - chicken_leg.n.01) 
+                        (?chicken_leg.n.01_x - chicken_leg.n.01) 
                         (and 
-                            (hot ?chicken_leg.n.01) 
-                            (inside ?chicken_leg.n.01 ?casserole.n.02)
+                            (hot ?chicken_leg.n.01_x) 
+                            (inside ?chicken_leg.n.01_x ?casserole.n.02_x)
                         )
                     ) 
                     (not 
-                        (contains ?casserole.n.02 cooked__diced__broccoli.n.01_1)
+                        (contains ?casserole.n.02_x cooked__diced__broccoli.n.01_1)
                     ) 
                     (not 
-                        (contains ?casserole.n.02 cooked__quinoa.n.01_1)
+                        (contains ?casserole.n.02_x cooked__quinoa.n.01_1)
                     ) 
                     (not 
-                        (inside chocolate_biscuit.n.01_1 ?casserole.n.02)
+                        (inside chocolate_biscuit.n.01_1 ?casserole.n.02_x)
                     )
                 )
             ) 
             (exists 
-                (?casserole.n.02 - casserole.n.02) 
+                (?casserole.n.02_x - casserole.n.02) 
                 (and 
                     (exists 
-                        (?ladle.n.01 - ladle.n.01) 
-                        (inside ?ladle.n.01 ?casserole.n.02)
+                        (?ladle.n.01_x - ladle.n.01) 
+                        (inside ?ladle.n.01_x ?casserole.n.02_x)
                     ) 
-                    (contains ?casserole.n.02 cooked__quinoa.n.01_1) 
+                    (contains ?casserole.n.02_x cooked__quinoa.n.01_1) 
                     (not 
-                        (inside chicken_leg.n.01_1 ?casserole.n.02)
-                    ) 
-                    (not 
-                        (contains ?casserole.n.02 cooked__diced__broccoli.n.01_1)
+                        (inside chicken_leg.n.01_1 ?casserole.n.02_x)
                     ) 
                     (not 
-                        (inside chocolate_biscuit.n.01_1 ?casserole.n.02)
+                        (contains ?casserole.n.02_x cooked__diced__broccoli.n.01_1)
+                    ) 
+                    (not 
+                        (inside chocolate_biscuit.n.01_1 ?casserole.n.02_x)
                     )
                 )
             ) 
             (exists 
-                (?casserole.n.02 - casserole.n.02) 
+                (?casserole.n.02_x - casserole.n.02) 
                 (and 
                     (exists 
-                        (?tongs.n.01 - tongs.n.01) 
-                        (inside ?tongs.n.01 ?casserole.n.02)
+                        (?tongs.n.01_x - tongs.n.01) 
+                        (inside ?tongs.n.01_x ?casserole.n.02_x)
                     ) 
                     (forall 
-                        (?chocolate_biscuit.n.01 - chocolate_biscuit.n.01) 
-                        (inside ?chocolate_biscuit.n.01 ?casserole.n.02)
+                        (?chocolate_biscuit.n.01_x - chocolate_biscuit.n.01) 
+                        (inside ?chocolate_biscuit.n.01_x ?casserole.n.02_x)
                     ) 
                     (not 
-                        (contains ?casserole.n.02 cooked__diced__broccoli.n.01_1)
+                        (contains ?casserole.n.02_x cooked__diced__broccoli.n.01_1)
                     ) 
                     (not 
-                        (contains ?casserole.n.02 cooked__quinoa.n.01_1)
+                        (contains ?casserole.n.02_x cooked__quinoa.n.01_1)
                     ) 
                     (not 
-                        (inside chicken_leg.n.01_1 ?casserole.n.02)
+                        (inside chicken_leg.n.01_1 ?casserole.n.02_x)
                     )
                 )
             )

@@ -45,12 +45,12 @@
     (:goal 
         (and 
             (forall 
-                (?ham_hock.n.01 - ham_hock.n.01) 
+                (?ham_hock.n.01_x - ham_hock.n.01) 
                 (and 
-                    (inside ?ham_hock.n.01 stockpot.n.01_1) 
-                    (cooked ?ham_hock.n.01) 
-                    (covered ?ham_hock.n.01 black_pepper.n.02_1) 
-                    (covered ?ham_hock.n.01 salt.n.02_1)
+                    (inside ?ham_hock.n.01_x stockpot.n.01_1) 
+                    (cooked ?ham_hock.n.01_x) 
+                    (covered ?ham_hock.n.01_x black_pepper.n.02_1) 
+                    (covered ?ham_hock.n.01_x salt.n.02_1)
                 )
             ) 
             (contains stockpot.n.01_1 chicken_broth.n.01_1)

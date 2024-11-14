@@ -41,19 +41,19 @@
     (:goal 
         (and 
             (forall 
-                (?place_mat.n.01 - place_mat.n.01) 
+                (?place_mat.n.01_x - place_mat.n.01) 
                 (and 
                     (not 
-                        (covered ?place_mat.n.01 breadcrumb.n.01_1)
+                        (covered ?place_mat.n.01_x breadcrumb.n.01_1)
                     ) 
                     (not 
-                        (covered ?place_mat.n.01 water.n.06_1)
+                        (covered ?place_mat.n.01_x water.n.06_1)
                     ) 
                     (not 
-                        (saturated ?place_mat.n.01 water.n.06_1)
+                        (saturated ?place_mat.n.01_x water.n.06_1)
                     ) 
                     (not 
-                        (covered ?place_mat.n.01 adhesive_material.n.01_1)
+                        (covered ?place_mat.n.01_x adhesive_material.n.01_1)
                     )
                 )
             )

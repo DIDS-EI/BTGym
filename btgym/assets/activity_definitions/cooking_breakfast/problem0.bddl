@@ -42,18 +42,18 @@
         (and 
             (real melted__butter.n.01_1) 
             (forall 
-                (?raw_egg.n.01 - raw_egg.n.01) 
+                (?raw_egg.n.01_x - raw_egg.n.01) 
                 (and 
-                    (cooked ?raw_egg.n.01) 
-                    (ontop ?raw_egg.n.01 plate.n.04_1)
+                    (cooked ?raw_egg.n.01_x) 
+                    (ontop ?raw_egg.n.01_x plate.n.04_1)
                 )
             ) 
             (forall 
-                (?bratwurst.n.01 - bratwurst.n.01) 
+                (?bratwurst.n.01_x - bratwurst.n.01) 
                 (and 
-                    (cooked ?bratwurst.n.01) 
-                    (ontop ?bratwurst.n.01 plate.n.04_1) 
-                    (covered ?bratwurst.n.01 melted__butter.n.01_1)
+                    (cooked ?bratwurst.n.01_x) 
+                    (ontop ?bratwurst.n.01_x plate.n.04_1) 
+                    (covered ?bratwurst.n.01_x melted__butter.n.01_1)
                 )
             )
         )

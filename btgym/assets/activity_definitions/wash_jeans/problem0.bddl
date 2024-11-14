@@ -29,9 +29,9 @@
     (:goal 
         (and 
             (forall 
-                (?long_trousers.n.01 - long_trousers.n.01) 
+                (?long_trousers.n.01_x - long_trousers.n.01) 
                 (not 
-                    (covered ?long_trousers.n.01 stain.n.01_1)
+                    (covered ?long_trousers.n.01_x stain.n.01_1)
                 )
             )
         )

@@ -28,8 +28,8 @@
     (:goal 
         (and 
             (forall 
-                (?brownie.n.03 - brownie.n.03) 
-                (inside ?brownie.n.03 tupperware.n.01_1)
+                (?brownie.n.03_x - brownie.n.03) 
+                (inside ?brownie.n.03_x tupperware.n.01_1)
             ) 
             (inside tupperware.n.01_1 electric_refrigerator.n.01_1)
         )

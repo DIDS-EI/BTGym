@@ -47,12 +47,12 @@
             (inside chicken.n.01_1 tupperware.n.01_1) 
             (inside tupperware.n.01_1 electric_refrigerator.n.01_1) 
             (forall 
-                (?beefsteak_tomato.n.01 - beefsteak_tomato.n.01) 
-                (inside ?beefsteak_tomato.n.01 electric_refrigerator.n.01_1)
+                (?beefsteak_tomato.n.01_x - beefsteak_tomato.n.01) 
+                (inside ?beefsteak_tomato.n.01_x electric_refrigerator.n.01_1)
             ) 
             (forall 
-                (?egg.n.02 - egg.n.02) 
-                (inside ?egg.n.02 electric_refrigerator.n.01_1)
+                (?egg.n.02_x - egg.n.02) 
+                (inside ?egg.n.02_x electric_refrigerator.n.01_1)
             ) 
             (not 
                 (open electric_refrigerator.n.01_1)

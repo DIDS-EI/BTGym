@@ -30,9 +30,9 @@
     (:goal 
         (and 
             (forall 
-                (?broom.n.01 - broom.n.01) 
+                (?broom.n.01_x - broom.n.01) 
                 (not 
-                    (covered ?broom.n.01 stain.n.01_1)
+                    (covered ?broom.n.01_x stain.n.01_1)
                 )
             )
         )

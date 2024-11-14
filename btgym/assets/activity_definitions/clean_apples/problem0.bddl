@@ -32,9 +32,9 @@
     (:goal 
         (and 
             (forall 
-                (?apple.n.01 - apple.n.01) 
+                (?apple.n.01_x - apple.n.01) 
                 (not 
-                    (covered ?apple.n.01 dirt.n.02_1)
+                    (covered ?apple.n.01_x dirt.n.02_1)
                 )
             )
         )

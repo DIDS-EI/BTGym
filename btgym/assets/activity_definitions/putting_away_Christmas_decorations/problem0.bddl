@@ -27,16 +27,16 @@
     (:goal 
         (and 
             (forall 
-                (?wreath.n.01 - wreath.n.01) 
-                (nextto ?wreath.n.01 cabinet.n.01_1)
+                (?wreath.n.01_x - wreath.n.01) 
+                (nextto ?wreath.n.01_x cabinet.n.01_1)
             ) 
             (forall 
-                (?bow.n.08 - bow.n.08) 
-                (nextto ?bow.n.08 cabinet.n.01_1)
+                (?bow.n.08_x - bow.n.08) 
+                (nextto ?bow.n.08_x cabinet.n.01_1)
             ) 
             (forall 
-                (?ribbon.n.01 - ribbon.n.01) 
-                (inside ?ribbon.n.01 cabinet.n.01_1)
+                (?ribbon.n.01_x - ribbon.n.01) 
+                (inside ?ribbon.n.01_x cabinet.n.01_1)
             )
         )
     )

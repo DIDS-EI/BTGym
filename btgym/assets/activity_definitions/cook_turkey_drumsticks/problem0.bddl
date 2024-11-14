@@ -45,12 +45,12 @@
     (:goal 
         (and 
             (forall 
-                (?turkey_leg.n.01 - turkey_leg.n.01) 
+                (?turkey_leg.n.01_x - turkey_leg.n.01) 
                 (and 
-                    (cooked ?turkey_leg.n.01) 
-                    (covered ?turkey_leg.n.01 salt.n.02_1) 
-                    (covered ?turkey_leg.n.01 thyme.n.02_1) 
-                    (covered ?turkey_leg.n.01 black_pepper.n.02_1)
+                    (cooked ?turkey_leg.n.01_x) 
+                    (covered ?turkey_leg.n.01_x salt.n.02_1) 
+                    (covered ?turkey_leg.n.01_x thyme.n.02_1) 
+                    (covered ?turkey_leg.n.01_x black_pepper.n.02_1)
                 )
             )
         )

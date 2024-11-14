@@ -38,9 +38,9 @@
     (:goal 
         (and 
             (forall 
-                (?wineglass.n.01 - wineglass.n.01) 
+                (?wineglass.n.01_x - wineglass.n.01) 
                 (not 
-                    (covered ?wineglass.n.01 stain.n.01_1)
+                    (covered ?wineglass.n.01_x stain.n.01_1)
                 )
             )
         )

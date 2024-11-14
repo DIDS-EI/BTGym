@@ -21,8 +21,8 @@
     (:goal 
         (and 
             (forall 
-                (?sheet.n.03 - sheet.n.03) 
-                (folded ?sheet.n.03)
+                (?sheet.n.03_x - sheet.n.03) 
+                (folded ?sheet.n.03_x)
             )
         )
     )

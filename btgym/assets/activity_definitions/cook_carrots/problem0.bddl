@@ -51,8 +51,8 @@
     (:goal 
         (and 
             (forall 
-                (?carrot.n.03 - carrot.n.03) 
-                (cooked ?carrot.n.03)
+                (?carrot.n.03_x - carrot.n.03) 
+                (cooked ?carrot.n.03_x)
             )
         )
     )

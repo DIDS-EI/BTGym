@@ -33,9 +33,9 @@
     (:goal 
         (and 
             (forall 
-                (?lobster.n.01 - lobster.n.01) 
+                (?lobster.n.01_x - lobster.n.01) 
                 (not 
-                    (frozen ?lobster.n.01)
+                    (frozen ?lobster.n.01_x)
                 )
             ) 
             (not 

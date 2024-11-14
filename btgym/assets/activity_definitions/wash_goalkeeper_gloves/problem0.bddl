@@ -32,9 +32,9 @@
     (:goal 
         (and 
             (forall 
-                (?goalkeeper_gloves.n.01 - goalkeeper_gloves.n.01) 
+                (?goalkeeper_gloves.n.01_x - goalkeeper_gloves.n.01) 
                 (not 
-                    (covered ?goalkeeper_gloves.n.01 mud.n.03_1)
+                    (covered ?goalkeeper_gloves.n.01_x mud.n.03_1)
                 )
             )
         )

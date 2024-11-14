@@ -39,8 +39,8 @@
     (:goal 
         (and 
             (forall 
-                (?strawberry.n.01 - strawberry.n.01) 
-                (inside ?strawberry.n.01 bowl.n.01_1)
+                (?strawberry.n.01_x - strawberry.n.01) 
+                (inside ?strawberry.n.01_x bowl.n.01_1)
             ) 
             (contains bowl.n.01_1 granulated_sugar.n.01_1) 
             (contains bowl.n.01_1 whipped_cream.n.01_1)

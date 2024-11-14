@@ -30,9 +30,9 @@
     (:goal 
         (and 
             (forall 
-                (?pillow.n.01 - pillow.n.01) 
+                (?pillow.n.01_x - pillow.n.01) 
                 (not 
-                    (covered ?pillow.n.01 stain.n.01_1)
+                    (covered ?pillow.n.01_x stain.n.01_1)
                 )
             )
         )

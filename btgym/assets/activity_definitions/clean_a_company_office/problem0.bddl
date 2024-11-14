@@ -51,27 +51,27 @@
     (:goal 
         (and 
             (forall 
-                (?computer.n.01 - computer.n.01) 
+                (?computer.n.01_x - computer.n.01) 
                 (not 
-                    (covered ?computer.n.01 dust.n.01_1)
+                    (covered ?computer.n.01_x dust.n.01_1)
                 )
             ) 
             (forall 
-                (?desk.n.01 - desk.n.01) 
+                (?desk.n.01_x - desk.n.01) 
                 (not 
-                    (covered ?desk.n.01 dust.n.01_1)
+                    (covered ?desk.n.01_x dust.n.01_1)
                 )
             ) 
             (forall 
-                (?mouse.n.04 - mouse.n.04) 
+                (?mouse.n.04_x - mouse.n.04) 
                 (not 
-                    (covered ?mouse.n.04 dust.n.01_1)
+                    (covered ?mouse.n.04_x dust.n.01_1)
                 )
             ) 
             (forall 
-                (?keyboard.n.01 - keyboard.n.01) 
+                (?keyboard.n.01_x - keyboard.n.01) 
                 (not 
-                    (covered ?keyboard.n.01 dust.n.01_1)
+                    (covered ?keyboard.n.01_x dust.n.01_1)
                 )
             ) 
             (inside sheet.n.02_1 carton.n.02_1) 

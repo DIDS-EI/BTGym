@@ -94,19 +94,19 @@
     (:goal 
         (and 
             (forall 
-                (?prawn.n.01 - prawn.n.01) 
+                (?prawn.n.01_x - prawn.n.01) 
                 (and 
-                    (cooked ?prawn.n.01) 
-                    (covered ?prawn.n.01 paprika.n.02_1) 
-                    (covered ?prawn.n.01 salt.n.02_1) 
-                    (inside ?prawn.n.01 frying_pan.n.01_1)
+                    (cooked ?prawn.n.01_x) 
+                    (covered ?prawn.n.01_x paprika.n.02_1) 
+                    (covered ?prawn.n.01_x salt.n.02_1) 
+                    (inside ?prawn.n.01_x frying_pan.n.01_1)
                 )
             ) 
             (forall 
-                (?clove.n.03 - clove.n.03) 
+                (?clove.n.03_x - clove.n.03) 
                 (and 
-                    (cooked ?clove.n.03) 
-                    (inside ?clove.n.03 frying_pan.n.01_1)
+                    (cooked ?clove.n.03_x) 
+                    (inside ?clove.n.03_x frying_pan.n.01_1)
                 )
             ) 
             (contains frying_pan.n.01_1 melted__butter.n.01_1) 

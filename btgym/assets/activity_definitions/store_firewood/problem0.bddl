@@ -20,8 +20,8 @@
     (:goal 
         (and 
             (forall 
-                (?firewood.n.01 - firewood.n.01) 
-                (ontop ?firewood.n.01 table.n.02_1)
+                (?firewood.n.01_x - firewood.n.01) 
+                (ontop ?firewood.n.01_x table.n.02_1)
             )
         )
     )

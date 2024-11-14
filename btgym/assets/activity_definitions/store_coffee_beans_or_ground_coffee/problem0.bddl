@@ -25,10 +25,10 @@
     (:goal 
         (and 
             (forall 
-                (?mason_jar.n.01 - mason_jar.n.01) 
+                (?mason_jar.n.01_x - mason_jar.n.01) 
                 (and 
-                    (filled ?mason_jar.n.01 coffee_bean.n.01_1) 
-                    (inside ?mason_jar.n.01 cabinet.n.01_1)
+                    (filled ?mason_jar.n.01_x coffee_bean.n.01_1) 
+                    (inside ?mason_jar.n.01_x cabinet.n.01_1)
                 )
             )
         )

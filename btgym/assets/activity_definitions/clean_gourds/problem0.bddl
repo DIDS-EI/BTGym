@@ -26,9 +26,9 @@
     (:goal 
         (and 
             (forall 
-                (?gourd.n.02 - gourd.n.02) 
+                (?gourd.n.02_x - gourd.n.02) 
                 (not 
-                    (covered ?gourd.n.02 dust.n.01_1)
+                    (covered ?gourd.n.02_x dust.n.01_1)
                 )
             )
         )

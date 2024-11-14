@@ -49,29 +49,29 @@
     (:goal 
         (and 
             (forall 
-                (?mail.n.04 - mail.n.04) 
+                (?mail.n.04_x - mail.n.04) 
                 (or 
-                    (ontop ?mail.n.04 tray.n.01_1) 
-                    (ontop ?mail.n.04 mail.n.04_1) 
-                    (ontop ?mail.n.04 mail.n.04_2)
+                    (ontop ?mail.n.04_x tray.n.01_1) 
+                    (ontop ?mail.n.04_x mail.n.04_1) 
+                    (ontop ?mail.n.04_x mail.n.04_2)
                 )
             ) 
             (forall 
-                (?folder.n.02 - folder.n.02) 
+                (?folder.n.02_x - folder.n.02) 
                 (or 
-                    (inside ?folder.n.02 shelf.n.01_1) 
-                    (ontop ?folder.n.02 desk.n.01_1) 
-                    (ontop ?folder.n.02 folder.n.02_1) 
-                    (ontop ?folder.n.02 folder.n.02_2)
+                    (inside ?folder.n.02_x shelf.n.01_1) 
+                    (ontop ?folder.n.02_x desk.n.01_1) 
+                    (ontop ?folder.n.02_x folder.n.02_1) 
+                    (ontop ?folder.n.02_x folder.n.02_2)
                 )
             ) 
             (forall 
-                (?pen.n.01 - pen.n.01) 
-                (inside ?pen.n.01 pencil_box.n.01_1)
+                (?pen.n.01_x - pen.n.01) 
+                (inside ?pen.n.01_x pencil_box.n.01_1)
             ) 
             (forall 
-                (?paperback_book.n.01 - paperback_book.n.01) 
-                (inside ?paperback_book.n.01 shelf.n.01_1)
+                (?paperback_book.n.01_x - paperback_book.n.01) 
+                (inside ?paperback_book.n.01_x shelf.n.01_1)
             ) 
             (inside pencil.n.01_1 pencil_box.n.01_1) 
             (inside shears.n.01_1 pencil_box.n.01_1) 

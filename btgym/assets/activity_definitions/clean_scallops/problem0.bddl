@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?scallop.n.02 - scallop.n.02) 
+                (?scallop.n.02_x - scallop.n.02) 
                 (not 
-                    (covered ?scallop.n.02 sand.n.04_1)
+                    (covered ?scallop.n.02_x sand.n.04_1)
                 )
             )
         )

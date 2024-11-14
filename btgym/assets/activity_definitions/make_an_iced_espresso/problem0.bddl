@@ -40,8 +40,8 @@
             (real cafe_au_lait.n.01_1) 
             (contains mug.n.04_1 cafe_au_lait.n.01_1) 
             (forall 
-                (?ice_cube.n.01 - ice_cube.n.01) 
-                (inside ?ice_cube.n.01 mug.n.04_1)
+                (?ice_cube.n.01_x - ice_cube.n.01) 
+                (inside ?ice_cube.n.01_x mug.n.04_1)
             )
         )
     )

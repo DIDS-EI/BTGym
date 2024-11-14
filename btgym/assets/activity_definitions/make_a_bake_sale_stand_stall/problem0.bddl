@@ -48,68 +48,68 @@
     (:goal 
         (and 
             (forall 
-                (?plate.n.04 - plate.n.04) 
-                (ontop ?plate.n.04 booth.n.01_1)
+                (?plate.n.04_x - plate.n.04) 
+                (ontop ?plate.n.04_x booth.n.01_1)
             ) 
             (exists 
-                (?plate.n.04 - plate.n.04) 
+                (?plate.n.04_x - plate.n.04) 
                 (and 
                     (forall 
-                        (?brownie.n.03 - brownie.n.03) 
-                        (ontop ?brownie.n.03 ?plate.n.04)
+                        (?brownie.n.03_x - brownie.n.03) 
+                        (ontop ?brownie.n.03_x ?plate.n.04_x)
                     ) 
                     (exists 
-                        (?cupcake.n.01 - cupcake.n.01) 
+                        (?cupcake.n.01_x - cupcake.n.01) 
                         (not 
-                            (ontop ?cupcake.n.01 ?plate.n.04)
+                            (ontop ?cupcake.n.01_x ?plate.n.04_x)
                         )
                     ) 
                     (exists 
-                        (?muffin.n.01 - muffin.n.01) 
+                        (?muffin.n.01_x - muffin.n.01) 
                         (not 
-                            (ontop ?muffin.n.01 ?plate.n.04)
+                            (ontop ?muffin.n.01_x ?plate.n.04_x)
                         )
                     )
                 )
             ) 
             (exists 
-                (?plate.n.04 - plate.n.04) 
+                (?plate.n.04_x - plate.n.04) 
                 (and 
                     (forall 
-                        (?cupcake.n.01 - cupcake.n.01) 
-                        (ontop ?cupcake.n.01 ?plate.n.04)
+                        (?cupcake.n.01_x - cupcake.n.01) 
+                        (ontop ?cupcake.n.01_x ?plate.n.04_x)
                     ) 
                     (exists 
-                        (?brownie.n.03 - brownie.n.03) 
+                        (?brownie.n.03_x - brownie.n.03) 
                         (not 
-                            (ontop ?brownie.n.03 ?plate.n.04)
+                            (ontop ?brownie.n.03_x ?plate.n.04_x)
                         )
                     ) 
                     (exists 
-                        (?muffin.n.01 - muffin.n.01) 
+                        (?muffin.n.01_x - muffin.n.01) 
                         (not 
-                            (ontop ?muffin.n.01 ?plate.n.04)
+                            (ontop ?muffin.n.01_x ?plate.n.04_x)
                         )
                     )
                 )
             ) 
             (exists 
-                (?plate.n.04 - plate.n.04) 
+                (?plate.n.04_x - plate.n.04) 
                 (and 
                     (forall 
-                        (?muffin.n.01 - muffin.n.01) 
-                        (ontop ?muffin.n.01 ?plate.n.04)
+                        (?muffin.n.01_x - muffin.n.01) 
+                        (ontop ?muffin.n.01_x ?plate.n.04_x)
                     ) 
                     (exists 
-                        (?brownie.n.03 - brownie.n.03) 
+                        (?brownie.n.03_x - brownie.n.03) 
                         (not 
-                            (ontop ?brownie.n.03 ?plate.n.04)
+                            (ontop ?brownie.n.03_x ?plate.n.04_x)
                         )
                     ) 
                     (exists 
-                        (?cupcake.n.01 - cupcake.n.01) 
+                        (?cupcake.n.01_x - cupcake.n.01) 
                         (not 
-                            (ontop ?cupcake.n.01 ?plate.n.04)
+                            (ontop ?cupcake.n.01_x ?plate.n.04_x)
                         )
                     )
                 )

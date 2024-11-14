@@ -34,11 +34,11 @@
     (:goal 
         (and 
             (forall 
-                (?green_bean.n.01 - green_bean.n.01) 
+                (?green_bean.n.01_x - green_bean.n.01) 
                 (and 
-                    (inside ?green_bean.n.01 bowl.n.01_1) 
+                    (inside ?green_bean.n.01_x bowl.n.01_1) 
                     (not 
-                        (covered ?green_bean.n.01 dirt.n.02_1)
+                        (covered ?green_bean.n.01_x dirt.n.02_1)
                     )
                 )
             )

@@ -31,16 +31,16 @@
     (:goal 
         (and 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside half__apple_pie.n.01_1 ?tupperware.n.01)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside half__apple_pie.n.01_1 ?tupperware.n.01_x)
             ) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside chicken_wing.n.01_1 ?tupperware.n.01)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside chicken_wing.n.01_1 ?tupperware.n.01_x)
             ) 
             (forall 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside ?tupperware.n.01 electric_refrigerator.n.01_1)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside ?tupperware.n.01_x electric_refrigerator.n.01_1)
             )
         )
     )

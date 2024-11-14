@@ -21,8 +21,8 @@
     (:goal 
         (and 
             (forall 
-                (?trampoline_leg.n.01 - trampoline_leg.n.01) 
-                (attached ?trampoline_leg.n.01 trampoline_top.n.01_1)
+                (?trampoline_leg.n.01_x - trampoline_leg.n.01) 
+                (attached ?trampoline_leg.n.01_x trampoline_top.n.01_1)
             )
         )
     )

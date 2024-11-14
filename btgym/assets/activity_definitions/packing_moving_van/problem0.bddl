@@ -29,17 +29,17 @@
             (ontop mattress.n.01_1 pickup.n.01_1) 
             (ontop blanket.n.01_1 pickup.n.01_1) 
             (forall 
-                (?carton.n.02 - carton.n.02) 
+                (?carton.n.02_x - carton.n.02) 
                 (and 
-                    (ontop ?carton.n.02 pickup.n.01_1) 
+                    (ontop ?carton.n.02_x pickup.n.01_1) 
                     (not 
-                        (open ?carton.n.02)
+                        (open ?carton.n.02_x)
                     )
                 )
             ) 
             (forall 
-                (?chair.n.01 - chair.n.01) 
-                (ontop ?chair.n.01 pickup.n.01_1)
+                (?chair.n.01_x - chair.n.01) 
+                (ontop ?chair.n.01_x pickup.n.01_1)
             )
         )
     )

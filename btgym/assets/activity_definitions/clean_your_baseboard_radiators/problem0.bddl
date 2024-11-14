@@ -26,9 +26,9 @@
     (:goal 
         (and 
             (forall 
-                (?radiator.n.02 - radiator.n.02) 
+                (?radiator.n.02_x - radiator.n.02) 
                 (not 
-                    (covered ?radiator.n.02 dust.n.01_1)
+                    (covered ?radiator.n.02_x dust.n.01_1)
                 )
             )
         )

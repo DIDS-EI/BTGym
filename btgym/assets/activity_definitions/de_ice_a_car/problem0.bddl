@@ -31,9 +31,9 @@
     (:goal 
         (and 
             (forall 
-                (?ice.n.01 - ice.n.01) 
+                (?ice.n.01_x - ice.n.01) 
                 (not 
-                    (ontop ?ice.n.01 car.n.01_1)
+                    (ontop ?ice.n.01_x car.n.01_1)
                 )
             )
         )

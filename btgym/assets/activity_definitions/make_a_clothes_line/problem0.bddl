@@ -19,7 +19,7 @@
     (:goal 
         (and 
             (exists 
-                (?pole.n.01 - pole.n.01) 
+                (?pole.n.01_x - pole.n.01) 
                 (attached clothesline_rope.n.01_1 pole.n.01_1)
             )
         )

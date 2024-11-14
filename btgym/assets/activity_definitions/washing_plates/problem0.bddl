@@ -39,13 +39,13 @@
     (:goal 
         (and 
             (forall 
-                (?plate.n.04 - plate.n.04) 
+                (?plate.n.04_x - plate.n.04) 
                 (and 
                     (not 
-                        (covered ?plate.n.04 pesto.n.01_1)
+                        (covered ?plate.n.04_x pesto.n.01_1)
                     ) 
                     (not 
-                        (covered ?plate.n.04 breadcrumb.n.01_1)
+                        (covered ?plate.n.04_x breadcrumb.n.01_1)
                     )
                 )
             )

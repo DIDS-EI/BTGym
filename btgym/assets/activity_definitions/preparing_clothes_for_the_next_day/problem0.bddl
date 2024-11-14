@@ -32,8 +32,8 @@
             (ontop coat.n.01_1 bed.n.01_1) 
             (ontop trouser.n.01_1 bed.n.01_1) 
             (forall 
-                (?boot.n.01 - boot.n.01) 
-                (ontop ?boot.n.01 floor.n.01_2)
+                (?boot.n.01_x - boot.n.01) 
+                (ontop ?boot.n.01_x floor.n.01_2)
             ) 
             (ontop wallet.n.01_1 bed.n.01_1)
         )

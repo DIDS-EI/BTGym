@@ -35,15 +35,15 @@
     (:goal 
         (and 
             (forall 
-                (?gym_shoe.n.01 - gym_shoe.n.01) 
+                (?gym_shoe.n.01_x - gym_shoe.n.01) 
                 (not 
-                    (covered ?gym_shoe.n.01 stain.n.01_1)
+                    (covered ?gym_shoe.n.01_x stain.n.01_1)
                 )
             ) 
             (forall 
-                (?gym_shoe.n.01 - gym_shoe.n.01) 
+                (?gym_shoe.n.01_x - gym_shoe.n.01) 
                 (not 
-                    (covered ?gym_shoe.n.01 dust.n.01_1)
+                    (covered ?gym_shoe.n.01_x dust.n.01_1)
                 )
             ) 
             (ontop towel.n.01_1 floor.n.01_1)

@@ -37,29 +37,29 @@
             (real diced__steak.n.01_1) 
             (real diced__pineapple.n.01_1) 
             (exists 
-                (?mason_jar.n.01 - mason_jar.n.01) 
+                (?mason_jar.n.01_x - mason_jar.n.01) 
                 (and 
-                    (filled ?mason_jar.n.01 diced__steak.n.01_1) 
+                    (filled ?mason_jar.n.01_x diced__steak.n.01_1) 
                     (not 
-                        (contains ?mason_jar.n.01 diced__pineapple.n.01_1)
+                        (contains ?mason_jar.n.01_x diced__pineapple.n.01_1)
                     )
                 )
             ) 
             (exists 
-                (?mason_jar.n.01 - mason_jar.n.01) 
+                (?mason_jar.n.01_x - mason_jar.n.01) 
                 (and 
-                    (filled ?mason_jar.n.01 diced__pineapple.n.01_1) 
+                    (filled ?mason_jar.n.01_x diced__pineapple.n.01_1) 
                     (not 
-                        (contains ?mason_jar.n.01 diced__steak.n.01_1)
+                        (contains ?mason_jar.n.01_x diced__steak.n.01_1)
                     )
                 )
             ) 
             (forall 
-                (?mason_jar.n.01 - mason_jar.n.01) 
+                (?mason_jar.n.01_x - mason_jar.n.01) 
                 (and 
-                    (inside ?mason_jar.n.01 cabinet.n.01_1) 
+                    (inside ?mason_jar.n.01_x cabinet.n.01_1) 
                     (not 
-                        (open ?mason_jar.n.01)
+                        (open ?mason_jar.n.01_x)
                     )
                 )
             )

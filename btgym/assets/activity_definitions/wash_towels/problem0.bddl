@@ -28,9 +28,9 @@
     (:goal 
         (and 
             (forall 
-                (?bath_towel.n.01 - bath_towel.n.01) 
+                (?bath_towel.n.01_x - bath_towel.n.01) 
                 (not 
-                    (covered ?bath_towel.n.01 dirt.n.02_1)
+                    (covered ?bath_towel.n.01_x dirt.n.02_1)
                 )
             )
         )

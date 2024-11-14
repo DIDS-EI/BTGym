@@ -38,42 +38,42 @@
     (:goal 
         (and 
             (forall 
-                (?sack.n.01 - sack.n.01) 
-                (inside ?sack.n.01 car.n.01_1)
+                (?sack.n.01_x - sack.n.01) 
+                (inside ?sack.n.01_x car.n.01_1)
             ) 
             (forall 
-                (?bap.n.01 - bap.n.01) 
+                (?bap.n.01_x - bap.n.01) 
                 (exists 
-                    (?sack.n.01 - sack.n.01) 
-                    (inside ?bap.n.01 ?sack.n.01)
+                    (?sack.n.01_x - sack.n.01) 
+                    (inside ?bap.n.01_x ?sack.n.01_x)
                 )
             ) 
             (forall 
-                (?bottle__of__shampoo.n.01 - bottle__of__shampoo.n.01) 
+                (?bottle__of__shampoo.n.01_x - bottle__of__shampoo.n.01) 
                 (exists 
-                    (?sack.n.01 - sack.n.01) 
-                    (inside ?bottle__of__shampoo.n.01 ?sack.n.01)
+                    (?sack.n.01_x - sack.n.01) 
+                    (inside ?bottle__of__shampoo.n.01_x ?sack.n.01_x)
                 )
             ) 
             (forall 
-                (?bottle__of__cold_cream.n.01 - bottle__of__cold_cream.n.01) 
+                (?bottle__of__cold_cream.n.01_x - bottle__of__cold_cream.n.01) 
                 (exists 
-                    (?sack.n.01 - sack.n.01) 
-                    (inside ?bottle__of__cold_cream.n.01 ?sack.n.01)
+                    (?sack.n.01_x - sack.n.01) 
+                    (inside ?bottle__of__cold_cream.n.01_x ?sack.n.01_x)
                 )
             ) 
             (forall 
-                (?toilet_tissue.n.01 - toilet_tissue.n.01) 
+                (?toilet_tissue.n.01_x - toilet_tissue.n.01) 
                 (exists 
-                    (?sack.n.01 - sack.n.01) 
-                    (inside ?toilet_tissue.n.01 ?sack.n.01)
+                    (?sack.n.01_x - sack.n.01) 
+                    (inside ?toilet_tissue.n.01_x ?sack.n.01_x)
                 )
             ) 
             (forall 
-                (?salt__shaker.n.01 - salt__shaker.n.01) 
+                (?salt__shaker.n.01_x - salt__shaker.n.01) 
                 (exists 
-                    (?sack.n.01 - sack.n.01) 
-                    (inside ?salt__shaker.n.01 ?sack.n.01)
+                    (?sack.n.01_x - sack.n.01) 
+                    (inside ?salt__shaker.n.01_x ?sack.n.01_x)
                 )
             )
         )

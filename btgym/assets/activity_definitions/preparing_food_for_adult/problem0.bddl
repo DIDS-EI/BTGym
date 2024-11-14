@@ -54,10 +54,10 @@
             (real cooked__diced__potato.n.01_1) 
             (cooked steak.n.01_1) 
             (forall 
-                (?raw_egg.n.01 - raw_egg.n.01) 
+                (?raw_egg.n.01_x - raw_egg.n.01) 
                 (and 
-                    (cooked ?raw_egg.n.01) 
-                    (ontop ?raw_egg.n.01 plate.n.04_1)
+                    (cooked ?raw_egg.n.01_x) 
+                    (ontop ?raw_egg.n.01_x plate.n.04_1)
                 )
             ) 
             (ontop steak.n.01_1 plate.n.04_1) 

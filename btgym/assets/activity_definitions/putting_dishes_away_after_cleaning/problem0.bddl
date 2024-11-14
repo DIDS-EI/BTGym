@@ -28,10 +28,10 @@
     (:goal 
         (and 
             (exists 
-                (?cabinet.n.01 - cabinet.n.01) 
+                (?cabinet.n.01_x - cabinet.n.01) 
                 (forall 
-                    (?plate.n.04 - plate.n.04) 
-                    (inside ?plate.n.04 cabinet.n.01_1)
+                    (?plate.n.04_x - plate.n.04) 
+                    (inside ?plate.n.04_x cabinet.n.01_1)
                 )
             )
         )

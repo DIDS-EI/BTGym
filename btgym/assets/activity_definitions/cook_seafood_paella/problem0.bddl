@@ -169,17 +169,17 @@
                 (contains frying_pan.n.01_1 salt.n.02_1)
             ) 
             (forall 
-                (?prawn.n.01 - prawn.n.01) 
+                (?prawn.n.01_x - prawn.n.01) 
                 (and 
-                    (cooked ?prawn.n.01) 
-                    (inside ?prawn.n.01 frying_pan.n.01_1)
+                    (cooked ?prawn.n.01_x) 
+                    (inside ?prawn.n.01_x frying_pan.n.01_1)
                 )
             ) 
             (forall 
-                (?clam.n.03 - clam.n.03) 
+                (?clam.n.03_x - clam.n.03) 
                 (and 
-                    (cooked ?clam.n.03) 
-                    (inside ?clam.n.03 frying_pan.n.01_1)
+                    (cooked ?clam.n.03_x) 
+                    (inside ?clam.n.03_x frying_pan.n.01_1)
                 )
             ) 
             (contains frying_pan.n.01_1 cooked__diced__chorizo.n.01_1) 
@@ -193,10 +193,10 @@
                 (contains frying_pan.n.01_1 white_wine.n.01_1)
             ) 
             (forall 
-                (?clove.n.03 - clove.n.03) 
+                (?clove.n.03_x - clove.n.03) 
                 (and 
-                    (cooked ?clove.n.03) 
-                    (inside ?clove.n.03 frying_pan.n.01_1)
+                    (cooked ?clove.n.03_x) 
+                    (inside ?clove.n.03_x frying_pan.n.01_1)
                 )
             )
         )

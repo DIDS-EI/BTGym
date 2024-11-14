@@ -34,14 +34,14 @@
         (and 
             (ontop laptop.n.01_1 shelf.n.01_1) 
             (exists 
-                (?videodisk.n.01 - videodisk.n.01) 
-                (ontop ?videodisk.n.01 shelf.n.01_1)
+                (?videodisk.n.01_x - videodisk.n.01) 
+                (ontop ?videodisk.n.01_x shelf.n.01_1)
             ) 
             (exists 
-                (?videodisk.n.01 - videodisk.n.01) 
+                (?videodisk.n.01_x - videodisk.n.01) 
                 (or 
-                    (ontop ?videodisk.n.01 videodisk.n.01_1) 
-                    (ontop ?videodisk.n.01 videodisk.n.01_2)
+                    (ontop ?videodisk.n.01_x videodisk.n.01_1) 
+                    (ontop ?videodisk.n.01_x videodisk.n.01_2)
                 )
             ) 
             (ontop battery.n.02_1 shelf.n.01_1) 

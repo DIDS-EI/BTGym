@@ -49,8 +49,8 @@
             (contains goblet.n.01_1 rum.n.01_1) 
             (contains goblet.n.01_1 granulated_sugar.n.01_1) 
             (forall 
-                (?half__lime.n.01 - half__lime.n.01) 
-                (inside ?half__lime.n.01 goblet.n.01_1)
+                (?half__lime.n.01_x - half__lime.n.01) 
+                (inside ?half__lime.n.01_x goblet.n.01_1)
             ) 
             (inside mint.n.04_1 goblet.n.01_1)
         )

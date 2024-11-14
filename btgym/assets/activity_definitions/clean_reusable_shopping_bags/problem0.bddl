@@ -30,9 +30,9 @@
     (:goal 
         (and 
             (forall 
-                (?sack.n.01 - sack.n.01) 
+                (?sack.n.01_x - sack.n.01) 
                 (not 
-                    (covered ?sack.n.01 stain.n.01_1)
+                    (covered ?sack.n.01_x stain.n.01_1)
                 )
             )
         )

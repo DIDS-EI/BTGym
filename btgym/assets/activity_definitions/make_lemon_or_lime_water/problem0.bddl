@@ -38,8 +38,8 @@
         (and 
             (filled water_glass.n.02_1 water.n.06_1) 
             (forall 
-                (?ice_cube.n.01 - ice_cube.n.01) 
-                (inside ?ice_cube.n.01 water_glass.n.02_1)
+                (?ice_cube.n.01_x - ice_cube.n.01) 
+                (inside ?ice_cube.n.01_x water_glass.n.02_1)
             )
         )
     )

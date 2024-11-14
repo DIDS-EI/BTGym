@@ -42,8 +42,8 @@
     (:goal 
         (and 
             (forall 
-                (?entire_leaf.n.01 - entire_leaf.n.01) 
-                (inside ?entire_leaf.n.01 ashcan.n.01_1)
+                (?entire_leaf.n.01_x - entire_leaf.n.01) 
+                (inside ?entire_leaf.n.01_x ashcan.n.01_1)
             ) 
             (covered board.n.02_1 bleaching_agent.n.01_1) 
             (not 

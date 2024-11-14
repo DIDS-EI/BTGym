@@ -45,10 +45,10 @@
     (:goal 
         (and 
             (forall 
-                (?pea_pod.n.01 - pea_pod.n.01) 
+                (?pea_pod.n.01_x - pea_pod.n.01) 
                 (and 
-                    (cooked ?pea_pod.n.01) 
-                    (covered ?pea_pod.n.01 cheese_sauce.n.01_1)
+                    (cooked ?pea_pod.n.01_x) 
+                    (covered ?pea_pod.n.01_x cheese_sauce.n.01_1)
                 )
             )
         )

@@ -55,10 +55,10 @@
     (:goal 
         (and 
             (forall 
-                (?dumpling.n.01 - dumpling.n.01) 
+                (?dumpling.n.01_x - dumpling.n.01) 
                 (and 
-                    (cooked ?dumpling.n.01) 
-                    (covered ?dumpling.n.01 cooking_oil.n.01_1)
+                    (cooked ?dumpling.n.01_x) 
+                    (covered ?dumpling.n.01_x cooking_oil.n.01_1)
                 )
             )
         )

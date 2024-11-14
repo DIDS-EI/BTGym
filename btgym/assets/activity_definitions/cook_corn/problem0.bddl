@@ -47,10 +47,10 @@
     (:goal 
         (and 
             (forall 
-                (?sweet_corn.n.02 - sweet_corn.n.02) 
+                (?sweet_corn.n.02_x - sweet_corn.n.02) 
                 (and 
-                    (cooked ?sweet_corn.n.02) 
-                    (covered ?sweet_corn.n.02 melted__butter.n.01_1)
+                    (cooked ?sweet_corn.n.02_x) 
+                    (covered ?sweet_corn.n.02_x melted__butter.n.01_1)
                 )
             ) 
             (real melted__butter.n.01_1)

@@ -45,17 +45,17 @@
                 (covered tights.n.01_1 stain.n.01_1)
             ) 
             (exists 
-                (?hanger.n.02 - hanger.n.02) 
+                (?hanger.n.02_x - hanger.n.02) 
                 (and 
-                    (draped leotard.n.01_1 ?hanger.n.02) 
-                    (attached ?hanger.n.02 wardrobe.n.01_1)
+                    (draped leotard.n.01_1 ?hanger.n.02_x) 
+                    (attached ?hanger.n.02_x wardrobe.n.01_1)
                 )
             ) 
             (exists 
-                (?hanger.n.02 - hanger.n.02) 
+                (?hanger.n.02_x - hanger.n.02) 
                 (and 
-                    (draped tights.n.01_1 ?hanger.n.02) 
-                    (attached ?hanger.n.02 wardrobe.n.01_1)
+                    (draped tights.n.01_1 ?hanger.n.02_x) 
+                    (attached ?hanger.n.02_x wardrobe.n.01_1)
                 )
             )
         )

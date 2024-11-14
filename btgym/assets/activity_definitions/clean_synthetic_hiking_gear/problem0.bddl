@@ -46,9 +46,9 @@
                 (covered sleeping_bag.n.01_1 stain.n.01_1)
             ) 
             (forall 
-                (?hiking_boot.n.01 - hiking_boot.n.01) 
+                (?hiking_boot.n.01_x - hiking_boot.n.01) 
                 (not 
-                    (covered ?hiking_boot.n.01 dust.n.01_1)
+                    (covered ?hiking_boot.n.01_x dust.n.01_1)
                 )
             ) 
             (not 

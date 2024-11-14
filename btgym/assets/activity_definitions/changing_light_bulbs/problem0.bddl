@@ -32,17 +32,17 @@
     (:goal 
         (and 
             (forall 
-                (?table_lamp.n.01 - table_lamp.n.01) 
+                (?table_lamp.n.01_x - table_lamp.n.01) 
                 (and 
                     (forall 
-                        (?broken__light_bulb.n.01 - broken__light_bulb.n.01) 
+                        (?broken__light_bulb.n.01_x - broken__light_bulb.n.01) 
                         (not 
-                            (attached ?broken__light_bulb.n.01 ?table_lamp.n.01)
+                            (attached ?broken__light_bulb.n.01_x ?table_lamp.n.01_x)
                         )
                     ) 
                     (exists 
-                        (?light_bulb.n.01 - light_bulb.n.01) 
-                        (attached ?light_bulb.n.01 ?table_lamp.n.01)
+                        (?light_bulb.n.01_x - light_bulb.n.01) 
+                        (attached ?light_bulb.n.01_x ?table_lamp.n.01_x)
                     )
                 )
             )

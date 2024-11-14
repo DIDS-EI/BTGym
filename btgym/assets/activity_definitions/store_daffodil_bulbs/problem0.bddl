@@ -24,8 +24,8 @@
     (:goal 
         (and 
             (forall 
-                (?daffodil_bulb.n.01 - daffodil_bulb.n.01) 
-                (inside ?daffodil_bulb.n.01 mixing_bowl.n.01_1)
+                (?daffodil_bulb.n.01_x - daffodil_bulb.n.01) 
+                (inside ?daffodil_bulb.n.01_x mixing_bowl.n.01_1)
             ) 
             (inside mixing_bowl.n.01_1 cabinet.n.01_1)
         )

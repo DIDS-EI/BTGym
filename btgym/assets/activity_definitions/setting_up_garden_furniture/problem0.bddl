@@ -32,20 +32,20 @@
         (and 
             (ontop pitcher.n.02_1 coffee_table.n.01_1) 
             (forall 
-                (?lawn_chair.n.01 - lawn_chair.n.01) 
+                (?lawn_chair.n.01_x - lawn_chair.n.01) 
                 (and 
-                    (ontop ?lawn_chair.n.01 floor.n.01_1) 
-                    (nextto ?lawn_chair.n.01 coffee_table.n.01_1) 
+                    (ontop ?lawn_chair.n.01_x floor.n.01_1) 
+                    (nextto ?lawn_chair.n.01_x coffee_table.n.01_1) 
                     (or 
-                        (nextto ?lawn_chair.n.01 lawn_chair.n.01_1) 
-                        (nextto ?lawn_chair.n.01 lawn_chair.n.01_2) 
-                        (nextto ?lawn_chair.n.01 lawn_chair.n.01_3)
+                        (nextto ?lawn_chair.n.01_x lawn_chair.n.01_1) 
+                        (nextto ?lawn_chair.n.01_x lawn_chair.n.01_2) 
+                        (nextto ?lawn_chair.n.01_x lawn_chair.n.01_3)
                     )
                 )
             ) 
             (forall 
-                (?teacup.n.02 - teacup.n.02) 
-                (ontop ?teacup.n.02 coffee_table.n.01_1)
+                (?teacup.n.02_x - teacup.n.02) 
+                (ontop ?teacup.n.02_x coffee_table.n.01_1)
             )
         )
     )

@@ -96,11 +96,11 @@
             (covered chicken.n.01_1 hot_sauce.n.01_1) 
             (ontop chicken.n.01_1 plate.n.04_1) 
             (forall 
-                (?waffle.n.01 - waffle.n.01) 
+                (?waffle.n.01_x - waffle.n.01) 
                 (and 
-                    (cooked ?waffle.n.01) 
-                    (covered ?waffle.n.01 melted__butter.n.01_1) 
-                    (ontop ?waffle.n.01 plate.n.04_1) 
+                    (cooked ?waffle.n.01_x) 
+                    (covered ?waffle.n.01_x melted__butter.n.01_1) 
+                    (ontop ?waffle.n.01_x plate.n.04_1) 
                     (covered waffle.n.01_1 hot_sauce.n.01_1) 
                     (covered waffle.n.01_1 maple_syrup.n.01_1)
                 )

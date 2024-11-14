@@ -33,16 +33,16 @@
             (inside chicken.n.01_1 tupperware.n.01_1) 
             (inside spinach.n.02_1 tupperware.n.01_1) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside chicken.n.01_1 ?tupperware.n.01)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside chicken.n.01_1 ?tupperware.n.01_x)
             ) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside spinach.n.02_1 ?tupperware.n.01)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside spinach.n.02_1 ?tupperware.n.01_x)
             ) 
             (forall 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside ?tupperware.n.01 electric_refrigerator.n.01_1)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside ?tupperware.n.01_x electric_refrigerator.n.01_1)
             ) 
             (or 
                 (inside plate.n.04_1 sink.n.01_1) 

@@ -31,20 +31,20 @@
             (inside bath_towel.n.01_1 shelf.n.01_1) 
             (folded bath_towel.n.01_1) 
             (forall 
-                (?diaper.n.01 - diaper.n.01) 
-                (inside ?diaper.n.01 shelf.n.01_1)
+                (?diaper.n.01_x - diaper.n.01) 
+                (inside ?diaper.n.01_x shelf.n.01_1)
             ) 
             (forall 
-                (?sock.n.01 - sock.n.01) 
+                (?sock.n.01_x - sock.n.01) 
                 (and 
-                    (folded ?sock.n.01) 
-                    (inside ?sock.n.01 shelf.n.01_1)
+                    (folded ?sock.n.01_x) 
+                    (inside ?sock.n.01_x shelf.n.01_1)
                 )
             ) 
             (nextto sock.n.01_1 sock.n.01_2) 
             (forall 
-                (?baby_shoe.n.01 - baby_shoe.n.01) 
-                (inside ?baby_shoe.n.01 shelf.n.01_1)
+                (?baby_shoe.n.01_x - baby_shoe.n.01) 
+                (inside ?baby_shoe.n.01_x shelf.n.01_1)
             ) 
             (touching baby_shoe.n.01_1 baby_shoe.n.01_2)
         )

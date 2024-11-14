@@ -46,14 +46,14 @@
             (cooked lamb.n.05_1) 
             (covered lamb.n.05_1 salt.n.02_1) 
             (forall 
-                (?mint.n.04 - mint.n.04) 
-                (ontop ?mint.n.04 lamb.n.05_1)
+                (?mint.n.04_x - mint.n.04) 
+                (ontop ?mint.n.04_x lamb.n.05_1)
             ) 
             (forall 
-                (?clove.n.03 - clove.n.03) 
+                (?clove.n.03_x - clove.n.03) 
                 (and 
-                    (cooked ?clove.n.03) 
-                    (touching ?clove.n.03 lamb.n.05_1)
+                    (cooked ?clove.n.03_x) 
+                    (touching ?clove.n.03_x lamb.n.05_1)
                 )
             )
         )

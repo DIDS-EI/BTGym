@@ -32,22 +32,22 @@
     (:goal 
         (and 
             (forall 
-                (?biscuit.n.01 - biscuit.n.01) 
+                (?biscuit.n.01_x - biscuit.n.01) 
                 (exists 
-                    (?backpack.n.01 - backpack.n.01) 
-                    (inside ?biscuit.n.01 ?backpack.n.01)
+                    (?backpack.n.01_x - backpack.n.01) 
+                    (inside ?biscuit.n.01_x ?backpack.n.01_x)
                 )
             ) 
             (forall 
-                (?water_bottle.n.01 - water_bottle.n.01) 
+                (?water_bottle.n.01_x - water_bottle.n.01) 
                 (exists 
-                    (?backpack.n.01 - backpack.n.01) 
-                    (inside ?water_bottle.n.01 ?backpack.n.01)
+                    (?backpack.n.01_x - backpack.n.01) 
+                    (inside ?water_bottle.n.01_x ?backpack.n.01_x)
                 )
             ) 
             (forall 
-                (?backpack.n.01 - backpack.n.01) 
-                (inside ?backpack.n.01 car.n.01_1)
+                (?backpack.n.01_x - backpack.n.01) 
+                (inside ?backpack.n.01_x car.n.01_1)
             ) 
             (inside tent.n.01_1 car.n.01_1) 
             (inside sleeping_bag.n.01_1 car.n.01_1)

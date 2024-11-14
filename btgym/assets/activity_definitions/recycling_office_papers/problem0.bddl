@@ -22,7 +22,7 @@
     (:goal 
         (and 
             (forall 
-                (?legal_document.n.01 - legal_document.n.01) 
+                (?legal_document.n.01_x - legal_document.n.01) 
                 (inside legal_document.n.01_1 recycling_bin.n.01_1)
             )
         )

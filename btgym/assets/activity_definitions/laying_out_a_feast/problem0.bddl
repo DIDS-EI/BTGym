@@ -53,18 +53,18 @@
     (:goal 
         (and 
             (exists 
-                (?platter.n.01 - platter.n.01) 
-                (ontop lamb.n.05_1 ?platter.n.01)
+                (?platter.n.01_x - platter.n.01) 
+                (ontop lamb.n.05_1 ?platter.n.01_x)
             ) 
             (exists 
-                (?platter.n.01 - platter.n.01) 
-                (ontop potato.n.01_1 ?platter.n.01)
+                (?platter.n.01_x - platter.n.01) 
+                (ontop potato.n.01_1 ?platter.n.01_x)
             ) 
             (hot lamb.n.05_1) 
             (hot potato.n.01_1) 
             (forall 
-                (?platter.n.01 - platter.n.01) 
-                (ontop ?platter.n.01 breakfast_table.n.01_1)
+                (?platter.n.01_x - platter.n.01) 
+                (ontop ?platter.n.01_x breakfast_table.n.01_1)
             )
         )
     )

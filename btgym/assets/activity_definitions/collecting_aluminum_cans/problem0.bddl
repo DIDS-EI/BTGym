@@ -25,8 +25,8 @@
     (:goal 
         (and 
             (forall 
-                (?can__of__soda.n.01 - can__of__soda.n.01) 
-                (inside ?can__of__soda.n.01 bucket.n.01_1)
+                (?can__of__soda.n.01_x - can__of__soda.n.01) 
+                (inside ?can__of__soda.n.01_x bucket.n.01_1)
             )
         )
     )

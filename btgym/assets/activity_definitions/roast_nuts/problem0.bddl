@@ -53,10 +53,10 @@
     (:goal 
         (and 
             (forall 
-                (?walnut.n.01 - walnut.n.01) 
+                (?walnut.n.01_x - walnut.n.01) 
                 (and 
-                    (cooked ?walnut.n.01) 
-                    (covered ?walnut.n.01 granulated_sugar.n.01_1) 
+                    (cooked ?walnut.n.01_x) 
+                    (covered ?walnut.n.01_x granulated_sugar.n.01_1) 
                     (covered walnut.n.01_1 olive_oil.n.01_1)
                 )
             )

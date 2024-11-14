@@ -18,8 +18,8 @@
     (:goal 
         (and 
             (forall 
-                (?bag__of__rubbish.n.01 - bag__of__rubbish.n.01) 
-                (ontop ?bag__of__rubbish.n.01 floor.n.01_1)
+                (?bag__of__rubbish.n.01_x - bag__of__rubbish.n.01) 
+                (ontop ?bag__of__rubbish.n.01_x floor.n.01_1)
             )
         )
     )

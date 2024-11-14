@@ -40,38 +40,38 @@
     (:goal 
         (and 
             (forall 
-                (?pan.n.01 - pan.n.01) 
+                (?pan.n.01_x - pan.n.01) 
                 (and 
                     (not 
-                        (covered ?pan.n.01 stain.n.01_1)
+                        (covered ?pan.n.01_x stain.n.01_1)
                     ) 
                     (exists 
-                        (?cabinet.n.01 - cabinet.n.01) 
-                        (inside ?pan.n.01 ?cabinet.n.01)
+                        (?cabinet.n.01_x - cabinet.n.01) 
+                        (inside ?pan.n.01_x ?cabinet.n.01_x)
                     )
                 )
             ) 
             (forall 
-                (?kettle.n.01 - kettle.n.01) 
+                (?kettle.n.01_x - kettle.n.01) 
                 (and 
                     (not 
-                        (covered ?kettle.n.01 stain.n.01_1)
+                        (covered ?kettle.n.01_x stain.n.01_1)
                     ) 
                     (exists 
-                        (?cabinet.n.01 - cabinet.n.01) 
-                        (inside ?kettle.n.01 ?cabinet.n.01)
+                        (?cabinet.n.01_x - cabinet.n.01) 
+                        (inside ?kettle.n.01_x ?cabinet.n.01_x)
                     )
                 )
             ) 
             (forall 
-                (?teapot.n.01 - teapot.n.01) 
+                (?teapot.n.01_x - teapot.n.01) 
                 (and 
                     (not 
-                        (covered ?teapot.n.01 stain.n.01_1)
+                        (covered ?teapot.n.01_x stain.n.01_1)
                     ) 
                     (exists 
-                        (?cabinet.n.01 - cabinet.n.01) 
-                        (inside ?teapot.n.01 ?cabinet.n.01)
+                        (?cabinet.n.01_x - cabinet.n.01) 
+                        (inside ?teapot.n.01_x ?cabinet.n.01_x)
                     )
                 )
             )

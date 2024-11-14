@@ -42,13 +42,13 @@
     (:goal 
         (and 
             (forall 
-                (?teaspoon.n.02 - teaspoon.n.02) 
+                (?teaspoon.n.02_x - teaspoon.n.02) 
                 (and 
                     (not 
-                        (covered ?teaspoon.n.02 soy_sauce.n.01_1)
+                        (covered ?teaspoon.n.02_x soy_sauce.n.01_1)
                     ) 
                     (not 
-                        (covered ?teaspoon.n.02 cooking_oil.n.01_1)
+                        (covered ?teaspoon.n.02_x cooking_oil.n.01_1)
                     )
                 )
             ) 

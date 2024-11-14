@@ -32,9 +32,9 @@
     (:goal 
         (and 
             (forall 
-                (?egg.n.02 - egg.n.02) 
+                (?egg.n.02_x - egg.n.02) 
                 (not 
-                    (covered ?egg.n.02 dust.n.01_1)
+                    (covered ?egg.n.02_x dust.n.01_1)
                 )
             )
         )

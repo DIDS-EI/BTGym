@@ -40,11 +40,11 @@
     (:goal 
         (and 
             (forall 
-                (?mussel.n.01 - mussel.n.01) 
+                (?mussel.n.01_x - mussel.n.01) 
                 (and 
-                    (covered ?mussel.n.01 water.n.06_1) 
+                    (covered ?mussel.n.01_x water.n.06_1) 
                     (not 
-                        (covered ?mussel.n.01 sand.n.04_1)
+                        (covered ?mussel.n.01_x sand.n.04_1)
                     )
                 )
             )

@@ -47,15 +47,15 @@
     (:goal 
         (and 
             (forall 
-                (?cherry_tomato.n.02 - cherry_tomato.n.02) 
+                (?cherry_tomato.n.02_x - cherry_tomato.n.02) 
                 (not 
-                    (covered ?cherry_tomato.n.02 mud.n.03_1)
+                    (covered ?cherry_tomato.n.02_x mud.n.03_1)
                 )
             ) 
             (forall 
-                (?carrot.n.03 - carrot.n.03) 
+                (?carrot.n.03_x - carrot.n.03) 
                 (not 
-                    (covered ?carrot.n.03 mud.n.03_1)
+                    (covered ?carrot.n.03_x mud.n.03_1)
                 )
             )
         )

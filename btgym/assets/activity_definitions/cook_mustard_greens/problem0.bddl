@@ -41,8 +41,8 @@
     (:goal 
         (and 
             (forall 
-                (?mustard.n.03 - mustard.n.03) 
-                (cooked ?mustard.n.03)
+                (?mustard.n.03_x - mustard.n.03) 
+                (cooked ?mustard.n.03_x)
             )
         )
     )

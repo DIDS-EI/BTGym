@@ -27,8 +27,8 @@
     (:goal 
         (and 
             (forall 
-                (?jersey.n.03 - jersey.n.03) 
-                (ontop ?jersey.n.03 booth.n.01_1)
+                (?jersey.n.03_x - jersey.n.03) 
+                (ontop ?jersey.n.03_x booth.n.01_1)
             )
         )
     )

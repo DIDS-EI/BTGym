@@ -45,14 +45,14 @@
     (:goal 
         (and 
             (forall 
-                (?huitre.n.01 - huitre.n.01) 
-                (inside ?huitre.n.01 stockpot.n.01_1)
+                (?huitre.n.01_x - huitre.n.01) 
+                (inside ?huitre.n.01_x stockpot.n.01_1)
             ) 
             (forall 
-                (?huitre.n.01 - huitre.n.01) 
+                (?huitre.n.01_x - huitre.n.01) 
                 (and 
-                    (cooked ?huitre.n.01) 
-                    (covered ?huitre.n.01 salt.n.02_1)
+                    (cooked ?huitre.n.01_x) 
+                    (covered ?huitre.n.01_x salt.n.02_1)
                 )
             )
         )

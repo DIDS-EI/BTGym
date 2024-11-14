@@ -136,10 +136,10 @@
                 (real cooked__salt.n.01_1)
             ) 
             (forall 
-                (?half__mushroom.n.01 - half__mushroom.n.01) 
+                (?half__mushroom.n.01_x - half__mushroom.n.01) 
                 (and 
-                    (cooked ?half__mushroom.n.01) 
-                    (inside ?half__mushroom.n.01 frying_pan.n.01_1)
+                    (cooked ?half__mushroom.n.01_x) 
+                    (inside ?half__mushroom.n.01_x frying_pan.n.01_1)
                 )
             ) 
             (contains frying_pan.n.01_1 cooked__diced__clove.n.01_1) 

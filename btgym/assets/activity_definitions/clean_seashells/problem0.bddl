@@ -30,9 +30,9 @@
     (:goal 
         (and 
             (forall 
-                (?seashell.n.01 - seashell.n.01) 
+                (?seashell.n.01_x - seashell.n.01) 
                 (not 
-                    (covered ?seashell.n.01 sand.n.04_1)
+                    (covered ?seashell.n.01_x sand.n.04_1)
                 )
             )
         )

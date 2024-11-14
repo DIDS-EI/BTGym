@@ -31,14 +31,14 @@
     (:goal 
         (and 
             (forall 
-                (?conch.n.01 - conch.n.01) 
+                (?conch.n.01_x - conch.n.01) 
                 (and 
-                    (ontop ?conch.n.01 countertop.n.01_1) 
+                    (ontop ?conch.n.01_x countertop.n.01_1) 
                     (not 
-                        (covered ?conch.n.01 dust.n.01_1)
+                        (covered ?conch.n.01_x dust.n.01_1)
                     ) 
                     (not 
-                        (covered ?conch.n.01 sand.n.04_1)
+                        (covered ?conch.n.01_x sand.n.04_1)
                     )
                 )
             )

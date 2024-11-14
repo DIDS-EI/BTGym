@@ -77,8 +77,8 @@
             (real spice_cookie.n.01_5) 
             (real spice_cookie.n.01_6) 
             (forall 
-                (?spice_cookie.n.01 - spice_cookie.n.01) 
-                (cooked ?spice_cookie.n.01)
+                (?spice_cookie.n.01_x - spice_cookie.n.01) 
+                (cooked ?spice_cookie.n.01_x)
             )
         )
     )

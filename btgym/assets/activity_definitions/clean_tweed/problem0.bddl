@@ -37,9 +37,9 @@
     (:goal 
         (and 
             (forall 
-                (?wool_coat.n.01 - wool_coat.n.01) 
+                (?wool_coat.n.01_x - wool_coat.n.01) 
                 (not 
-                    (covered ?wool_coat.n.01 stain.n.01_1)
+                    (covered ?wool_coat.n.01_x stain.n.01_1)
                 )
             )
         )

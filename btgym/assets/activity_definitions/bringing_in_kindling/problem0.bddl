@@ -27,10 +27,10 @@
     (:goal 
         (and 
             (forall 
-                (?firewood.n.01 - firewood.n.01) 
+                (?firewood.n.01_x - firewood.n.01) 
                 (and 
-                    (ontop ?firewood.n.01 floor.n.01_2) 
-                    (nextto ?firewood.n.01 fireplace.n.01_1)
+                    (ontop ?firewood.n.01_x floor.n.01_2) 
+                    (nextto ?firewood.n.01_x fireplace.n.01_1)
                 )
             )
         )

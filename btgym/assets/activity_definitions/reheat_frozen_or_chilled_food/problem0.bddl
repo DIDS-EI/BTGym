@@ -32,8 +32,8 @@
     (:goal 
         (and 
             (forall 
-                (?muffin.n.01 - muffin.n.01) 
-                (hot ?muffin.n.01)
+                (?muffin.n.01_x - muffin.n.01) 
+                (hot ?muffin.n.01_x)
             ) 
             (not 
                 (frozen chicken_leg.n.01_1)

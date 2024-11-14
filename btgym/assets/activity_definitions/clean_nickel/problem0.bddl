@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?nickel.n.02 - nickel.n.02) 
+                (?nickel.n.02_x - nickel.n.02) 
                 (not 
-                    (covered ?nickel.n.02 stain.n.01_1)
+                    (covered ?nickel.n.02_x stain.n.01_1)
                 )
             )
         )

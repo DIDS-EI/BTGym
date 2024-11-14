@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?gym_shoe.n.01 - gym_shoe.n.01) 
+                (?gym_shoe.n.01_x - gym_shoe.n.01) 
                 (not 
-                    (covered ?gym_shoe.n.01 stain.n.01_1)
+                    (covered ?gym_shoe.n.01_x stain.n.01_1)
                 )
             )
         )

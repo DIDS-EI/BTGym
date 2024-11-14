@@ -56,8 +56,8 @@
             (real fruit_punch.n.01_1) 
             (contains pitcher.n.02_1 fruit_punch.n.01_1) 
             (forall 
-                (?ice_cube.n.01 - ice_cube.n.01) 
-                (inside ?ice_cube.n.01 pitcher.n.02_1)
+                (?ice_cube.n.01_x - ice_cube.n.01) 
+                (inside ?ice_cube.n.01_x pitcher.n.02_1)
             )
         )
     )

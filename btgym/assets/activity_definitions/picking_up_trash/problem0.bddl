@@ -24,12 +24,12 @@
     (:goal 
         (and 
             (forall 
-                (?pad.n.01 - pad.n.01) 
-                (inside ?pad.n.01 ashcan.n.01_1)
+                (?pad.n.01_x - pad.n.01) 
+                (inside ?pad.n.01_x ashcan.n.01_1)
             ) 
             (forall 
-                (?can__of__soda.n.01 - can__of__soda.n.01) 
-                (inside ?can__of__soda.n.01 ashcan.n.01_1)
+                (?can__of__soda.n.01_x - can__of__soda.n.01) 
+                (inside ?can__of__soda.n.01_x ashcan.n.01_1)
             )
         )
     )

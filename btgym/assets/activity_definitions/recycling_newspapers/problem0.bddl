@@ -22,8 +22,8 @@
     (:goal 
         (and 
             (forall 
-                (?newspaper.n.03 - newspaper.n.03) 
-                (inside ?newspaper.n.03 recycling_bin.n.01_1)
+                (?newspaper.n.03_x - newspaper.n.03) 
+                (inside ?newspaper.n.03_x recycling_bin.n.01_1)
             )
         )
     )

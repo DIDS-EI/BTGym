@@ -36,12 +36,12 @@
     (:goal 
         (and 
             (forall 
-                (?grape.n.01 - grape.n.01) 
+                (?grape.n.01_x - grape.n.01) 
                 (and 
                     (not 
-                        (covered ?grape.n.01 dirt.n.02_1)
+                        (covered ?grape.n.01_x dirt.n.02_1)
                     ) 
-                    (inside ?grape.n.01 bowl.n.01_1)
+                    (inside ?grape.n.01_x bowl.n.01_1)
                 )
             )
         )

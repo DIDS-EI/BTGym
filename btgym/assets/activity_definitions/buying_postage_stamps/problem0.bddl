@@ -25,12 +25,12 @@
     (:goal 
         (and 
             (forall 
-                (?postage.n.02 - postage.n.02) 
-                (ontop ?postage.n.02 checkout.n.03_1)
+                (?postage.n.02_x - postage.n.02) 
+                (ontop ?postage.n.02_x checkout.n.03_1)
             ) 
             (forall 
-                (?money.n.01 - money.n.01) 
-                (inside ?money.n.01 cash_register.n.01_1)
+                (?money.n.01_x - money.n.01) 
+                (inside ?money.n.01_x cash_register.n.01_1)
             )
         )
     )

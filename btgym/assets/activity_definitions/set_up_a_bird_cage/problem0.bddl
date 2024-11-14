@@ -30,30 +30,30 @@
     (:goal 
         (and 
             (exists 
-                (?bowl.n.01 - bowl.n.01) 
+                (?bowl.n.01_x - bowl.n.01) 
                 (and 
-                    (inside apple.n.01_1 ?bowl.n.01) 
+                    (inside apple.n.01_1 ?bowl.n.01_x) 
                     (not 
-                        (contains ?bowl.n.01 water.n.06_1)
+                        (contains ?bowl.n.01_x water.n.06_1)
                     )
                 )
             ) 
             (exists 
-                (?bowl.n.01 - bowl.n.01) 
+                (?bowl.n.01_x - bowl.n.01) 
                 (and 
-                    (contains ?bowl.n.01 water.n.06_1) 
+                    (contains ?bowl.n.01_x water.n.06_1) 
                     (not 
-                        (inside apple.n.01_1 ?bowl.n.01)
+                        (inside apple.n.01_1 ?bowl.n.01_x)
                     )
                 )
             ) 
             (forall 
-                (?toy_figure.n.01 - toy_figure.n.01) 
-                (inside ?toy_figure.n.01 birdcage.n.01_1)
+                (?toy_figure.n.01_x - toy_figure.n.01) 
+                (inside ?toy_figure.n.01_x birdcage.n.01_1)
             ) 
             (forall 
-                (?bowl.n.01 - bowl.n.01) 
-                (inside ?bowl.n.01 birdcage.n.01_1)
+                (?bowl.n.01_x - bowl.n.01) 
+                (inside ?bowl.n.01_x birdcage.n.01_1)
             )
         )
     )

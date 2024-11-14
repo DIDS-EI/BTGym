@@ -43,9 +43,9 @@
     (:goal 
         (and 
             (forall 
-                (?grape.n.01 - grape.n.01) 
+                (?grape.n.01_x - grape.n.01) 
                 (not 
-                    (covered ?grape.n.01 dust.n.01_1)
+                    (covered ?grape.n.01_x dust.n.01_1)
                 )
             ) 
             (not 

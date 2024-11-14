@@ -32,9 +32,9 @@
     (:goal 
         (and 
             (forall 
-                (?window.n.01 - window.n.01) 
+                (?window.n.01_x - window.n.01) 
                 (not 
-                    (covered ?window.n.01 stain.n.01_1)
+                    (covered ?window.n.01_x stain.n.01_1)
                 )
             )
         )

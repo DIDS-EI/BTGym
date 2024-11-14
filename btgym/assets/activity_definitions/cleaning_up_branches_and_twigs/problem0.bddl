@@ -26,8 +26,8 @@
     (:goal 
         (and 
             (forall 
-                (?branch.n.02 - branch.n.02) 
-                (inside ?branch.n.02 ashcan.n.01_1)
+                (?branch.n.02_x - branch.n.02) 
+                (inside ?branch.n.02_x ashcan.n.01_1)
             ) 
             (ontop ashcan.n.01_1 lawn.n.01_1)
         )

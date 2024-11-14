@@ -25,14 +25,14 @@
     (:goal 
         (and 
             (forall 
-                (?hand_towel.n.01 - hand_towel.n.01) 
-                (draped ?hand_towel.n.01 towel_rack.n.01_1)
+                (?hand_towel.n.01_x - hand_towel.n.01) 
+                (draped ?hand_towel.n.01_x towel_rack.n.01_1)
             ) 
             (forall 
-                (?bath_towel.n.01 - bath_towel.n.01) 
+                (?bath_towel.n.01_x - bath_towel.n.01) 
                 (and 
-                    (folded ?bath_towel.n.01) 
-                    (inside ?bath_towel.n.01 wicker_basket.n.01_1)
+                    (folded ?bath_towel.n.01_x) 
+                    (inside ?bath_towel.n.01_x wicker_basket.n.01_1)
                 )
             ) 
             (ontop wicker_basket.n.01_1 floor.n.01_2)

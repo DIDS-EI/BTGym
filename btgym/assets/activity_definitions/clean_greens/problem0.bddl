@@ -30,11 +30,11 @@
     (:goal 
         (and 
             (forall 
-                (?chard.n.02 - chard.n.02) 
+                (?chard.n.02_x - chard.n.02) 
                 (and 
-                    (inside ?chard.n.02 bowl.n.01_1) 
+                    (inside ?chard.n.02_x bowl.n.01_1) 
                     (not 
-                        (covered ?chard.n.02 dirt.n.02_1)
+                        (covered ?chard.n.02_x dirt.n.02_1)
                     )
                 )
             )

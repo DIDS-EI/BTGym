@@ -22,12 +22,12 @@
     (:goal 
         (and 
             (forall 
-                (?paper_lantern.n.01 - paper_lantern.n.01) 
-                (attached ?paper_lantern.n.01 pole.n.01_1)
+                (?paper_lantern.n.01_x - paper_lantern.n.01) 
+                (attached ?paper_lantern.n.01_x pole.n.01_1)
             ) 
             (forall 
-                (?pole.n.01 - pole.n.01) 
-                (attached ?pole.n.01 wall_nail.n.01_1)
+                (?pole.n.01_x - pole.n.01) 
+                (attached ?pole.n.01_x wall_nail.n.01_1)
             )
         )
     )

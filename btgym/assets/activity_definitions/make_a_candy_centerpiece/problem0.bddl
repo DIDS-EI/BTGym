@@ -27,12 +27,12 @@
     (:goal 
         (and 
             (forall 
-                (?lollipop.n.02 - lollipop.n.02) 
-                (inside ?lollipop.n.02 vase.n.01_1)
+                (?lollipop.n.02_x - lollipop.n.02) 
+                (inside ?lollipop.n.02_x vase.n.01_1)
             ) 
             (forall 
-                (?candy_cane.n.01 - candy_cane.n.01) 
-                (inside ?candy_cane.n.01 vase.n.01_1)
+                (?candy_cane.n.01_x - candy_cane.n.01) 
+                (inside ?candy_cane.n.01_x vase.n.01_1)
             ) 
             (overlaid ribbon.n.01_1 vase.n.01_1)
         )

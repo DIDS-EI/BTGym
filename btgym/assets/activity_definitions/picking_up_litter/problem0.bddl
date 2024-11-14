@@ -26,12 +26,12 @@
         (and 
             (inside plastic_bag.n.01_1 recycling_bin.n.01_1) 
             (forall 
-                (?water_bottle.n.01 - water_bottle.n.01) 
-                (inside ?water_bottle.n.01 recycling_bin.n.01_1)
+                (?water_bottle.n.01_x - water_bottle.n.01) 
+                (inside ?water_bottle.n.01_x recycling_bin.n.01_1)
             ) 
             (forall 
-                (?tissue.n.02 - tissue.n.02) 
-                (inside ?tissue.n.02 recycling_bin.n.01_1)
+                (?tissue.n.02_x - tissue.n.02) 
+                (inside ?tissue.n.02_x recycling_bin.n.01_1)
             ) 
             (ontop recycling_bin.n.01_1 floor.n.01_1)
         )

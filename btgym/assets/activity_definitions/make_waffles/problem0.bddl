@@ -67,8 +67,8 @@
             (real waffle.n.01_3) 
             (real waffle.n.01_4) 
             (forall 
-                (?waffle.n.01 - waffle.n.01) 
-                (cooked ?waffle.n.01)
+                (?waffle.n.01_x - waffle.n.01) 
+                (cooked ?waffle.n.01_x)
             )
         )
     )

@@ -485,7 +485,8 @@ def convert_goal_expr(goal_expr):
         last_dot = goal_expr.rfind('.')
         if last_underscore > last_dot and last_dot != -1:
             return goal_expr[1:]
-        return goal_expr
+        else:
+            return goal_expr + "_x"
     return goal_expr
     
 

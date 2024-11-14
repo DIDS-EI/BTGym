@@ -37,35 +37,35 @@
     (:goal 
         (and 
             (forall 
-                (?wicker_basket.n.01 - wicker_basket.n.01) 
-                (inside ?wicker_basket.n.01 car.n.01_1)
+                (?wicker_basket.n.01_x - wicker_basket.n.01) 
+                (inside ?wicker_basket.n.01_x car.n.01_1)
             ) 
             (inside paper_towel.n.01_1 car.n.01_1) 
             (inside blanket.n.01_1 car.n.01_1) 
             (exists 
-                (?wicker_basket.n.01 - wicker_basket.n.01) 
-                (inside water_bottle.n.01_1 ?wicker_basket.n.01)
+                (?wicker_basket.n.01_x - wicker_basket.n.01) 
+                (inside water_bottle.n.01_1 ?wicker_basket.n.01_x)
             ) 
             (exists 
-                (?wicker_basket.n.01 - wicker_basket.n.01) 
-                (inside bottle__of__sunscreen.n.01_1 ?wicker_basket.n.01)
+                (?wicker_basket.n.01_x - wicker_basket.n.01) 
+                (inside bottle__of__sunscreen.n.01_1 ?wicker_basket.n.01_x)
             ) 
             (exists 
-                (?wicker_basket.n.01 - wicker_basket.n.01) 
-                (inside carving_knife.n.01_1 ?wicker_basket.n.01)
+                (?wicker_basket.n.01_x - wicker_basket.n.01) 
+                (inside carving_knife.n.01_1 ?wicker_basket.n.01_x)
             ) 
             (forall 
-                (?beer_bottle.n.01 - beer_bottle.n.01) 
+                (?beer_bottle.n.01_x - beer_bottle.n.01) 
                 (exists 
-                    (?wicker_basket.n.01 - wicker_basket.n.01) 
-                    (inside ?beer_bottle.n.01 ?wicker_basket.n.01)
+                    (?wicker_basket.n.01_x - wicker_basket.n.01) 
+                    (inside ?beer_bottle.n.01_x ?wicker_basket.n.01_x)
                 )
             ) 
             (forall 
-                (?cupcake.n.01 - cupcake.n.01) 
+                (?cupcake.n.01_x - cupcake.n.01) 
                 (exists 
-                    (?wicker_basket.n.01 - wicker_basket.n.01) 
-                    (inside ?cupcake.n.01 ?wicker_basket.n.01)
+                    (?wicker_basket.n.01_x - wicker_basket.n.01) 
+                    (inside ?cupcake.n.01_x ?wicker_basket.n.01_x)
                 )
             )
         )

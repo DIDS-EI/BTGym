@@ -27,11 +27,11 @@
     (:goal 
         (and 
             (forall 
-                (?wineglass.n.01 - wineglass.n.01) 
+                (?wineglass.n.01_x - wineglass.n.01) 
                 (inside wineglass.n.01_1 sink.n.01_1)
             ) 
             (forall 
-                (?plate.n.04 - plate.n.04) 
+                (?plate.n.04_x - plate.n.04) 
                 (inside plate.n.04_1 sink.n.01_1)
             )
         )

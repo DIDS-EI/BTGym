@@ -34,13 +34,13 @@
     (:goal 
         (and 
             (forall 
-                (?chip.n.04 - chip.n.04) 
-                (inside ?chip.n.04 bowl.n.01_1)
+                (?chip.n.04_x - chip.n.04) 
+                (inside ?chip.n.04_x bowl.n.01_1)
             ) 
             (ontop bowl.n.01_1 table.n.02_1) 
             (forall 
-                (?hardback.n.01 - hardback.n.01) 
-                (inside ?hardback.n.01 shelf.n.01_1)
+                (?hardback.n.01_x - hardback.n.01) 
+                (inside ?hardback.n.01_x shelf.n.01_1)
             ) 
             (inside rag.n.01_1 shelf.n.01_1) 
             (folded rag.n.01_1) 

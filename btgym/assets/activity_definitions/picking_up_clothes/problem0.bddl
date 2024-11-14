@@ -22,10 +22,10 @@
     (:goal 
         (and 
             (forall 
-                (?dress.n.01 - dress.n.01) 
+                (?dress.n.01_x - dress.n.01) 
                 (and 
-                    (folded ?dress.n.01) 
-                    (inside ?dress.n.01 wardrobe.n.01_1)
+                    (folded ?dress.n.01_x) 
+                    (inside ?dress.n.01_x wardrobe.n.01_1)
                 )
             )
         )

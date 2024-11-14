@@ -73,8 +73,8 @@
             (ontop vase.n.01_1 breakfast_table.n.01_1) 
             (nextto candlestick.n.01_1 vase.n.01_1) 
             (forall 
-                (?dip.n.07 - dip.n.07) 
-                (attached ?dip.n.07 candlestick.n.01_1)
+                (?dip.n.07_x - dip.n.07) 
+                (attached ?dip.n.07_x candlestick.n.01_1)
             )
         )
     )

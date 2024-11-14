@@ -35,8 +35,8 @@
             (ontop gift_box.n.01_1 coffee_table.n.01_1) 
             (ontop centerpiece.n.02_1 coffee_table.n.01_1) 
             (forall 
-                (?balloon.n.01 - balloon.n.01) 
-                (ontop ?balloon.n.01 floor.n.01_1)
+                (?balloon.n.01_x - balloon.n.01) 
+                (ontop ?balloon.n.01_x floor.n.01_1)
             ) 
             (attached bow.n.08_1 wall_nail.n.01_1)
         )

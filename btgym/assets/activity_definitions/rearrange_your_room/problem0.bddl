@@ -24,8 +24,8 @@
         (and 
             (ontop mattress.n.01_1 bed.n.01_1) 
             (forall 
-                (?pillow.n.01 - pillow.n.01) 
-                (ontop ?pillow.n.01 mattress.n.01_1)
+                (?pillow.n.01_x - pillow.n.01) 
+                (ontop ?pillow.n.01_x mattress.n.01_1)
             )
         )
     )

@@ -49,15 +49,15 @@
     (:goal 
         (and 
             (forall 
-                (?huitre.n.01 - huitre.n.01) 
+                (?huitre.n.01_x - huitre.n.01) 
                 (and 
                     (not 
-                        (covered ?huitre.n.01 dirt.n.02_1)
+                        (covered ?huitre.n.01_x dirt.n.02_1)
                     ) 
                     (not 
-                        (covered ?huitre.n.01 sand.n.04_1)
+                        (covered ?huitre.n.01_x sand.n.04_1)
                     ) 
-                    (inside ?huitre.n.01 tupperware.n.01_1)
+                    (inside ?huitre.n.01_x tupperware.n.01_1)
                 )
             ) 
             (inside tupperware.n.01_1 electric_refrigerator.n.01_1)

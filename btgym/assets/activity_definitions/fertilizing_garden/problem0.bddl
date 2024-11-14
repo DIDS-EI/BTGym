@@ -26,10 +26,10 @@
     (:goal 
         (and 
             (forall 
-                (?potato.n.01 - potato.n.01) 
+                (?potato.n.01_x - potato.n.01) 
                 (and 
-                    (covered ?potato.n.01 fertilizer.n.01_1) 
-                    (covered ?potato.n.01 soil.n.02_1)
+                    (covered ?potato.n.01_x fertilizer.n.01_1) 
+                    (covered ?potato.n.01_x soil.n.02_1)
                 )
             )
         )

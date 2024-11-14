@@ -38,23 +38,23 @@
     (:goal 
         (and 
             (forall 
-                (?potato.n.01 - potato.n.01) 
+                (?potato.n.01_x - potato.n.01) 
                 (exists 
-                    (?sack.n.01 - sack.n.01) 
-                    (inside ?potato.n.01 ?sack.n.01)
+                    (?sack.n.01_x - sack.n.01) 
+                    (inside ?potato.n.01_x ?sack.n.01_x)
                 )
             ) 
             (exists 
-                (?sack.n.01 - sack.n.01) 
+                (?sack.n.01_x - sack.n.01) 
                 (and 
                     (forall 
-                        (?yam.n.03 - yam.n.03) 
-                        (inside ?yam.n.03 ?sack.n.01)
+                        (?yam.n.03_x - yam.n.03) 
+                        (inside ?yam.n.03_x ?sack.n.01_x)
                     ) 
                     (forall 
-                        (?potato.n.01 - potato.n.01) 
+                        (?potato.n.01_x - potato.n.01) 
                         (not 
-                            (inside ?potato.n.01 ?sack.n.01)
+                            (inside ?potato.n.01_x ?sack.n.01_x)
                         )
                     )
                 )

@@ -45,11 +45,11 @@
     (:goal 
         (and 
             (forall 
-                (?clam.n.03 - clam.n.03) 
+                (?clam.n.03_x - clam.n.03) 
                 (and 
-                    (cooked ?clam.n.03) 
-                    (covered ?clam.n.03 salt.n.02_1) 
-                    (covered ?clam.n.03 lemon_juice.n.01_1)
+                    (cooked ?clam.n.03_x) 
+                    (covered ?clam.n.03_x salt.n.02_1) 
+                    (covered ?clam.n.03_x lemon_juice.n.01_1)
                 )
             )
         )

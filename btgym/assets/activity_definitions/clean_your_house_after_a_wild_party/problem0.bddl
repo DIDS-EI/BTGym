@@ -74,12 +74,12 @@
     (:goal 
         (and 
             (forall 
-                (?plate.n.04 - plate.n.04) 
-                (inside ?plate.n.04 dishwasher.n.01_1)
+                (?plate.n.04_x - plate.n.04) 
+                (inside ?plate.n.04_x dishwasher.n.01_1)
             ) 
             (forall 
-                (?cup.n.01 - cup.n.01) 
-                (inside ?cup.n.01 dishwasher.n.01_1)
+                (?cup.n.01_x - cup.n.01) 
+                (inside ?cup.n.01_x dishwasher.n.01_1)
             ) 
             (not 
                 (covered floor.n.01_1 water.n.06_1)
@@ -100,10 +100,10 @@
                 (covered countertop.n.01_1 stain.n.01_1)
             ) 
             (forall 
-                (?beer_bottle.n.01 - beer_bottle.n.01) 
+                (?beer_bottle.n.01_x - beer_bottle.n.01) 
                 (exists 
-                    (?recycling_bin.n.01 - recycling_bin.n.01) 
-                    (inside ?beer_bottle.n.01 ?recycling_bin.n.01)
+                    (?recycling_bin.n.01_x - recycling_bin.n.01) 
+                    (inside ?beer_bottle.n.01_x ?recycling_bin.n.01_x)
                 )
             )
         )

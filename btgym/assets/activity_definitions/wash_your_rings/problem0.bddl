@@ -34,9 +34,9 @@
     (:goal 
         (and 
             (forall 
-                (?ring.n.08 - ring.n.08) 
+                (?ring.n.08_x - ring.n.08) 
                 (not 
-                    (covered ?ring.n.08 stain.n.01_1)
+                    (covered ?ring.n.08_x stain.n.01_1)
                 )
             )
         )

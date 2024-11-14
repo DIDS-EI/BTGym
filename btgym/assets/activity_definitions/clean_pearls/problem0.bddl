@@ -39,16 +39,16 @@
     (:goal 
         (and 
             (forall 
-                (?pearl.n.01 - pearl.n.01) 
+                (?pearl.n.01_x - pearl.n.01) 
                 (and 
                     (not 
-                        (covered ?pearl.n.01 stain.n.01_1)
+                        (covered ?pearl.n.01_x stain.n.01_1)
                     ) 
                     (not 
-                        (covered ?pearl.n.01 baby_oil.n.01_1)
+                        (covered ?pearl.n.01_x baby_oil.n.01_1)
                     ) 
                     (not 
-                        (covered ?pearl.n.01 water.n.06_1)
+                        (covered ?pearl.n.01_x water.n.06_1)
                     )
                 )
             )

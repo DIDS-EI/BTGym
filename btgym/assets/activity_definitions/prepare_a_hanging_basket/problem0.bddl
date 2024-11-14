@@ -24,8 +24,8 @@
     (:goal 
         (and 
             (forall 
-                (?pottable__marigold.n.01 - pottable__marigold.n.01) 
-                (inside ?pottable__marigold.n.01 pot.n.04_1)
+                (?pottable__marigold.n.01_x - pottable__marigold.n.01) 
+                (inside ?pottable__marigold.n.01_x pot.n.04_1)
             )
         )
     )

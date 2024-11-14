@@ -76,10 +76,10 @@
         (and 
             (real cooked__diced__clove.n.01_1) 
             (forall 
-                (?prawn.n.01 - prawn.n.01) 
+                (?prawn.n.01_x - prawn.n.01) 
                 (and 
-                    (cooked ?prawn.n.01) 
-                    (inside ?prawn.n.01 frying_pan.n.01_1)
+                    (cooked ?prawn.n.01_x) 
+                    (inside ?prawn.n.01_x frying_pan.n.01_1)
                 )
             ) 
             (contains frying_pan.n.01_1 cooked__diced__clove.n.01_1) 

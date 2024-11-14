@@ -36,13 +36,13 @@
     (:goal 
         (and 
             (forall 
-                (?tile.n.01 - tile.n.01) 
+                (?tile.n.01_x - tile.n.01) 
                 (and 
                     (not 
-                        (covered ?tile.n.01 stain.n.01_1)
+                        (covered ?tile.n.01_x stain.n.01_1)
                     ) 
-                    (covered ?tile.n.01 bleaching_agent.n.01_1) 
-                    (ontop ?tile.n.01 floor.n.01_1)
+                    (covered ?tile.n.01_x bleaching_agent.n.01_1) 
+                    (ontop ?tile.n.01_x floor.n.01_1)
                 )
             )
         )

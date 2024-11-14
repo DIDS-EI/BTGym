@@ -22,8 +22,8 @@
     (:goal 
         (and 
             (forall 
-                (?mail.n.04 - mail.n.04) 
-                (ontop ?mail.n.04 coffee_table.n.01_1)
+                (?mail.n.04_x - mail.n.04) 
+                (ontop ?mail.n.04_x coffee_table.n.01_1)
             ) 
             (not 
                 (open mailbox.n.01_1)

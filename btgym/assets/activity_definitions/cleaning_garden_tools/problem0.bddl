@@ -69,12 +69,12 @@
             ) 
             (nextto rake.n.03_1 rail_fence.n.01_1) 
             (forall 
-                (?glove.n.02 - glove.n.02) 
+                (?glove.n.02_x - glove.n.02) 
                 (and 
                     (not 
-                        (covered ?glove.n.02 mud.n.03_1)
+                        (covered ?glove.n.02_x mud.n.03_1)
                     ) 
-                    (inside ?glove.n.02 carton.n.02_1)
+                    (inside ?glove.n.02_x carton.n.02_1)
                 )
             )
         )

@@ -41,10 +41,10 @@
     (:goal 
         (and 
             (forall 
-                (?rib.n.03 - rib.n.03) 
+                (?rib.n.03_x - rib.n.03) 
                 (and 
-                    (cooked ?rib.n.03) 
-                    (covered ?rib.n.03 barbecue_sauce.n.01_1)
+                    (cooked ?rib.n.03_x) 
+                    (covered ?rib.n.03_x barbecue_sauce.n.01_1)
                 )
             )
         )

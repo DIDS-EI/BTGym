@@ -40,10 +40,10 @@
             (real half__eggplant.n.01_1) 
             (real half__eggplant.n.01_2) 
             (forall 
-                (?half__eggplant.n.01 - half__eggplant.n.01) 
+                (?half__eggplant.n.01_x - half__eggplant.n.01) 
                 (and 
-                    (cooked ?half__eggplant.n.01) 
-                    (ontop feta.n.01_1 ?half__eggplant.n.01)
+                    (cooked ?half__eggplant.n.01_x) 
+                    (ontop feta.n.01_1 ?half__eggplant.n.01_x)
                 )
             )
         )

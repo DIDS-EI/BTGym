@@ -78,8 +78,8 @@
             (real cheese_tart.n.01_5) 
             (real cheese_tart.n.01_6) 
             (forall 
-                (?cheese_tart.n.01 - cheese_tart.n.01) 
-                (cooked ?cheese_tart.n.01)
+                (?cheese_tart.n.01_x - cheese_tart.n.01) 
+                (cooked ?cheese_tart.n.01_x)
             )
         )
     )

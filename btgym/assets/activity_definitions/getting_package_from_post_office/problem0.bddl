@@ -34,8 +34,8 @@
     (:goal 
         (and 
             (exists 
-                (?package.n.02 - package.n.02) 
-                (ontop ?package.n.02 desk.n.01_1)
+                (?package.n.02_x - package.n.02) 
+                (ontop ?package.n.02_x desk.n.01_1)
             )
         )
     )

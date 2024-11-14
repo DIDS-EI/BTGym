@@ -32,16 +32,16 @@
     (:goal 
         (and 
             (forall 
-                (?newspaper.n.03 - newspaper.n.03) 
-                (inside ?newspaper.n.03 recycling_bin.n.01_1)
+                (?newspaper.n.03_x - newspaper.n.03) 
+                (inside ?newspaper.n.03_x recycling_bin.n.01_1)
             ) 
             (forall 
-                (?magazine.n.02 - magazine.n.02) 
-                (inside ?magazine.n.02 shelf.n.01_1)
+                (?magazine.n.02_x - magazine.n.02) 
+                (inside ?magazine.n.02_x shelf.n.01_1)
             ) 
             (forall 
-                (?mail.n.04 - mail.n.04) 
-                (inside ?mail.n.04 shelf.n.01_1)
+                (?mail.n.04_x - mail.n.04) 
+                (inside ?mail.n.04_x shelf.n.01_1)
             ) 
             (ontop comic_book.n.01_1 shelf.n.01_1)
         )

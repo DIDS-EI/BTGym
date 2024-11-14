@@ -22,11 +22,11 @@
     (:goal 
         (and 
             (forall 
-                (?package.n.02 - package.n.02) 
+                (?package.n.02_x - package.n.02) 
                 (and 
                     (or 
-                        (inside ?package.n.02 mailbox.n.01_1) 
-                        (nextto ?package.n.02 mailbox.n.01_1)
+                        (inside ?package.n.02_x mailbox.n.01_1) 
+                        (nextto ?package.n.02_x mailbox.n.01_1)
                     )
                 )
             )

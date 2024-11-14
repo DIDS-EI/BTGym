@@ -38,11 +38,11 @@
             (real half__bell_pepper.n.01_1) 
             (real half__bell_pepper.n.01_2) 
             (forall 
-                (?half__bell_pepper.n.01 - half__bell_pepper.n.01) 
+                (?half__bell_pepper.n.01_x - half__bell_pepper.n.01) 
                 (and 
-                    (covered ?half__bell_pepper.n.01 white_rice.n.01_1) 
-                    (covered ?half__bell_pepper.n.01 diced__chili.n.01_1) 
-                    (ontop ?half__bell_pepper.n.01 plate.n.04_1)
+                    (covered ?half__bell_pepper.n.01_x white_rice.n.01_1) 
+                    (covered ?half__bell_pepper.n.01_x diced__chili.n.01_1) 
+                    (ontop ?half__bell_pepper.n.01_x plate.n.04_1)
                 )
             )
         )

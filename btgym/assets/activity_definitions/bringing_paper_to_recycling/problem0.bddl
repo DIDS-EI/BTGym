@@ -21,8 +21,8 @@
     (:goal 
         (and 
             (forall 
-                (?paper.n.01 - paper.n.01) 
-                (inside ?paper.n.01 recycling_bin.n.01_1)
+                (?paper.n.01_x - paper.n.01) 
+                (inside ?paper.n.01_x recycling_bin.n.01_1)
             ) 
             (not 
                 (open recycling_bin.n.01_1)

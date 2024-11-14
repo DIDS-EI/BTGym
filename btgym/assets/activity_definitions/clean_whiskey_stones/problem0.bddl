@@ -34,13 +34,13 @@
     (:goal 
         (and 
             (forall 
-                (?whiskey_stone.n.01 - whiskey_stone.n.01) 
+                (?whiskey_stone.n.01_x - whiskey_stone.n.01) 
                 (and 
                     (not 
-                        (covered ?whiskey_stone.n.01 whiskey.n.01_1)
+                        (covered ?whiskey_stone.n.01_x whiskey.n.01_1)
                     ) 
                     (not 
-                        (covered ?whiskey_stone.n.01 water.n.06_1)
+                        (covered ?whiskey_stone.n.01_x water.n.06_1)
                     )
                 )
             )

@@ -39,10 +39,10 @@
     (:goal 
         (and 
             (forall 
-                (?bell_pepper.n.02 - bell_pepper.n.02) 
+                (?bell_pepper.n.02_x - bell_pepper.n.02) 
                 (and 
-                    (cooked ?bell_pepper.n.02) 
-                    (covered ?bell_pepper.n.02 hummus.n.01_1)
+                    (cooked ?bell_pepper.n.02_x) 
+                    (covered ?bell_pepper.n.02_x hummus.n.01_1)
                 )
             )
         )

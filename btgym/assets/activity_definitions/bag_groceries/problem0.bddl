@@ -27,20 +27,20 @@
     (:goal 
         (and 
             (exists 
-                (?sack.n.01 - sack.n.01) 
-                (inside canned_food.n.01_1 ?sack.n.01)
+                (?sack.n.01_x - sack.n.01) 
+                (inside canned_food.n.01_1 ?sack.n.01_x)
             ) 
             (exists 
-                (?sack.n.01 - sack.n.01) 
-                (inside egg.n.02_1 ?sack.n.01)
+                (?sack.n.01_x - sack.n.01) 
+                (inside egg.n.02_1 ?sack.n.01_x)
             ) 
             (exists 
-                (?sack.n.01 - sack.n.01) 
-                (inside bottle__of__orange_juice.n.01_1 ?sack.n.01)
+                (?sack.n.01_x - sack.n.01) 
+                (inside bottle__of__orange_juice.n.01_1 ?sack.n.01_x)
             ) 
             (exists 
-                (?sack.n.01 - sack.n.01) 
-                (inside apple.n.01_1 ?sack.n.01)
+                (?sack.n.01_x - sack.n.01) 
+                (inside apple.n.01_1 ?sack.n.01_x)
             )
         )
     )

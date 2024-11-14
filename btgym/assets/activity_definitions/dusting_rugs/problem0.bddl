@@ -24,9 +24,9 @@
     (:goal 
         (and 
             (forall 
-                (?rug.n.01 - rug.n.01) 
+                (?rug.n.01_x - rug.n.01) 
                 (not 
-                    (covered ?rug.n.01 dust.n.01_1)
+                    (covered ?rug.n.01_x dust.n.01_1)
                 )
             )
         )

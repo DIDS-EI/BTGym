@@ -31,8 +31,8 @@
     (:goal 
         (and 
             (forall 
-                (?kabob.n.01 - kabob.n.01) 
-                (inside ?kabob.n.01 tupperware.n.01_1)
+                (?kabob.n.01_x - kabob.n.01) 
+                (inside ?kabob.n.01_x tupperware.n.01_1)
             ) 
             (inside tupperware.n.01_1 electric_refrigerator.n.01_1) 
             (not 

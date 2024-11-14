@@ -47,8 +47,8 @@
                 (saturated quilt.n.01_2 water.n.06_1)
             ) 
             (forall 
-                (?tennis_ball.n.01 - tennis_ball.n.01) 
-                (inside ?tennis_ball.n.01 clothes_dryer.n.01_1)
+                (?tennis_ball.n.01_x - tennis_ball.n.01) 
+                (inside ?tennis_ball.n.01_x clothes_dryer.n.01_1)
             )
         )
     )

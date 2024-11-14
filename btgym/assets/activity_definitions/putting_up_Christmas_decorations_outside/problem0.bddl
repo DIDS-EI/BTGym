@@ -28,20 +28,20 @@
     (:goal 
         (and 
             (exists 
-                (?wall_nail.n.01 - wall_nail.n.01) 
-                (attached icicle_lights.n.01_1 ?wall_nail.n.01)
+                (?wall_nail.n.01_x - wall_nail.n.01) 
+                (attached icicle_lights.n.01_1 ?wall_nail.n.01_x)
             ) 
             (exists 
-                (?wall_nail.n.01 - wall_nail.n.01) 
-                (attached wreath.n.01_1 ?wall_nail.n.01)
+                (?wall_nail.n.01_x - wall_nail.n.01) 
+                (attached wreath.n.01_1 ?wall_nail.n.01_x)
             ) 
             (forall 
-                (?glass_lantern.n.01 - glass_lantern.n.01) 
-                (ontop ?glass_lantern.n.01 lawn.n.01_1)
+                (?glass_lantern.n.01_x - glass_lantern.n.01) 
+                (ontop ?glass_lantern.n.01_x lawn.n.01_1)
             ) 
             (forall 
-                (?poinsettia.n.01 - poinsettia.n.01) 
-                (ontop ?poinsettia.n.01 lawn.n.01_1)
+                (?poinsettia.n.01_x - poinsettia.n.01) 
+                (ontop ?poinsettia.n.01_x lawn.n.01_1)
             )
         )
     )

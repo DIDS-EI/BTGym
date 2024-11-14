@@ -37,38 +37,38 @@
     (:goal 
         (and 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
+                (?tupperware.n.01_x - tupperware.n.01) 
                 (forall 
-                    (?bell_pepper.n.02 - bell_pepper.n.02) 
+                    (?bell_pepper.n.02_x - bell_pepper.n.02) 
                     (and 
-                        (inside ?bell_pepper.n.02 ?tupperware.n.01) 
-                        (frozen ?bell_pepper.n.02)
+                        (inside ?bell_pepper.n.02_x ?tupperware.n.01_x) 
+                        (frozen ?bell_pepper.n.02_x)
                     )
                 )
             ) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
+                (?tupperware.n.01_x - tupperware.n.01) 
                 (forall 
-                    (?half__zucchini.n.01 - half__zucchini.n.01) 
+                    (?half__zucchini.n.01_x - half__zucchini.n.01) 
                     (and 
-                        (inside ?half__zucchini.n.01 ?tupperware.n.01) 
-                        (frozen ?half__zucchini.n.01)
+                        (inside ?half__zucchini.n.01_x ?tupperware.n.01_x) 
+                        (frozen ?half__zucchini.n.01_x)
                     )
                 )
             ) 
             (exists 
-                (?tupperware.n.01 - tupperware.n.01) 
+                (?tupperware.n.01_x - tupperware.n.01) 
                 (forall 
-                    (?carrot.n.03 - carrot.n.03) 
+                    (?carrot.n.03_x - carrot.n.03) 
                     (and 
-                        (inside ?carrot.n.03 ?tupperware.n.01) 
-                        (frozen ?carrot.n.03)
+                        (inside ?carrot.n.03_x ?tupperware.n.01_x) 
+                        (frozen ?carrot.n.03_x)
                     )
                 )
             ) 
             (forall 
-                (?tupperware.n.01 - tupperware.n.01) 
-                (inside ?tupperware.n.01 electric_refrigerator.n.01_1)
+                (?tupperware.n.01_x - tupperware.n.01) 
+                (inside ?tupperware.n.01_x electric_refrigerator.n.01_1)
             )
         )
     )

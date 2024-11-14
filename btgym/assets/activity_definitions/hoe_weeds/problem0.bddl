@@ -26,8 +26,8 @@
     (:goal 
         (and 
             (forall 
-                (?weed.n.01 - weed.n.01) 
-                (inside ?weed.n.01 ashcan.n.01_1)
+                (?weed.n.01_x - weed.n.01) 
+                (inside ?weed.n.01_x ashcan.n.01_1)
             )
         )
     )

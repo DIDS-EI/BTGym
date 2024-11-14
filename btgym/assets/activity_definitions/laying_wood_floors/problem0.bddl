@@ -24,16 +24,16 @@
     (:goal 
         (and 
             (forall 
-                (?plywood.n.01 - plywood.n.01) 
-                (ontop ?plywood.n.01 floor.n.01_2)
+                (?plywood.n.01_x - plywood.n.01) 
+                (ontop ?plywood.n.01_x floor.n.01_2)
             ) 
             (forall 
-                (?plywood.n.01 - plywood.n.01) 
+                (?plywood.n.01_x - plywood.n.01) 
                 (or 
-                    (nextto ?plywood.n.01 plywood.n.01_1) 
-                    (nextto ?plywood.n.01 plywood.n.01_2) 
-                    (nextto ?plywood.n.01 plywood.n.01_3) 
-                    (nextto ?plywood.n.01 plywood.n.01_4)
+                    (nextto ?plywood.n.01_x plywood.n.01_1) 
+                    (nextto ?plywood.n.01_x plywood.n.01_2) 
+                    (nextto ?plywood.n.01_x plywood.n.01_3) 
+                    (nextto ?plywood.n.01_x plywood.n.01_4)
                 )
             )
         )

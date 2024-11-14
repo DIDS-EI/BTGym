@@ -45,8 +45,8 @@
     (:goal 
         (and 
             (forall 
-                (?tofu.n.02 - tofu.n.02) 
-                (cooked ?tofu.n.02)
+                (?tofu.n.02_x - tofu.n.02) 
+                (cooked ?tofu.n.02_x)
             )
         )
     )

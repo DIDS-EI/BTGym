@@ -29,9 +29,9 @@
     (:goal 
         (and 
             (forall 
-                (?switch.n.01 - switch.n.01) 
+                (?switch.n.01_x - switch.n.01) 
                 (not 
-                    (toggled_on ?switch.n.01)
+                    (toggled_on ?switch.n.01_x)
                 )
             )
         )

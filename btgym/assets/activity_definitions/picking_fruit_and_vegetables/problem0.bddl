@@ -38,42 +38,42 @@
         (and 
             (inside pineapple.n.02_1 shopping_basket.n.01_1) 
             (forall 
-                (?eggplant.n.01 - eggplant.n.01) 
+                (?eggplant.n.01_x - eggplant.n.01) 
                 (and 
                     (imply 
                         (not 
-                            (covered ?eggplant.n.01 stain.n.01_1)
+                            (covered ?eggplant.n.01_x stain.n.01_1)
                         ) 
-                        (inside ?eggplant.n.01 shopping_basket.n.01_1)
+                        (inside ?eggplant.n.01_x shopping_basket.n.01_1)
                     ) 
                     (imply 
                         (covered eggplant.n.01_1 stain.n.01_1) 
                         (not 
-                            (inside ?eggplant.n.01 shopping_basket.n.01_1)
+                            (inside ?eggplant.n.01_x shopping_basket.n.01_1)
                         )
                     )
                 )
             ) 
             (forall 
-                (?zucchini.n.02 - zucchini.n.02) 
+                (?zucchini.n.02_x - zucchini.n.02) 
                 (and 
                     (imply 
                         (not 
-                            (covered ?zucchini.n.02 stain.n.01_1)
+                            (covered ?zucchini.n.02_x stain.n.01_1)
                         ) 
-                        (inside ?zucchini.n.02 shopping_basket.n.01_1)
+                        (inside ?zucchini.n.02_x shopping_basket.n.01_1)
                     ) 
                     (imply 
-                        (covered ?zucchini.n.02 stain.n.01_1) 
+                        (covered ?zucchini.n.02_x stain.n.01_1) 
                         (not 
-                            (inside ?zucchini.n.02 shopping_basket.n.01_1)
+                            (inside ?zucchini.n.02_x shopping_basket.n.01_1)
                         )
                     )
                 )
             ) 
             (forall 
-                (?mango.n.02 - mango.n.02) 
-                (inside ?mango.n.02 shopping_basket.n.01_1)
+                (?mango.n.02_x - mango.n.02) 
+                (inside ?mango.n.02_x shopping_basket.n.01_1)
             ) 
             (not 
                 (inside half__mango.n.01_1 shopping_basket.n.01_1)

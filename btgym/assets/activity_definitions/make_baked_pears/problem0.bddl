@@ -58,13 +58,13 @@
             ) 
             (real granulated_sugar.n.01_1) 
             (forall 
-                (?pear.n.01 - pear.n.01) 
+                (?pear.n.01_x - pear.n.01) 
                 (and 
-                    (cooked ?pear.n.01) 
-                    (covered ?pear.n.01 granulated_sugar.n.01_1) 
+                    (cooked ?pear.n.01_x) 
+                    (covered ?pear.n.01_x granulated_sugar.n.01_1) 
                     (or 
-                        (covered ?pear.n.01 cooked__red_wine.n.01_1) 
-                        (covered ?pear.n.01 red_wine.n.01_1)
+                        (covered ?pear.n.01_x cooked__red_wine.n.01_1) 
+                        (covered ?pear.n.01_x red_wine.n.01_1)
                     )
                 )
             )

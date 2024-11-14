@@ -36,9 +36,9 @@
     (:goal 
         (and 
             (forall 
-                (?pinecone.n.01 - pinecone.n.01) 
+                (?pinecone.n.01_x - pinecone.n.01) 
                 (not 
-                    (covered ?pinecone.n.01 dirt.n.02_1)
+                    (covered ?pinecone.n.01_x dirt.n.02_1)
                 )
             )
         )

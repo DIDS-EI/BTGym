@@ -37,13 +37,13 @@
     (:goal 
         (and 
             (forall 
-                (?ski.n.01 - ski.n.01) 
+                (?ski.n.01_x - ski.n.01) 
                 (and 
                     (not 
-                        (covered ?ski.n.01 stain.n.01_1)
+                        (covered ?ski.n.01_x stain.n.01_1)
                     ) 
                     (not 
-                        (covered ?ski.n.01 snow.n.01_1)
+                        (covered ?ski.n.01_x snow.n.01_1)
                     )
                 )
             )

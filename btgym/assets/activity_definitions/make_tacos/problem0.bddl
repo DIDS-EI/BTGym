@@ -54,9 +54,9 @@
             (real diced__chili.n.01_1) 
             (real diced__vidalia_onion.n.01_1) 
             (forall 
-                (?tortilla.n.01 - tortilla.n.01) 
+                (?tortilla.n.01_x - tortilla.n.01) 
                 (and 
-                    (ontop ?tortilla.n.01 platter.n.01_1) 
+                    (ontop ?tortilla.n.01_x platter.n.01_1) 
                     (covered tortilla.n.01_1 cooked__ground_beef.n.01_1) 
                     (covered tortilla.n.01_1 grated_cheese.n.01_1) 
                     (covered tortilla.n.01_1 salsa.n.01_1) 
