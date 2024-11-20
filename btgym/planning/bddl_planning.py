@@ -125,16 +125,14 @@ if __name__ == "__main__":
 
 #     plan_multi_task(1016, debug=False)
     
-    success_list =  os.listdir(f"{ROOT_PATH}/../outputs/bddl_planning/success")
-#     success_count = len(success_list)
-#     failure_list =  os.listdir(f"{ROOT_PATH}/../outputs/bddl_planning/failures")
-#     failure_count = len(failure_list)
-#     print(f'''
-# Success count: {success_count},
-# Failure count: {failure_count},
-# Total: {success_count + failure_count},
-# Ratio: {success_count / (success_count + failure_count)}
-#           ''')
+    success_count = len(os.listdir(f"{ROOT_PATH}/../outputs/bddl_planning/success"))
+    failure_count = len(os.listdir(f"{ROOT_PATH}/../outputs/bddl_planning/failures"))
+    print(f'''
+Success count: {success_count},
+Failure count: {failure_count},
+Total: {success_count + failure_count},
+Ratio: {success_count / (success_count + failure_count)}
+          ''')
 
     success_list.sort()
 
