@@ -1,8 +1,6 @@
 import json
-import logging
 import os
-import time
-import torch as th
+from btgym.execution.display_robot_map import RobotMapDisplay
 import yaml
 
 import omnigibson as og
@@ -10,32 +8,9 @@ from omnigibson.action_primitives.starter_semantic_action_primitives import (
     StarterSemanticActionPrimitives,
     StarterSemanticActionPrimitiveSet,
 )
-from omnigibson.macros import gm
 from btgym.utils.path import ROOT_PATH
-from omnigibson.tasks.behavior_task import BehaviorTask
-
-log_path = os.path.dirname(__file__)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-# 创建文件处理程序，将日志写入文件
-file_handler = logging.FileHandler(f'{log_path}/logfile.log')
-file_handler.setLevel(logging.INFO)
-
-# 创建日志格式器并将其添加到处理程序
-formatter = logging.Formatter('%(message)s')
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
-
-# 将文件处理程序添加到日志记录器
-logger.addHandler(file_handler)
-
-def log(text):
-    logger.info(text)
-
-log('====== a new run ======')
-log('time: ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+from omnigibson.utils.asset_utils import get_og_scene_path
+from btgym.utils.logger import log
 
 
 action_map = {
@@ -55,7 +30,7 @@ print(len(task_scene_map))
 
 # Don't use GPU dynamics and use flatcache for performance boost
 # gm.USE_GPU_DYNAMICS = True
-# gm.ENABLE_FLATCACHE = False
+# gm.ENABLE_FLATCACHE = True
 
 
 def execute_controller(ctrl_gen, env):
@@ -79,20 +54,21 @@ def load_plan(plan_file):
 def execute_task_single(task_name, plan_file):
     action_list = load_plan(plan_file)
 
-    """
-    Demonstrates how to use the action primitives to solve a simple BEHAVIOR-1K task.
 
+    """
     It loads Benevolence_1_int with a robot, and the robot attempts to solve the
     picking_up_trash task using a hardcoded sequence of primitives.
     """
     # Load the config
-    config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
-    # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
+    # config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
+    config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
     config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
 
     # Update it to run a grocery shopping task
-    config["scene"]["scene_model"] = task_scene_map[task_name][0]
-    # config["scene"]["load_task_relevant_only"] = True
+    scene_name = task_scene_map[task_name][0]
+    config["scene"]["scene_model"] = scene_name
+    log(f'scene: {scene_name}')
+    config["scene"]["load_task_relevant_only"] = True
     # config["scene"]["not_load_object_categories"] = ["ceilings"]
     config["task"] = {
         "type": "BehaviorTask",
@@ -102,6 +78,8 @@ def execute_task_single(task_name, plan_file):
         "predefined_problem": None,
         "online_object_sampling": False,
     }
+
+    show_map(scene_name)
 
     # Load the environment
     env = og.Environment(configs=config)
@@ -134,11 +112,38 @@ def execute_task_single(task_name, plan_file):
     # print("Finished executing place")
 
 
+def check_system(plan_file):
+    action_list = load_plan(plan_file)
+
+
+def show_map(scene_name):
+    scene_path = get_og_scene_path(scene_name)
+    map_path = os.path.join(get_og_scene_path(scene_name), "layout", "floor_trav_no_door_0.png")
+
+
+    # 创建RobotMapDisplay实例并启动
+    map_display = RobotMapDisplay(map_path)
+    map_display.start()
+
+
+
+
 if __name__ == "__main__":
-    # execute_task_single('picking_up_trash',f'{ROOT_PATH}/../outputs/bddl_planning/success/picking_up_trash')
-    start_idx = 8
-    task_num = 1
     plan_folder = f'{ROOT_PATH}/../outputs/bddl_planning/success'
-    for plan_file in os.listdir(plan_folder)[start_idx:start_idx+task_num]:
-        log("执行task: " + plan_file)
-        execute_task_single(plan_file, f'{plan_folder}/{plan_file}')
+
+    # start_idx = 9
+    # task_num = 1
+    # for plan_file in os.listdir(plan_folder)[start_idx:start_idx+task_num]:
+    #     log("执行task: " + plan_file)
+    #     execute_task_single(plan_file, f'{plan_folder}/{plan_file}')
+
+
+    # for plan_file in os.listdir(plan_folder)[start_idx:start_idx+task_num]:
+    #     log("检查system: " + plan_file)
+    #     execute_task_single(plan_file, f'{plan_folder}/{plan_file}')
+
+
+
+    task_name = 'putting_shoes_on_rack'
+    plan_file = f'{plan_folder}/{task_name}'
+    execute_task_single(task_name, plan_file)

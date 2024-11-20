@@ -1,4 +1,4 @@
-from btgym.envs.virtualhome.behavior_lib._base.VHCondition import VHCondition
+from btgym.cores.virtualhome.behavior_lib._base.VHCondition import VHCondition
 
 class IsLeftHandEmpty(VHCondition):
     can_be_expanded = True

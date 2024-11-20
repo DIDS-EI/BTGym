@@ -80,6 +80,7 @@ def main():
     execute_controller(controller.apply_ref(StarterSemanticActionPrimitiveSet.PLACE_ON_TOP, table), env)
     print("Finished executing place")
 
+    exit()
 
 if __name__ == "__main__":
     main()

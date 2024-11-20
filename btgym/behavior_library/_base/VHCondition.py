@@ -1,6 +1,6 @@
 from btgym.bt.base_nodes import Condition
 from btgym.bt import Status
-from btgym.envs.gridenv.minigrid_computation_env.base.WareHouseCondition import WareHouseCondition
+from btgym.cores.gridenv.minigrid_computation_env.base.WareHouseCondition import WareHouseCondition
 
 
 

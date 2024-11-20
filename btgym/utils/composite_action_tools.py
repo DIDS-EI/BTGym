@@ -2,7 +2,7 @@ import time
 
 from btgym.btgym.base.planning_agent import PlanningAgent
 from btgym.btgym.cabtgym import CABTGym
-from btgym.envs.gridenv.minigrid.planning_action import PlanningAction
+from btgym.cores.gridenv.minigrid.planning_action import PlanningAction
 from btgym.utils.tools import extract_parameters_from_action_name,extract_predicate_from_action_name,extract_agent_id_from_action_name
 from btgym.behavior_tree.btml.BTML import BTML
 from btgym.utils import parse_predicate_logic

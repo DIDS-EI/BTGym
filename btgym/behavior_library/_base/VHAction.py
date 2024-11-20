@@ -1,7 +1,7 @@
 from btgym.bt.base_nodes import Action
 from btgym.bt import Status
 
-from btgym.envs.gridenv.minigrid_computation_env.base.WareHouseAction import WareHouseAction
+from btgym.cores.gridenv.minigrid_computation_env.base.WareHouseAction import WareHouseAction
 
 class VHAction(WareHouseAction):
     can_be_expanded = True
