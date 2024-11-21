@@ -9,9 +9,13 @@ from btgym.utils.logger import log
 import numpy as np
 from btgym.core.simulator import Simulator
 
-from btgym.core.actions import action_map
+# from btgym.core.action_symbolic import action_symbolic_map as action_map
+# from btgym.core.action_symbolic import ActionPrimitives
 
-from btgym.core.actions import ActionPrimitives
+from btgym.core.action_starter import action_starter_map as action_map
+from btgym.core.action_starter import ActionPrimitives
+
+
 from btgym.utils.path import ROOT_PATH
 def create_ui(*args):
     ui = UI(*args)
@@ -35,8 +39,6 @@ class Controller:
     def __init__(self, simulator:Simulator):
         self.simulator = simulator
 
-        scene_name = self.simulator.get_scene_name()
-
         self.last_control_time = time.time()
         self.control_interval = 1/60
 
@@ -45,9 +47,7 @@ class Controller:
 
         log("Controller step log interval: {}".format(self.step_log_interval))
         
-        self.trav_map = self.get_scene_trav_map()
-        self.action_primitives = ActionPrimitives(self.simulator)
-
+        # self.trav_map = self.get_scene_trav_map()
 
         self.action_queue = queue.Queue()
         self.doing_task = False
@@ -58,8 +58,11 @@ class Controller:
         self.current_action = None
 
         self.idle_control = self.simulator.idle_control
+        self.goal_status_str = ""
 
     def do_task(self, task_name):
+        self.reset()
+        self.action_primitives = ActionPrimitives(self.simulator)
         self.doing_task = True
         self.action_list = self.load_plan(f'{ROOT_PATH}/../outputs/bddl_planning/success/{task_name}')
         self.execute_plan(self.action_list)
@@ -113,6 +116,7 @@ class Controller:
                 if predicate_satisfied:
                     success_goal_list.append(predicate_str)
             log(log_str)
+            self.goal_status_str = log_str
 
             if len(success_goal_list) >= goal_num:
                 log('Task completed!')

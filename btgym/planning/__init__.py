@@ -1,2 +1,2 @@
 
-from btgym.planning.planning import run_fast_downward
+from btgym.planning.run_downward import run_fast_downward

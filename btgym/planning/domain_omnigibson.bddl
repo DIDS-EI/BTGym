@@ -32,32 +32,11 @@
     )
     
 
-
-    ;; Open an object
-    (:action open
-        :parameters (?obj1)
-        :precondition (forall (?obj2) (not (grasped agent.n.01_1 ?obj2)))
-        :effect (open ?obj1)
-    )
-
-    (:action close
-        :parameters (?obj1)
-        :precondition (forall (?obj2) (not (grasped agent.n.01_1 ?obj2)))
-        :effect (not (open ?obj1))
-    )
-
     ;; Grasp an object
     (:action grasp
         :parameters (?obj1)
         :precondition (forall (?obj2) (not (grasped agent.n.01_1 ?obj2)))
         :effect (grasped agent.n.01_1 ?obj1)
-    )
-
-    ;; Release an object
-    (:action release
-        :parameters (?obj1)
-        :precondition (grasped agent.n.01_1 ?obj1)
-        :effect (not (grasped agent.n.01_1 ?obj1))
     )
 
     ;; Place the currently grasped object on top of another object
@@ -66,12 +45,4 @@
         :precondition (grasped agent.n.01_1  ?obj1)
         :effect (and (ontop ?obj1 ?obj2) (covered ?obj1 ?obj2) (not (grasped agent.n.01_1 ?obj1))) 
     )
-
-    ;; Place the currently grasped object inside another object
-    (:action place_inside
-        :parameters (?obj1 ?obj2)
-        :precondition (grasped agent.n.01_1 ?obj1)
-        :effect (and (contains ?obj1 ?obj2) (inside ?obj1 ?obj2) (not (grasped agent.n.01_1 ?obj1)))        ;;contains inside
-    )
-
 )

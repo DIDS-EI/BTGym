@@ -1,4 +1,4 @@
-from btgym.planning.planning import run_fast_downward
+from btgym.planning.run_downward import run_fast_downward
 from btgym.utils.path import ROOT_PATH
 from bddl.activity import Conditions 
 import tempfile
@@ -66,7 +66,7 @@ def plan_multi_task(num_tasks, debug=True):
 
 
     # 从文件中读取任务列表
-    with open(f"{ROOT_PATH}/assets/task_names.txt", "r") as file:
+    with open(f"{ROOT_PATH}/assets/tasks.txt", "r") as file:
         task_list = file.readlines()
         task_list.sort()
 
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     # exit()
 
 
-#     plan_multi_task(1016, debug=False)
+    plan_multi_task(1016, debug=False)
     
     success_count = len(os.listdir(f"{ROOT_PATH}/../outputs/bddl_planning/success"))
     failure_count = len(os.listdir(f"{ROOT_PATH}/../outputs/bddl_planning/failures"))
@@ -134,6 +134,7 @@ Total: {success_count + failure_count},
 Ratio: {success_count / (success_count + failure_count)}
           ''')
 
+    success_list = os.listdir(f"{ROOT_PATH}/../outputs/bddl_planning/success")
     success_list.sort()
 
     with open(f"{ROOT_PATH}/../outputs/bddl_planning/success_plan_list.txt", "w") as f:

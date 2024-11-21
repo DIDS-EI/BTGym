@@ -28,8 +28,6 @@ def main():
     It loads Rs_int with a robot, and the robot picks and places a bottle of cologne.
     """
 
-
-
     # Load the config
     config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
     config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)

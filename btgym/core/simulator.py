@@ -16,6 +16,10 @@ from btgym.utils.logger import log
 from omnigibson.robots.tiago import Tiago
 from btgym.utils.path import ROOT_PATH
 import json
+import torch as th
+import omnigibson.utils.transform_utils as T
+
+
 gm.ENABLE_FLATCACHE = True
 
 def execute_controller(ctrl_gen, env):
@@ -30,13 +34,39 @@ class Simulator:
 
     It loads Rs_int with a robot, and the robot picks and places a bottle of cologne.
 
-    task_list:
-    picking_up_trash
-    picking_up_toys
-    picking_up_books_at_library
-    putting_shoes_on_rack
-    putting_away_tools
-    putting_away_cleaning_supplies
+    valid task_list:
+store_firewood
+re_shelving_library_books
+putting_in_a_hot_tub
+place_houseplants_around_your_home
+buy_boxes_for_packing
+set_up_a_home_office_in_your_garage
+getting_package_from_post_office
+buying_office_supplies
+bringing_in_wood
+shopping_at_warehouse_stores
+setting_up_room_for_games
+putting_shoes_on_rack
+buy_alcohol
+paying_for_purchases
+buy_candle_making_supplies
+carrying_out_garden_furniture
+buy_a_keg
+bringing_newspaper_in
+buy_a_good_avocado
+buy_dog_food
+moving_boxes_to_storage
+lighting_fireplace
+picking_up_take_out_food
+laying_tile_floors
+collecting_childrens_toys
+rearrange_your_room
+taking_trash_outside
+collecting_mail_from_the_letterbox
+fold_a_tortilla
+buy_basic_garden_tools
+collecting_wood
+
     """
 
     def __init__(self):
@@ -153,9 +183,7 @@ class Simulator:
 
         # self.action_primitives = StarterSemanticActionPrimitives(self.og_sim, enable_head_tracking=False)
         og.sim.enable_viewer_camera_teleoperation()
-
-    def set_viewer_camera_pose(self, position, orientation):
-        og.sim.viewer_camera.set_position_orientation(position=position, orientation=orientation)
+        self.set_camera_lookat_robot()
 
     def reset(self):
         self.og_sim.reset()
@@ -174,7 +202,28 @@ class Simulator:
                 # self.og_sim.step(self.action_primitives._empty_action())
                 # log('robot step !!!')
 
+    def set_viewer_camera_pose(self, position, orientation):
+        og.sim.viewer_camera.set_position_orientation(position=position, orientation=orientation)
 
+    def set_camera_lookat_robot(self):
+        #设置
+        robot_pos, robot_quat = self.robot.get_position_orientation()
+        # 计算机器人前方向量
+        forward_dir = T.quat2mat(robot_quat)[:3, 0]  # 取旋转矩阵的第一列作为前方向量
+        # 计算前方1米的位置
+        camera_pos = robot_pos + forward_dir * 1.0
+        camera_pos[2] = 2
+
+        # 计算与y轴的夹角
+        y_axis = th.tensor([0.0, 1.0, 0.0])
+        angle = th.acos(th.dot(-forward_dir, y_axis) / (th.norm(-forward_dir) * th.norm(y_axis)))
+        angle = th.sign(forward_dir[0])*angle
+
+        camera_quat = T.euler2quat(th.tensor([0.45,0,angle]))
+        og.sim.viewer_camera.set_position_orientation(camera_pos, camera_quat)
+
+
+            
     def add_control(self,control):
         self.control_queue.put(control)
 
