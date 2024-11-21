@@ -1,0 +1,17 @@
+def stage3_subgoal_constraint1(end_effector, keypoints):
+    """The red pen must still stay upright (parallel to the z-axis)."""
+    pen_base = keypoints[3]
+    pen_top = keypoints[4]
+    pen_vector = pen_top - pen_base
+    z_axis = np.array([0, 0, 1])
+    cost = 1 - np.dot(pen_vector, z_axis) / (np.linalg.norm(pen_vector) * np.linalg.norm(z_axis))
+    return cost
+
+def stage3_subgoal_constraint2(end_effector, keypoints):
+    """The red pen is 10cm above the black pen holder opening."""
+    pen_tip = keypoints[3]
+    holder_opening_center = keypoints[6]  # Assume the center of the holder is defined
+    offsetted_point = holder_opening_center + np.array([0, 0, 0.1])  # 10cm above
+    cost = np.linalg.norm(pen_tip - offsetted_point)
+    return cost
+

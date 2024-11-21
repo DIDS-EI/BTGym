@@ -1,0 +1,9 @@
+def stage2_subgoal_constraint1(end_effector, keypoints):
+    """The red pen is upright (parallel to the z-axis)."""
+    pen_base = keypoints[3]
+    pen_top = keypoints[4]
+    pen_vector = pen_top - pen_base
+    z_axis = np.array([0, 0, 1])
+    cost = 1 - np.dot(pen_vector, z_axis) / (np.linalg.norm(pen_vector) * np.linalg.norm(z_axis))
+    return cost
+
