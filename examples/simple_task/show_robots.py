@@ -41,6 +41,8 @@ def main(random_selection=False, headless=False, short_exec=False):
         # Log information
         og.log.info(f"Loaded {robot_name}")
         og.log.info(f"Moving {robot_name}")
+        
+        print(f"Loaded {robot_name}")
 
         if not headless:
             # Set viewer in front facing robot
