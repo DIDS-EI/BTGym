@@ -3,6 +3,16 @@ A Platform for Behavior Tree Designing and Planning
 
 # 安装
 
+
+## 安装OmniGibson
+
+```shell
+conda create -n omnigibson python=3.10 pytorch torchvision torchaudio pytorch-cuda=12.4 "numpy<2" -c pytorch -c nvidia
+```
+注意：
+- 安装pytorch-cuda=xxx的版本要和当前机器所用版本一致，如果cuda版本高于12.4，则安装12.4，否则安装兼容的[pytorch](https://pytorch.org/get-started/locally/)版本
+- 官方推荐的[cuda](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local)版本是11.8
+
 ## 安装BDDL
 BDDL是用来解析Behavior-1K任务的库
 

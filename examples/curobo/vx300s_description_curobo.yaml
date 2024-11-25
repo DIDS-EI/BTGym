@@ -1,0 +1,170 @@
+robot_cfg:
+  kinematics:
+    usd_path: "robot/vx300s/vx300s/vx300s.usd"
+    usd_robot_root: "/vx300s"
+    isaac_usd_path: ""
+    usd_flip_joints: {}
+    usd_flip_joint_limits: []
+
+    urdf_path: "robot/vx300s/vx300s.urdf"
+    asset_root_path: "robot/vx300s"
+
+    base_link: "base_link"
+    ee_link: "ee_gripper_link"
+    link_names: null
+    lock_joints: {
+      "left_finger": 0.057, "right_finger": 0.057}
+    extra_links: {"attached_object":{"parent_link_name": "ee_gripper_link" ,
+    "link_name": "attached_object", "fixed_transform": [0,0,0,1,0,0,0], "joint_type":"FIXED",
+    "joint_name": "attach_joint" }}
+
+
+    collision_link_names: [
+      'base_link',
+      'shoulder_link',
+      'upper_arm_link',
+      'upper_forearm_link',
+      'lower_forearm_link',
+      'wrist_link',
+      'gripper_link',
+      'gripper_bar_link',
+      'left_finger_link',
+      'right_finger_link',
+      'attached_object',
+    ] # List[str]
+    collision_spheres:
+      base_link:
+          - "center": [ 0.006, 0.024, 0.038 ]
+            "radius": 0.068
+          - "center": [ -0.006, -0.025, 0.038 ]
+            "radius": 0.068
+          - "center": [ -0.158, 0.002, 0.027 ]
+            "radius": 0.057
+          - "center": [ -0.109, 0.004, 0.027 ]
+            "radius": 0.057
+      shoulder_link:
+          - "center": [ 0.001, -0.027, 0.032 ]
+            "radius": 0.036
+          - "center": [ 0.0, 0.024, 0.036 ]
+            "radius": 0.036
+      upper_arm_link:
+          - "center": [ 0.0, 0.0, 0.1 ]
+            "radius": 0.025
+          - "center": [ 0.0, 0.0, 0.15 ]
+            "radius": 0.025
+          - "center": [ 0.0, 0.0, 0.2 ]
+            "radius": 0.025
+          - "center": [ 0.0, 0.0, 0.25 ]
+            "radius": 0.025
+          - "center": [ 0.0, 0.0, 0.3 ]
+            "radius": 0.025
+          - "center": [ 0.055, -0.008, 0.301 ]
+            "radius": 0.026
+          - "center": [ 0.04, 0.025, 0.301 ]
+            "radius": 0.026
+          - "center": [ -0.0, -0.002, 0.048 ]
+            "radius": 0.025
+          - "center": [ 0.028, -0.019, 0.301 ]
+            "radius": 0.025
+      upper_forearm_link:
+          - "center": [ 0.047, -0.004, -0.0 ]
+            "radius": 0.035
+          - "center": [ 0.041, 0.022, 0.001 ]
+            "radius": 0.034
+          - "center": [ 0.171, -0.0, -0.002 ]
+            "radius": 0.034
+          - "center": [ 0.046, -0.018, 0.0 ]
+            "radius": 0.035
+          - "center": [ 0.082, -0.007, 0.0 ]
+            "radius": 0.03
+          - "center": [ 0.119, 0.002, 0.0 ]
+            "radius": 0.03
+      lower_forearm_link:
+          - "center": [ 0.027, 0.015, -0.0 ]
+            "radius": 0.036
+          - "center": [ 0.084, -0.005, -0.0 ]
+            "radius": 0.036
+          - "center": [ 0.093, 0.006, 0.0 ]
+            "radius": 0.036
+          - "center": [ 0.022, 0.029, 0.001 ]
+            "radius": 0.036
+      wrist_link:
+          - "center": [ 0.053, 0.001, 0.021 ]
+            "radius": 0.024
+          - "center": [ 0.056, 0.0, 0.003 ]
+            "radius": 0.023
+      gripper_link:
+          - "center": [ 0.023, -0.0, 0.007 ]
+            "radius": 0.024
+          - "center": [ 0.018, 0.0, 0.021 ]
+            "radius": 0.024
+      gripper_bar_link:
+          - "center": [ 0.0, 0.05, 0.0 ]
+            "radius": 0.03
+          - "center": [ 0.0, -0.05, 0.0 ]
+            "radius": 0.03
+          - "center": [ 0.0, 0.0, 0.0 ]
+            "radius": 0.04
+      left_finger_link:
+          - "center": [ 0.03, 0.0, 0.015 ]
+            "radius": 0.02
+          - "center": [ 0.03, 0.0, -0.015 ]
+            "radius": 0.02
+          - "center": [ 0.01, 0.0, -0.015 ]
+            "radius": 0.02
+          - "center": [ 0.01, 0.0, 0.015 ]
+            "radius": 0.02
+          - "center": [ 0.05, 0.0, 0.01 ]
+            "radius": 0.02
+          - "center": [ 0.05, 0.0, -0.01 ]
+            "radius": 0.02
+      right_finger_link:
+          - "center": [ 0.03, 0.0, 0.015 ]
+            "radius": 0.02
+          - "center": [ 0.03, 0.0, -0.015 ]
+            "radius": 0.02
+          - "center": [ 0.01, 0.0, -0.015 ]
+            "radius": 0.02
+          - "center": [ 0.01, 0.0, 0.015 ]
+            "radius": 0.02
+          - "center": [ 0.05, 0.0, 0.01 ]
+            "radius": 0.02
+          - "center": [ 0.05, 0.0, -0.01 ]
+            "radius": 0.02
+
+
+    collision_sphere_buffer: 0.001
+    extra_collision_spheres: {
+      "attached_object": 4,
+    }
+    self_collision_ignore: {
+      "base_link": ["shoulder_link", "upper_arm_link"],
+      "shoulder_link": ["upper_arm_link", "upper_forearm_link"],
+      "upper_arm_link": ["upper_forearm_link", "lower_forearm_link", "wrist_link", "gripper_link", "gripper_bar_link", "left_finger_link", "right_finger_link"],
+      "upper_forearm_link": ["lower_forearm_link", "wrist_link", "gripper_link", "gripper_bar_link", "left_finger_link", "right_finger_link"],
+      "lower_forearm_link": ["wrist_link", "gripper_link", "gripper_bar_link", "left_finger_link", "right_finger_link", "attached_object"],
+      "wrist_link": ["gripper_link", "gripper_bar_link", "left_finger_link", "right_finger_link", "attached_object"],
+      "gripper_link": ["gripper_bar_link", "left_finger_link", "right_finger_link", "attached_object"],
+      "gripper_bar_link": ["left_finger_link", "right_finger_link", "attached_object"],
+      "left_finger_link": ["right_finger_link", "attached_object"],
+      "right_finger_link": ["attached_object"],
+      }
+    self_collision_buffer: {
+      'base_link': 0,
+      'shoulder_link': 0,
+      'upper_arm_link': 0,
+      'upper_forearm_link': 0,
+      'lower_forearm_link' : 0,
+      'attached_object': 0,
+      }
+
+    use_global_cumul: True
+    mesh_link_names:  null # List[str]
+
+    cspace:
+      joint_names: ["waist", "shoulder", "elbow", "forearm_roll", "wrist_angle", "wrist_rotate"]
+      retract_config:  [0.0, -0.849879, 0.258767, 0.0, 0.5664, 0.0, 0.057, 0.057]
+      null_space_weight:  [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+      cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+      max_jerk: 500.0
+      max_acceleration: 12.0
