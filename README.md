@@ -37,9 +37,7 @@ pip install pygccxml pyplusplus
 
 1. 直接用apt安装依赖
 ```shell
-sudo apt-get install libboost-all-dev
-sudo apt-get install cmake
-sudo apt-get update sudo apt-get install libeigen3-dev
+sudo apt-get install python3-dev libboost-all-dev cmake libeigen3-dev
 ```
 
 

@@ -5,10 +5,7 @@ import os
 import yaml
 
 import omnigibson as og
-from omnigibson.action_primitives.starter_semantic_action_primitives import (
-    StarterSemanticActionPrimitives,
-    StarterSemanticActionPrimitiveSet,
-)
+
 from omnigibson.macros import gm
 import omnigibson.utils.transform_utils as T
 import torch as th
@@ -93,7 +90,7 @@ def main():
     print(pose, direction)
     curobo_mg = CuRoboMotionGenerator(robot)
 
-    # trajectories = curobo_mg.compute_trajectories(pose, direction)
+    trajectories = curobo_mg.compute_trajectories(pose[0], pose[1])
     # print(trajectories)
     while True:
         og.sim.step()

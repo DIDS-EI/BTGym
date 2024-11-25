@@ -3,10 +3,7 @@ import os
 import yaml
 
 import omnigibson as og
-from omnigibson.action_primitives.starter_semantic_action_primitives import (
-    StarterSemanticActionPrimitives,
-    StarterSemanticActionPrimitiveSet,
-)
+
 from omnigibson.macros import gm
 import torch as th
 import time
