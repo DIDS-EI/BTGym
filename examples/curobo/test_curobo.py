@@ -146,7 +146,7 @@ def main():
     while True:
         og.sim.step()
  
-        
+
     # controller = StarterSemanticActionPrimitives(env, enable_head_tracking=False)
 
     # # Grasp of cologne

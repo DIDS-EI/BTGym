@@ -28,8 +28,13 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-outputs/
-tests/
+outputs/*
+tests/*
+**/videos/*
+**/vlm_query/*
+!**/vlm_query/pen/
+!**/vlm_query/prompt_template zh.txt
+!**/vlm_query/prompt_template.txt
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

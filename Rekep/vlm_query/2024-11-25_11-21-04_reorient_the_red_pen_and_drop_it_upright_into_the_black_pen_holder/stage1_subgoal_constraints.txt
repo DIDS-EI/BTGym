@@ -1,5 +1,0 @@
-def stage1_subgoal_constraint1(end_effector, keypoints):
-    """Align the end-effector with the red pen (keypoint 2)."""
-    red_pen = keypoints[2]
-    return np.linalg.norm(end_effector - red_pen)
-

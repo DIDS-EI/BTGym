@@ -153,3 +153,17 @@ cd btgym/planning/downward
 选择正确的 python 解释器 'ctrl+shift+p'
 在 vscode 中对 Pylance 重新禁用再启用
 
+如果 omnigison 库有波浪线，在settings.json中添加，XXX为本地安装的Omnigibson库路径
+```json
+"python.analysis.extraPaths": [
+    "XXX/Omnigibson"
+]
+```
+
+
+
+# 开发规范
+
+## 自己写的测试文件放在 tests 文件夹下
+
+tests 中的文件不会被github同步，所以一些不稳定、不需要共享的临时测试代码可以放在里面。

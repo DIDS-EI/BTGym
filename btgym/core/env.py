@@ -16,11 +16,13 @@ class Env:
     It loads Rs_int with a robot, and the robot picks and places a bottle of cologne.
     """
 
-    def __init__(self):
+    def __init__(self,enable_ui=True):
         # Load the config
         self.sim = Simulator()
         self.controller = Controller(self.sim)
-        self.ui = UI(self.controller,self.sim)
+        self.enable_ui = enable_ui
+        if enable_ui:
+            self.ui = UI(self.controller,self.sim)
 
     def run(self):
         while True:
@@ -29,7 +31,8 @@ class Env:
     def step(self):
         self.sim.step()
         self.controller.step()
-        self.ui.step()
+        if self:
+            self.ui.step()
 
 
 
