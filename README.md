@@ -48,7 +48,7 @@ mkdir -p build/Release
 cd build/Release
 cmake ../.. -DPYTHON_EXEC=/home/cxl/softwares/anaconda3/envs/omnigibson/bin/python #注意这里一定要把路径改成自己的omnigibson虚拟环境下的python可执行文件路径
 make -j 32 update_bindings
-make -j 32 # replace
+make -j 32
 ```
 
 

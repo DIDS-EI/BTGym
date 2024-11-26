@@ -112,7 +112,7 @@ def main():
     # 将当前位置和目标位置拼接在一起
     pos_sequence = th.cat([target_pos, target_pos], dim=0)  # 形状变为 [2, 3]
     quat_sequence = th.cat([target_quat, target_quat], dim=0)  # 形状变为 [2, 4]
-    
+
 
 
     # 创建运动规划器
