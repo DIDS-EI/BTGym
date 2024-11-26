@@ -65,7 +65,7 @@ def main():
             "name": "cologne",
             "category": "bottle_of_cologne",
             "model": "lyipur",
-            "position": [0.5, 0, 0.6],
+            "position": [0.5, -0.5, 0.6],
             "orientation": [0, 0, 0, 1],
         },
         {
@@ -74,7 +74,7 @@ def main():
             "category": "breakfast_table",
             "model": "rjgmmy",
             "scale": [0.3, 0.3, 0.7],
-            "position": [0.5, 0, 0.2],
+            "position": [0.5, -0.5, 0.2],
             "orientation": [0, 0, 0, 1],
         },
         {
