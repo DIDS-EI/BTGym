@@ -1,0 +1,122 @@
+robot_cfg:
+  kinematics:
+    usd_path: "models/fetch/fetch.usd"
+    usd_robot_root: "/fetch"
+    isaac_usd_path: ""
+    urdf_path: "models/fetch/fetch.urdf"
+    asset_root_path: "robot/fetch"
+    
+    base_link: "base_link"
+    ee_link: "gripper_link"
+  
+    usd_flip_joints: {
+      "torso_lift_joint": "Z",
+      "shoulder_pan_joint": "Z",
+      "shoulder_lift_joint": "Y",
+      "upperarm_roll_joint": "X",
+      "elbow_flex_joint": "Y",
+      "forearm_roll_joint": "X",
+      "wrist_flex_joint": "Y",
+      "wrist_roll_joint": "X",
+      "r_gripper_finger_joint": "Y",
+      "l_gripper_finger_joint": "Y"
+    }
+
+    collision_link_names: [
+      "base_link",
+      "torso_lift_link",
+      "shoulder_pan_link",
+      "shoulder_lift_link",
+      "upperarm_roll_link",
+      "elbow_flex_link",
+      "forearm_roll_link",
+      "wrist_flex_link",
+      "wrist_roll_link",
+      "r_gripper_finger_link",
+      "l_gripper_finger_link"
+    ]
+
+    collision_spheres:
+      base_link:
+        - "center": [-0.0036, 0.0, 0.0014]
+          "radius": 0.15
+      torso_lift_link:
+        - "center": [-0.0013, -0.0009, 0.2935]
+          "radius": 0.12
+      shoulder_pan_link:
+        - "center": [0.0927, -0.0056, 0.0564]
+          "radius": 0.10
+      shoulder_lift_link:
+        - "center": [0.1432, 0.0072, -0.0001]
+          "radius": 0.10
+      upperarm_roll_link:
+        - "center": [0.1165, 0.0014, 0.0]
+          "radius": 0.08
+      elbow_flex_link:
+        - "center": [0.1279, 0.0073, 0.0]
+          "radius": 0.08
+      forearm_roll_link:
+        - "center": [0.1097, -0.0266, 0.0]
+          "radius": 0.07
+      wrist_flex_link:
+        - "center": [0.0882, 0.0009, -0.0001]
+          "radius": 0.06
+      wrist_roll_link:
+        - "center": [0.0095, 0.0004, -0.0002]
+          "radius": 0.05
+      r_gripper_finger_link:
+        - "center": [0.0, -0.01, 0.0]
+          "radius": 0.02
+      l_gripper_finger_link:
+        - "center": [0.0, 0.01, 0.0]
+          "radius": 0.02
+
+    collision_sphere_buffer: 0.01
+    
+    self_collision_ignore:
+      {
+        "base_link": ["torso_lift_link"],
+        "torso_lift_link": ["shoulder_pan_link"],
+        "shoulder_pan_link": ["shoulder_lift_link", "upperarm_roll_link"],
+        "shoulder_lift_link": ["upperarm_roll_link", "elbow_flex_link"],
+        "upperarm_roll_link": ["elbow_flex_link", "forearm_roll_link"],
+        "elbow_flex_link": ["forearm_roll_link", "wrist_flex_link"],
+        "forearm_roll_link": ["wrist_flex_link", "wrist_roll_link"],
+        "wrist_flex_link": ["wrist_roll_link"],
+        "wrist_roll_link": ["r_gripper_finger_link", "l_gripper_finger_link"],
+        "r_gripper_finger_link": ["l_gripper_finger_link"]
+      }
+    
+    self_collision_buffer: {
+      "default": 0.02,
+      "base_link": 0.05,
+      "torso_lift_link": 0.03,
+      "shoulder_pan_link": 0.03,
+      "shoulder_lift_link": 0.03,
+      "upperarm_roll_link": 0.02,
+      "elbow_flex_link": 0.02,
+      "forearm_roll_link": 0.02,
+      "wrist_flex_link": 0.02,
+      "wrist_roll_link": 0.02,
+      "r_gripper_finger_link": 0.01,
+      "l_gripper_finger_link": 0.01
+    }
+
+    cspace:
+      joint_names: [
+        "torso_lift_joint",
+        "shoulder_pan_joint", 
+        "shoulder_lift_joint",
+        "upperarm_roll_joint", 
+        "elbow_flex_joint",
+        "forearm_roll_joint", 
+        "wrist_flex_joint",
+        "wrist_roll_joint",
+        "r_gripper_finger_joint",
+        "l_gripper_finger_joint"
+      ]
+      retract_config: [0.0, 0.0, -0.5, 0.0, -1.0, 0.0, -0.5, 0.0, 0.0, 0.0]
+      null_space_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.5]
+      cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.5]
+      max_acceleration: 4.0
+      max_jerk: 500.0

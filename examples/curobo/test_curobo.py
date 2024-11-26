@@ -29,15 +29,23 @@ def get_grasp_poses_for_object_sticky(target_obj):
     Returns:
         List of grasp candidates, where each grasp candidate is a tuple containing the grasp pose and the approach direction.
     """
+    # 获取物体的边界框信息
     bbox_center_in_world, bbox_quat_in_world, bbox_extent_in_base_frame, _ = target_obj.get_base_aligned_bbox(
         visual=False
     )
-
+    # 计算抓取中心位置
     grasp_center_pos = bbox_center_in_world + th.tensor([0, 0, th.max(bbox_extent_in_base_frame) + 0.05])
+    # 计算抓取方向
     towards_object_in_world_frame = bbox_center_in_world - grasp_center_pos
     towards_object_in_world_frame /= th.norm(towards_object_in_world_frame)
 
+    # 设置抓取方向（机器人末端执行器的姿态）
+    # 修改前：侧面抓取
     grasp_quat = T.euler2quat(th.tensor([0, math.pi / 2, 0], dtype=th.float32))
+    # 修改后：从上往下抓取
+    # 另一种从上往下的姿态
+    # grasp_quat = T.euler2quat(th.tensor([0, math.pi, 0], dtype=th.float32))
+
 
     grasp_pose = (grasp_center_pos, grasp_quat)
     grasp_candidate = [(grasp_pose, towards_object_in_world_frame)]
@@ -52,7 +60,8 @@ def main():
     """
     
     # Load the config
-    config_filename = os.path.join(os.path.dirname(__file__), "franka_primitives.yaml")
+    # config_filename = os.path.join(os.path.dirname(__file__), "franka_primitives.yaml")
+    config_filename = os.path.join(os.path.dirname(__file__), "fetch_primitives.yaml")
     # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
     config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
 
@@ -62,30 +71,38 @@ def main():
     config["objects"] = [
         {
             "type": "DatasetObject",
-            "name": "cologne",
-            "category": "bottle_of_cologne",
-            "model": "lyipur",
-            "position": [0.5, 0, 0.6],
+            "name": "apple",
+            "category": "apple",
+            "model": "agveuv",
+            "position": [0.5, 0, 0.3],
             "orientation": [0, 0, 0, 1],
         },
+        # {
+        #     "type": "DatasetObject",
+        #     "name": "cologne",
+        #     "category": "bottle_of_cologne",
+        #     "model": "lyipur",
+        #     "position": [0.5,0, 0.6],
+        #     "orientation": [0, 0, 0, 1],
+        # },
         {
             "type": "DatasetObject",
             "name": "table2",
             "category": "breakfast_table",
             "model": "rjgmmy",
-            "scale": [0.3, 0.3, 0.7],
+            "scale": [0.3, 0.3, 0.3],
             "position": [0.5, 0, 0.2],
             "orientation": [0, 0, 0, 1],
-        },
-        {
-            "type": "DatasetObject",
-            "name": "table",
-            "category": "breakfast_table",
-            "model": "rjgmmy",
-            "scale": [0.3, 0.3, 0.3],
-            "position": [-0.3, 0.2, 0.2],
-            "orientation": [0, 0, 0, 1],
-        },
+        }
+        # {
+        #     "type": "DatasetObject",
+        #     "name": "table",
+        #     "category": "breakfast_table",
+        #     "model": "rjgmmy",
+        #     "scale": [0.3, 0.3, 0.3],
+        #     "position": [-0.8, 0.2, 0.2],
+        #     "orientation": [0, 0, 0, 1],
+        # },
         
     ]
 
@@ -98,9 +115,10 @@ def main():
     og.sim.enable_viewer_camera_teleoperation()
     
     # 获取抓取姿态 
-    grasp_pose, object_direction = get_grasp_poses_for_object_sticky(scene.object_registry("name", "cologne"))[0]
+    # grasp_pose, object_direction = get_grasp_poses_for_object_sticky(scene.object_registry("name", "cologne"))[0]
+    grasp_pose, object_direction = get_grasp_poses_for_object_sticky(scene.object_registry("name", "apple"))[0]
     grasp_pos,grasp_quat = grasp_pose
-    grasp_pos = grasp_pos + object_direction * 0.3
+    # grasp_pos = grasp_pos + object_direction * 0.1
     # # 获取机器人当前末端执行器的位置和方向
     # current_pos = robot.get_eef_position().unsqueeze(0)  # 当前位置
     # current_quat = robot.get_eef_orientation().unsqueeze(0)  # 当前方向
@@ -116,22 +134,37 @@ def main():
 
 
     # 创建运动规划器
-    curobo_mg = CuRoboMotionGenerator(robot)
+    curobo_mg = CuRoboMotionGenerator(robot,robot_cfg_path="/home/admin01/workspace/OmniGibson/omnigibson/data/assets/models/fetch/fetch_description_curobo.yaml")
     # 计算运动轨迹
     #  使用运动规划器计算从当前位置到目标抓取姿态的轨迹，输入包括目标姿态 pose 和抓取方向 direction，返回的 trajectories 包含机器人关节的运动序列
     successes, paths = curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
     print("paths:",paths)
-    
+    # 打印夹爪的活动范围
+    # 1. 打印夹爪信息
+    # 方法1：通过机器人的关节信息
+    # print("All joint names:", robot.arm_joint_names)  # 打印所有关节名称
+    # All joint names:{'0': ['panda_joint1', 'panda_joint2', 'panda_joint3', 'panda_joint4', 'panda_joint5', 'panda_joint6', 'panda_joint7']}
+
 
     if successes[0]:  # 检查第一条轨迹是否成功
         # 将 JointState 转换为 joint trajectory tensor
         joint_trajectory = curobo_mg.path_to_joint_trajectory(paths[0])
         
+        max_time_i = len(joint_trajectory)
         # 执行轨迹
         for time_i,joint_positions in enumerate(joint_trajectory):
-            print(f"time_i: {time_i}, joint_positions: {joint_positions}")
             # 现在 joint_positions 已经是 tensor 格式
             # robot.set_joint_positions(joint_positions)
+            
+            # if time_i == max_time_i-1:
+            #     # 关闭夹爪
+
+            # else:
+            #     # 打开夹爪
+            
+            # 打开
+            # joint_positions[-2:] = th.tensor([1.0, 1.0], device='cuda:0')  # 使用更大的开合值
+            print(f"time_i: {time_i}, joint_positions: {joint_positions}")
             # 更新模拟器
             env.step(joint_positions.to('cpu'))
             # og.sim.step()
