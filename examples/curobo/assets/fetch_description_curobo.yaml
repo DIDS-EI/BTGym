@@ -152,21 +152,84 @@ robot_cfg:
       "l_gripper_finger_link": 0.01
     }
 
-    cspace:
-      joint_names: [
-        "torso_lift_joint",
-        "shoulder_pan_joint", 
-        "shoulder_lift_joint",
-        "upperarm_roll_joint", 
-        "elbow_flex_joint",
-        "forearm_roll_joint", 
-        "wrist_flex_joint",
-        "wrist_roll_joint",
-        "r_gripper_finger_joint",
-        "l_gripper_finger_joint"
-      ]
-      retract_config: [0.0, 0.0, -0.5, 0.0, -1.0, 0.0, -0.5, 0.0, 0.04, 0.04]
-      null_space_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-      cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-      max_acceleration: 15.0
-      max_jerk: 500.0
+
+            cspace:
+            joint_names: [ # 共25个关节
+              "r_wheel_joint",
+              "l_wheel_joint",
+              "torso_lift_joint",
+              "head_pan_joint",
+              "head_tilt_joint",
+              "shoulder_pan_joint", 
+              "shoulder_lift_joint",
+              "upperarm_roll_joint", 
+              "elbow_flex_joint",
+              "forearm_roll_joint", 
+              "wrist_flex_joint",
+              "wrist_roll_joint",
+              "r_gripper_finger_joint",
+              "l_gripper_finger_joint",
+
+              "bellows_joint",
+              "bellows_joint2",
+              "estop_joint",
+              "laser_joint",
+              "torso_fixed_joint",
+              "head_camera_joint",
+              "head_camera_rgb_joint"
+              "head_camera_rgb_optical_joint",
+              "head_camera_depth_joint",
+              "head_camera_depth_optical_joint",
+              "eye_joint"
+            ]
+            retract_config: [ #这个配置让Fetch机器人的手臂处于一个向后收缩的安全姿态，适合作为默认的收缩位置。
+                0.0,    # r_wheel_joint
+                0.0,    # l_wheel_joint
+                0.0,    # torso_lift_joint
+                0.0,    # head_pan_joint
+                0.0,    # head_tilt_joint
+                1.32,   # shoulder_pan_joint (手臂向后收缩)
+                1.40,   # shoulder_lift_joint (肩部抬起)
+                -0.2,   # upperarm_roll_joint
+                1.72,   # elbow_flex_joint (手肘弯曲)
+                0.0,    # forearm_roll_joint
+                1.66,   # wrist_flex_joint (手腕弯曲)
+                0.0,    # wrist_roll_joint
+                0.0,    # r_gripper_finger_joint
+                0.0,    # l_gripper_finger_joint
+                0.0,    # bellows_joint
+                0.0,    # bellows_joint2
+                0.0,    # estop_joint
+                0.0,    # laser_joint
+                0.0,    # torso_fixed_joint
+                0.0,    # head_camera_joint
+                0.0,    # head_camera_rgb_joint
+                0.0,    # head_camera_rgb_optical_joint
+                0.0,    # head_camera_depth_joint
+                0.0,    # head_camera_depth_optical_joint
+                0.0     # eye_joint
+            ]
+            null_space_weight:  [1.0, 1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0, 1.0]
+            cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+            max_jerk: 500.0
+            max_acceleration: 15.0
+            
+    # cspace:
+    #   joint_names: [
+    #     "torso_lift_joint",
+    #     "shoulder_pan_joint", 
+    #     "shoulder_lift_joint",
+    #     "upperarm_roll_joint", 
+    #     "elbow_flex_joint",
+    #     "forearm_roll_joint", 
+    #     "wrist_flex_joint",
+    #     "wrist_roll_joint",
+    #     "r_gripper_finger_joint",
+    #     "l_gripper_finger_joint"
+    #   ]
+    #   retract_config: [0.0, 0.0, -0.5, 0.0, -1.0, 0.0, -0.5, 0.0, 0.04, 0.04]
+    #   null_space_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    #   cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    #   max_acceleration: 15.0
+    #   max_jerk: 500.0
+  
