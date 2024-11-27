@@ -2,10 +2,11 @@
 robot_cfg:
   kinematics:
     usd_path: "models/fetch/fetch.usd"
-    usd_robot_root: "/fetch"
-    isaac_usd_path: ""
     urdf_path: "models/fetch/fetch.urdf"
     asset_root_path: "models/fetch"
+    usd_robot_root: "/fetch"
+    isaac_usd_path: ""
+
     
     base_link: "base_link"
     ee_link: "gripper_link"
