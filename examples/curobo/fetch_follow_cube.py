@@ -170,10 +170,6 @@ def main():
     og.sim.enable_viewer_camera_teleoperation()
     
 
-    # 等待环境稳定
-    for _ in range(10):
-        env.step(robot.get_joint_positions())
-    
 
     # grasp_pos = grasp_pos + object_direction * 0.2
     # # 获取机器人当前末端执行器的位置和方向
@@ -185,7 +181,7 @@ def main():
     # Make a target to follow
     target = cuboid.VisualCuboid(
         "/World/visual",
-        position=np.array([0.17, 0, 0.6]),
+        position=np.array([0.3, 0, 0.67]),
         orientation=np.array([0, 1, 0, 0]),
         color=np.array([1.0, 0, 0]),
         size=0.05,
