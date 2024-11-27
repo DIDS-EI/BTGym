@@ -1,6 +1,7 @@
+
 robot_cfg:
   kinematics:
-    usd_path: "models/franka/franka/franka_panda.usd"
+    usd_path: "/home/cxl/code_external/OmniGibson/omnigibson/data/assets/models/franka/franka_panda.usd"
     usd_robot_root: "/panda"
     isaac_usd_path: ""
     usd_flip_joints: ["panda_joint1","panda_joint2","panda_joint3","panda_joint4", "panda_joint5",
@@ -18,8 +19,8 @@ robot_cfg:
     }
     usd_flip_joint_limits: ["panda_finger_joint2"]
     
-    urdf_path: "models/franka/franka_panda.urdf"
-    asset_root_path: "robot/franka"
+    urdf_path: "/home/cxl/code_external/OmniGibson/omnigibson/data/assets/models/franka/franka_panda.urdf"
+    asset_root_path: "/home/cxl/code_external/OmniGibson/omnigibson/data/assets/models/franka"
     
     base_link: "panda_link0"
     ee_link: "panda_hand"

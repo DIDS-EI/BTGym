@@ -1,10 +1,11 @@
+
 robot_cfg:
   kinematics:
     usd_path: "models/fetch/fetch.usd"
     usd_robot_root: "/fetch"
     isaac_usd_path: ""
     urdf_path: "models/fetch/fetch.urdf"
-    asset_root_path: "robot/fetch"
+    asset_root_path: "models/fetch"
     
     base_link: "base_link"
     ee_link: "gripper_link"
@@ -115,6 +116,7 @@ robot_cfg:
           "radius": 0.02
         - "center": [0.04, 0.01, 0.0]
           "radius": 0.015
+
 
     collision_sphere_buffer: 0.002
     
