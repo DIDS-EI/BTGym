@@ -12,12 +12,12 @@ robot_cfg:
     usd_flip_joints: {
       "torso_lift_joint": "Z",
       "shoulder_pan_joint": "Z",
-      "shoulder_lift_joint": "Y",
-      "upperarm_roll_joint": "X",
-      "elbow_flex_joint": "Y",
-      "forearm_roll_joint": "X",
-      "wrist_flex_joint": "Y",
-      "wrist_roll_joint": "X",
+      "shoulder_lift_joint": "Z",
+      "upperarm_roll_joint": "Z",
+      "elbow_flex_joint": "Z",
+      "forearm_roll_joint": "Z",
+      "wrist_flex_joint": "Z",
+      "wrist_roll_joint": "Z",
       "r_gripper_finger_joint": "Y",
       "l_gripper_finger_joint": "Y"
     }
