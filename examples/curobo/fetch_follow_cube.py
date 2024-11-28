@@ -58,24 +58,47 @@ def get_grasp_poses_for_object_sticky(target_obj):
 
 def open_grisper(env):
     robot = env.robots[0]
-    current_joint_positions = robot.get_joint_positions()
-    current_joint_positions[-1] = 1
-    current_joint_positions[-2] = 1
+    # current_joint_positions = robot.get_joint_positions()
+    current_joint_positions = th.zeros(robot.n_joints)
+    current_joint_positions[-1] = 0.05 #1
+    current_joint_positions[-2] = 0.05 #1
     print(f"current_joint_positions: {current_joint_positions}")
     for i in range(100):
         env.step(current_joint_positions)
     # print(f"current_joint_positions: {current_joint_positions}")
 
-def close_grisper(env):
+def close_grisper(env,joint_positions):
     robot = env.robots[0]
-    current_joint_positions = robot.get_joint_positions()
-    current_joint_positions[-1] = -1
-    current_joint_positions[-2] = -1
+    current_joint_positions = th.zeros(robot.n_joints, device=joint_positions.device)
+    current_joint_positions[4:] = joint_positions
+    current_joint_positions[-1] = 0.0 #-1
+    current_joint_positions[-2] = 0.0 #-1
     print(f"current_joint_positions: {current_joint_positions}")
     for i in range(100):
         env.step(current_joint_positions)
     # print(f"current_joint_positions: {current_joint_positions}")
 
+# def is_object_grasped(env, target=None):
+#     """检查物体是否被抓取"""
+#     scene = env.scene
+#     robot = env.robots[0]
+#     # if obj_name!=None:
+#     #     target_obj = scene.object_registry("name", obj_name)
+#     cube_position, cube_orientation = target.get_world_pose()
+    
+#     # 获取夹爪的碰撞链接
+#     l_finger = robot.links["l_gripper_finger_link"]
+#     r_finger = robot.links["r_gripper_finger_link"]
+    
+#     # 检查物体是否与夹爪接触
+#     contacts_l = l_finger.get_contacts()
+#     contacts_r = r_finger.get_contacts()
+    
+#     # 检查接触的物体是否是目标物体
+#     for contact in contacts_l + contacts_r:
+#         if contact.other_link.prim_path == target_obj.prim_path:
+#             return True
+#     return False
 
 
 def reach_object(env, curobo_mg, obj_name, offest):
@@ -89,7 +112,10 @@ def reach_object(env, curobo_mg, obj_name, offest):
 def reach_pose(env, curobo_mg, pos,quat=None):
     robot = env.robots[0]
     if quat is None:
-        quat = T.euler2quat(th.tensor([0,math.pi,0], dtype=th.float32))
+        # math.pi/2 默认从上往下抓
+        # math.pi 从左往右边抓
+        quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认从上往下抓
+    
 
     # 将当前位置和目标位置拼接在一起
     pos_sequence = th.stack([pos, pos])  # 形状变为 [2, 3]
@@ -103,16 +129,40 @@ def reach_pose(env, curobo_mg, pos,quat=None):
         robot.set_joint_positions(new_jp, normalized=True)
     og.sim.step()
 
-    successes, paths = curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
+    # 1. 固定方向抓
+    # successes, paths = curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
     # # print("paths:",paths)
+    
+    # 2. 不固定方向抓
+    # 定义多个可能的抓取朝向
+    grasp_orientations = [
+        T.euler2quat(th.tensor([0, math.pi/2, 0], dtype=th.float32)),  # 从上方抓取
+        T.euler2quat(th.tensor([0, math.pi, 0], dtype=th.float32)),    # 从侧面抓取
+        T.euler2quat(th.tensor([0, 0, 0], dtype=th.float32)),          # 从正面抓取
+        T.euler2quat(th.tensor([0, 3*math.pi/4, 0], dtype=th.float32)) # 45度角抓取
+    ]
+    for grasp_quat in grasp_orientations:
+        pos_sequence = th.stack([pos, pos])
+        quat_sequence = th.stack([grasp_quat, grasp_quat])
+        try:
+            successes, paths = curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
+            if successes[0]:
+                break
+        except Exception as e:  # 规划失败，换个抓取方向再规划
+            print(f"Error: {e}")
+            continue
 
 
     if successes[0]:
 
         # 执行轨迹
         joint_trajectory = curobo_mg.path_to_joint_trajectory(paths[0])
-
+        # 打印轨迹
         print(joint_trajectory)
+        
+        # 打开夹爪
+        # open_grisper(env)
+        
         for time_i,joint_positions in enumerate(joint_trajectory):
             # joint_positions = joint_trajectory[-1]
             full_action = th.zeros(robot.n_joints, device=joint_positions.device)
@@ -122,8 +172,23 @@ def reach_pose(env, curobo_mg, pos,quat=None):
             
             # robot.set_joint_positions(full_action)
             
+            if time_i == len(joint_trajectory) - 1:
+                full_action[-1] = 0.0
+                full_action[-2] = 0.0
+            else:
+                full_action[-1] = 0.05
+                full_action[-2] = 0.05  
+
             print(f"time_i: {time_i}, full_action: {full_action}")
             env.step(full_action.to('cpu'))
+        
+        # 检查是否抓取成功
+        # if is_object_grasped(env):
+        #     print("抓取成功!")
+            
+
+        # # 关闭夹爪
+        # close_grisper(env,joint_positions)
 
 
 def reset_robot(env):
