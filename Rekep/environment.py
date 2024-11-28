@@ -25,8 +25,8 @@ from omnigibson.controllers.controller_base import ControlType, BaseController
 import torch
 
 # Don't use GPU dynamics and use flatcache for performance boost
-gm.USE_GPU_DYNAMICS = True
-gm.ENABLE_FLATCACHE = False
+# gm.USE_GPU_DYNAMICS = True
+# gm.ENABLE_FLATCACHE = False
 
 # some customization to the OG functions
 def custom_clip_control(self, control):

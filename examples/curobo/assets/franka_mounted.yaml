@@ -32,7 +32,7 @@ scene:
 
 robots:
   # - type: Fetch
-  - type: FrankaPanda
+  - type: FrankaMounted
     scale: 1.0
     self_collisions: true
     action_normalize: false

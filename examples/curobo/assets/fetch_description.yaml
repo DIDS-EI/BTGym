@@ -23,6 +23,9 @@ cspace:
     - forearm_roll_joint
     - wrist_flex_joint
     - wrist_roll_joint
+    - gripper_joint
+    - l_gripper_finger_joint
+    - r_gripper_finger_joint
 
 root_link: base_link
 subtree_root_link: base_link
@@ -31,8 +34,10 @@ default_q: [
     # Original version
     # 0.00, 0.00, 0.00, -1.57, 0.00, 1.50, 0.75
 
-    # New config
-    0.385, -0.94121, -0.64134, 1.55186, 1.65672, -0.93218, 1.53416, 2.14474
+    # # New config
+    # 0.385, -0.94121, -0.64134, 1.55186, 1.65672, -0.93218, 1.53416, 2.14474
+
+    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
 ]
 
 # Most dimensions of the cspace have a direct corresponding element

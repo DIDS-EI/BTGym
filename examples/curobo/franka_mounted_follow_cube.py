@@ -87,7 +87,6 @@ def reach_object(env, curobo_mg, obj_name, offest):
     reach_pose(env, curobo_mg, grasp_pos, grasp_quat)
 
 def reach_pose(env, curobo_mg, pos,quat=None):
-    robot = env.robots[0]
     if quat is None:
         quat = T.euler2quat(th.tensor([0,math.pi,0], dtype=th.float32))
 
@@ -95,41 +94,28 @@ def reach_pose(env, curobo_mg, pos,quat=None):
     pos_sequence = th.stack([pos, pos])  # 形状变为 [2, 3]
     quat_sequence = th.stack([quat, quat])  # 形状变为 [2, 4]
 
-    # 如果机器人接近关节限制，则调整关节位置
-    jp = robot.get_joint_positions(normalized=True)
-    if not th.all(th.abs(jp)[:-2] < 0.97):
-        new_jp = jp.clone()
-        new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
-        robot.set_joint_positions(new_jp, normalized=True)
-    og.sim.step()
-
     successes, paths = curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
     # # print("paths:",paths)
 
-
-    if successes[0]:
-
-        # 执行轨迹
+    if successes[0]:  # 检查第一条轨迹是否成功
+        # 将 JointState 转换为 joint trajectory tensor
         joint_trajectory = curobo_mg.path_to_joint_trajectory(paths[0])
-
         print(joint_trajectory)
+        # 执行轨迹
         for time_i,joint_positions in enumerate(joint_trajectory):
-            # joint_positions = joint_trajectory[-1]
-            full_action = th.zeros(robot.n_joints, device=joint_positions.device)
-
-            # full_action[2] = joint_positions[0]
-            full_action[4:] = joint_positions
+            # print(f"time_i: {time_i}, joint_positions: {joint_positions}")
+            # 现在 joint_positions 已经是 tensor 格式
+            # robot.set_joint_positions(joint_positions)
+            # 更新模拟器
+            env.step(joint_positions.to('cpu'))
+            # og.sim.step()
+            # time.sleep(0.1)
             
-            # robot.set_joint_positions(full_action)
-            
-            print(f"time_i: {time_i}, full_action: {full_action}")
-            env.step(full_action.to('cpu'))
+        print("轨迹执行完成!")
+    else:
+        print("轨迹规划失败!")
 
 
-def reset_robot(env):
-    robot = env.robots[0]
-    robot.set_joint_positions(th.tensor([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), normalized=True)
-    og.sim.step()
 
 def main():
     """
@@ -139,28 +125,55 @@ def main():
     """
     
     # Load the config
-    config_filename = os.path.join(os.path.dirname(__file__), "assets/fetch_primitives.yaml")
+    config_filename = os.path.join(os.path.dirname(__file__), "assets/franka_mounted.yaml")
     # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
     config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
 
     # Update it to create a custom environment and run some actions
     config["scene"]["scene_model"] = "Rs_int"
     config["scene"]["load_object_categories"] = ["floors", "ceilings", "walls"]
-
+    # config["objects"] = [
+    #     {
+    #         "type": "DatasetObject",
+    #         "name": "cologne",
+    #         "category": "bottle_of_cologne",
+    #         "model": "lyipur",
+    #         "position": [0.7, 0, 1.2],
+    #         "orientation": [0, 0, 0, 1],
+    #     },
+    #     {
+    #         "type": "DatasetObject",
+    #         "name": "table2",
+    #         "category": "breakfast_table",
+    #         "model": "rjgmmy",
+    #         "scale": [0.5, 0.8, 1.9],
+    #         "position": [0.6, 0, 0.75],
+    #         "orientation": [0, 0, 0, 1],
+    #     },
+    #     {
+    #         "type": "DatasetObject",
+    #         "name": "table",
+    #         "category": "breakfast_table",
+    #         "model": "rjgmmy",
+    #         "scale": [0.3, 0.3, 0.3],
+    #         "position": [-0.3, 0.2, 0.2],
+    #         "orientation": [0, 0, 0, 1],
+    #     },
+    # ]
 
     # Load the environment
     env = og.Environment(configs=config)
     scene = env.scene
     robot = env.robots[0]
 
+    for i in range(100):
+        og.sim.step()
 
 
     print("start task!!!")
     # Allow user to move camera more easily
     og.sim.enable_viewer_camera_teleoperation()
     
-
-
     # grasp_pos = grasp_pos + object_direction * 0.2
     # # 获取机器人当前末端执行器的位置和方向
     # current_pos = robot.get_eef_position().unsqueeze(0)  # 当前位置
@@ -171,20 +184,20 @@ def main():
     # Make a target to follow
     target = cuboid.VisualCuboid(
         "/World/visual",
-        position=np.array([0.3, 0, 0.67]),
+        position=np.array([0.6, 0, 1.2]),
         orientation=np.array([0, 1, 0, 0]),
         color=np.array([1.0, 0, 0]),
         size=0.05,
     )
 
-    DIRNAME = os.path.dirname(os.path.abspath(__file__))
-    
-    curobo_mg = CuRoboMotionGenerator(robot,
-        robot_cfg_path=f"{DIRNAME}/assets/fetch_description_curobo.yaml",
-        debug=False)
+
+    # open_grisper(env)
+    controller = StarterSemanticActionPrimitives(env, enable_head_tracking=False)
+
+    curobo_mg = CuRoboMotionGenerator(robot)
 
 
-    # execute_controller(controller._execute_release(), env)
+    execute_controller(controller._execute_release(), env)
 
     n = 0
     while True:
@@ -193,12 +206,8 @@ def main():
         cube_position, cube_orientation = target.get_world_pose()
         try:
             reach_pose(env, curobo_mg, th.tensor(cube_position), th.tensor(cube_orientation))
-            # break
+            break
         except Exception as e:
-            n+=1
-            if n > 10:
-                reset_robot(env)
-                n = 0
             print(f"Error: {e}")
 
         # try:    

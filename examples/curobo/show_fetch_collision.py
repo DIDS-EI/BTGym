@@ -53,9 +53,6 @@ simulation_app = SimulationApp(
     }
 )
 
-import omnigibson as og
-
-og_root_path = og.root_path
 
 
 
@@ -79,6 +76,9 @@ from curobo.util.logger import setup_curobo_logger
 from curobo.util.usd_helper import UsdHelper
 from curobo.util_file import get_motion_gen_robot_list, get_robot_configs_path, join_path, load_yaml
 import curobo
+import omnigibson as og
+
+og_root_path = og.root_path
 
 from btgym import ROOT_PATH
 
