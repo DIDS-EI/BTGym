@@ -248,6 +248,13 @@ def main():
         robot_cfg_path=f"{DIRNAME}/assets/fetch_description_curobo.yaml",
         debug=False)
 
+    # 修改
+    # 修改夹爪位置
+    curobo_mg.mg.kinematics.lock_joints = {
+        "r_gripper_finger_joint": 0.0,  # 新的夹爪位置
+        "l_gripper_finger_joint": 0.0   # 新的夹爪位置
+    }
+
 
     # execute_controller(controller._execute_release(), env)
 
