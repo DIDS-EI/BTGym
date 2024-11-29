@@ -1,67 +1,99 @@
+import base64
+from openai import OpenAI
 import os
-# os.environ["OPENAI_API_KEY"]="sk-4vD6bVtv67XcfoVS8802AdF75888473296D604D707FbC9Bf"
-# os.environ["OPENAI_BASE_URL"]= "https://gtapi.xiaoerchaoren.com:8932"
-
-# from openai import OpenAI
-import http.client
+import cv2
 import json
+import parse
+import numpy as np
+import time
+from datetime import datetime
+from btgym.utils import cfgs
 
 
-DEFAULT_BASE_URL = "www.dwyu.top"
-DEFAULT_API_KEY = "sk-CSHOawi329bdxl4nkaHWJDVfp8bj6pDFzM2vfjLFva0F7Msy"
+# Function to encode the image
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
 
-
-class LLM():
+class LLM:
     def __init__(self):
-        self.base_url = DEFAULT_BASE_URL
-        self.api_key = DEFAULT_API_KEY
-        self.llm_model = "gpt-4o-mini"
+        self.client = OpenAI()
+        # self.base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), './vlm_query')
 
-    def request(self,message):
-        conn = http.client.HTTPSConnection(self.base_url)
-        payload = json.dumps({
-            "model": self.llm_model,
-            "messages": [
-                {"role": "user", "content": message}
-            ]
-        })
-        headers = {
-            'Authorization': f' {self.api_key}',
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-        conn.request("POST", "/v1/chat/completions", payload, headers)
-        data = conn.getresponse().read()
-        response = json.loads(data.decode("utf-8"))
-        print(response)
-        answer = response['choices'][0]['message']['content']
-        return answer
+    def _build_prompt_with_img(self, image_path, instruction):
+        img_base64 = encode_image(image_path)
+        prompt_text = self.prompt_template.format(instruction=instruction)
+        # save prompt
+        with open(os.path.join(self.task_dir, 'prompt.txt'), 'w') as f:
+            f.write(prompt_text)
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": self.prompt_template.format(instruction=instruction)
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/png;base64,{img_base64}"
+                        }
+                    },
+                ]
+            }
+        ]
+        return messages
 
-if __name__ == '__main__':
-    # llm = LLMGPT3()
-    # embedding_models = llm.list_embedding_models()
-    # print("Available embedding models:")
-    # for model in embedding_models:
-    #     print(model)
+    def _build_prompt(self, instruction):
+        return [
+            {
+                "role": "user",
+                "content": instruction
+            }
+        ]
 
-    # models = llm.list_models()
-    # for model in models:
-    #     print(model.id)
+    def request(self, instruction):
+        """
+        Args:
+            instruction (str): instruction for the query 查询指令
+        Returns:
+            save_dir (str): directory where the constraints 约束保存的目录
+        """
+        # build prompt 构建提示
+        messages = self._build_prompt(instruction)
+        stream = self.client.chat.completions.create(model=cfgs.llm_model,
+                                                        messages=messages,
+                                                        temperature=cfgs.llm_temperature,
+                                                        stream=True)
+        output = ""
+        print("", end="", flush=True)  # 清空当前行
+        print("正在生成回答...\n")
+        for chunk in stream:
+            if chunk.choices[0].delta.content is not None:
+                content = chunk.choices[0].delta.content
+                print(content, end="", flush=True)
+                output += content
+        print("\n")
 
-    # answer = llm.request(question="who are you,gpt?")
-    # answer = llm.embedding(question="who are you,gpt?")
-    # print(answer)
-    #
-    # llm = LLM()
-    # answer = llm.request("who are you,gpt?")
-    # print(answer)
-    # print(llm.list_embedding_models())
+        # 非流式
+        # response = self.client.chat.completions.create(
+        #     model=cfgs.llm_model, # gpt-4o
+        #     messages=messages,
+        #     temperature=cfgs.llm_temperature #0
+        #     # max_tokens=cfgs.llm_max_tokens*5 #2048
+        # )
+        # if isinstance(response, str):  # 检查是否为字符串
+        #     response = json.loads(response)  # 将其转换为 Python 对象
+        # output = response.choices[0].message.content
 
+        return output
+
+    def get_model_list(self):
+        models = self.client.models.list()
+        return [model.id for model in models]
+
+if __name__ == "__main__":
     llm = LLM()
-    llm.llm_model = "gpt-4-turbo"
-    answer = llm.request("你是谁?你是claude吗，还是GPT?")
-    print(answer)
-    # while True:
-    #     prompt = input("请输入你的问题:")
-    #     answer = llm.request(prompt)
-    #     print(answer)
+    print(llm.request("generate a python code to print 'hello world'"))
+    # print(llm.get_model_list())

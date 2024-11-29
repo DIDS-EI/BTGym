@@ -183,31 +183,31 @@ def main():
     action_space = robot.action_space
     action = np.zeros(action_space.shape[0])
 
-    env.step(action)
+    # env.step(action)
 
-    # # 如果上下限是inf,就设为100/-100
-    # action_space.high[action_space.high == np.inf] = 100
-    # action_space.low[action_space.low == -np.inf] = -100
+    # 如果上下限是inf,就设为100/-100
+    action_space.high[action_space.high == np.inf] = 100
+    action_space.low[action_space.low == -np.inf] = -100
     
-    # # 每个维度生成12个等间隔值
-    # samples_per_dim = 20
-    # steps_per_action = 8
+    # 每个维度生成12个等间隔值
+    samples_per_dim = 20
+    steps_per_action = 8
     
-    # # 遍历每个维度
-    # for dim in range(action_shape):
-    #     print(f"dim: {dim}")
-    #     # 生成当前维度的等间隔值
-    #     values = np.linspace(action_space.low[dim], action_space.high[dim], samples_per_dim)[1:-1]
+    # 遍历每个维度
+    for dim in range(action_shape):
+        print(f"dim: {dim}")
+        # 生成当前维度的等间隔值
+        values = np.linspace(action_space.low[dim], action_space.high[dim], samples_per_dim)[1:-1]
         
-    #     # 对每个值执行动作
-    #     for value in values:
-    #         # 创建动作数组,将当前维度设为指定值,其他维度为0
-    #         action = np.zeros(action_shape)
-    #         action[dim] = value
+        # 对每个值执行动作
+        for value in values:
+            # 创建动作数组,将当前维度设为指定值,其他维度为0
+            action = np.zeros(action_shape)
+            action[dim] = value
             
-    #         # 执行steps_per_action次
-    #         for _ in range(steps_per_action):
-    #             env.step(action)
+            # 执行steps_per_action次
+            for _ in range(steps_per_action):
+                env.step(action)
 
 
     while True:

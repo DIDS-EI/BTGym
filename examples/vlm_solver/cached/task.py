@@ -1,0 +1,11 @@
+def grasp_pen(env):
+    pen_obj, pencil_holder_obj = env.get_involved_object_names()
+    pen = env.get_obj_cls("Pen")(env, pen_obj)
+    pencil_holder = env.get_obj_cls("PencilHolder")(env, pencil_holder_obj)
+    grasp_pose = pen.get_grasp_pose()
+    env.open_gripper()
+    env.reach_pose(grasp_pose)
+    env.close_gripper()
+    pen_release_pose = pencil_holder.get_pen_release_pose(pen)
+    env.reach_pose(pen_release_pose)
+    env.open_gripper()
