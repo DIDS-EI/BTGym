@@ -1,4 +1,5 @@
-def grasp_pen(env):
+def do_task(env):
+    """grasp the pen"""
     pen_obj, pencil_holder_obj = env.get_involved_object_names()
     pen = env.get_obj_cls("Pen")(env, pen_obj)
     pencil_holder = env.get_obj_cls("PencilHolder")(env, pencil_holder_obj)

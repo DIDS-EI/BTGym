@@ -10,6 +10,9 @@ robot_cfg:
     ee_link: "gripper_link"
     link_names: null
     lock_joints: {"r_gripper_finger_joint": 0.04, "l_gripper_finger_joint": 0.04}
+    extra_links: {"attached_object":{"parent_link_name": "gripper_link" ,
+    "link_name": "attached_object", "fixed_transform": [0,0,0,1,0,0,0], "joint_type":"FIXED",
+    "joint_name": "attach_joint" }}
 
     usd_flip_joints: {
       "torso_lift_joint": "Z",

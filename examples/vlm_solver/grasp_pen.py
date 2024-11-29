@@ -11,8 +11,21 @@ import numpy as np
 from btgym import ROOT_PATH
 from btgym.core.curobo import CuRoboMotionGenerator
 from btgym.utils.og_utils import OGCamera
+import sys
+import importlib.util
 import importlib
+from omnigibson.action_primitives.starter_semantic_action_primitives import (
+    StarterSemanticActionPrimitives,
+    StarterSemanticActionPrimitiveSet,
+)
 code_path = os.path.join(ROOT_PATH, "../examples/vlm_solver/cached")
+sys.path.append(code_path)
+
+def execute_controller(ctrl_gen, env):
+    for action in ctrl_gen:
+        # print(f"action: {action}")
+        env.step(action)
+
 
 class Env:
     def __init__(self):
@@ -29,7 +42,7 @@ class Env:
         # 启用相机控制
         og.sim.enable_viewer_camera_teleoperation()
         self._initialize_cameras(self.config['camera'])
-        
+        self.gripper_open = True
         # 初始化运动规划器
         self.curobo_mg = CuRoboMotionGenerator(
             self.robot,
@@ -52,6 +65,11 @@ class Env:
             color=np.array([1.0, 0, 0]),
             size=0.05,
         )
+        self.action_primitive = StarterSemanticActionPrimitives(self.og_env)
+
+    def idle(self):
+        while True:
+            og.sim.step()
 
     def reset(self):
         self.og_env.reset()
@@ -90,11 +108,16 @@ class Env:
             "r_gripper_finger_joint": 0.05,
             "l_gripper_finger_joint": 0.05
         }
-        current_joint_positions = self.robot.get_joint_positions()
-        current_joint_positions[-1] = 0.05
-        current_joint_positions[-2] = 0.05
-        for _ in range(20):
-            self.og_env.step(current_joint_positions)
+        execute_controller(self.action_primitive._execute_release(), self.og_env)
+        self.gripper_open = True
+        for _ in range(10):
+            og.sim.step()
+        # current_joint_positions = self.robot.get_joint_positions()
+        # current_joint_positions[-1] = 0.05
+        # current_joint_positions[-2] = 0.05
+        # self.robot.set_joint_positions(current_joint_positions)
+        # for _ in range(20):
+        #     self.og_env.step(current_joint_positions)
 
     def close_gripper(self):
         """关闭夹爪"""
@@ -102,14 +125,22 @@ class Env:
             "r_gripper_finger_joint": 0.0,
             "l_gripper_finger_joint": 0.0
         }
+        # execute_controller(self.action_primitive._execute_grasp(), self.og_env)
+
         current_joint_positions = self.robot.get_joint_positions()
         current_joint_positions[-1] = 0.0
         current_joint_positions[-2] = 0.0
-        for _ in range(20):
-            self.og_env.step(current_joint_positions)
+        self.robot.set_joint_positions(current_joint_positions)
+        self.gripper_open = False
 
-    def reach_pose(self, pos, euler):
+        for _ in range(20):
+            og.sim.step()
+            # self.og_env.step(current_joint_positions)
+
+    def reach_pose(self, pose):
         """到达指定位姿"""
+        pos, euler = pose
+        euler = euler * math.pi / 180
         quat = T.euler2quat(euler)
 
         # 检查并调整关节位置
@@ -122,12 +153,19 @@ class Env:
 
         pos_sequence = th.stack([pos, pos])
         quat_sequence = th.stack([quat, quat])
-        try:
-            successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
-            if successes[0]:
-                self.execute_trajectory(paths[0])
-        except Exception as e:
-            print(f"Error: {e}")
+        obj_in_hand = self.action_primitive._get_obj_in_hand()
+        successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
+        if successes[0]:
+            self.execute_trajectory(paths[0])
+
+        for _ in range(50):
+            og.sim.step()
+        # try:
+        #     successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
+        #     if successes[0]:
+        #         self.execute_trajectory(paths[0])
+        # except Exception as e:
+        #     print(f"Error: {e}")
 
     def execute_trajectory(self, path):
         """执行轨迹"""
@@ -135,8 +173,11 @@ class Env:
         
         for time_i, joint_positions in enumerate(joint_trajectory):
             full_action = th.zeros(self.robot.n_joints, device=joint_positions.device)
-            full_action[4:] = joint_positions
-            
+            full_action[4:-2] = joint_positions[:-2]
+            if self.gripper_open:
+                full_action[-2:] = 0.05
+            else:
+                full_action[-2:] = 0.0
             self.og_env.step(full_action.to('cpu'))
 
     # def follow_cube(self):
@@ -156,26 +197,35 @@ class Env:
 
     def get_obj_bbox(self, obj_name):
         obj_name = obj_name.capitalize()
-        obj_cls = importlib.import_module(f"{code_path}.{obj_name}.{obj_name}")
+        obj_cls = importlib.import_module(f"{obj_name}.{obj_name}")
         return obj_cls.get_bbox()
 
-    def get_object(self, obj_name):
-        obj_name = obj_name.capitalize()
-        obj_cls = importlib.import_module(f"{code_path}.{obj_name}.{obj_name}")
-        return obj_cls(self)
+    def get_obj_cls(self, obj_name):
+        obj_cls = importlib.import_module(f"{obj_name}").__getattribute__(obj_name)
+        return obj_cls
     
     def get_involved_object_names(self):
         return ["pen_1", "pencil_holder_1"]
     
     def do_task(self,instruction):
         """现在先不管 instruction，先写好预定义的代码，跑通执行的pipeline。想清楚我们需要什么样的代码，再考虑大模型如何生成代码"""
-        task_func = importlib.import_module(f"{code_path}.task.grasp_pen")
-        task_func(self)
+        spec = importlib.util.find_spec('task.do_task')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.do_task(self)
 
 
 if __name__ == "__main__":
-    env = Env()
-    print("开始任务!")
-    env.do_task("grasp the pen")
+    # spec = importlib.util.find_spec('task')
+    # module = importlib.util.module_from_spec(spec)
+    # spec.loader.exec_module(module)
+    # module.do_task(Env())
+
+    # Env().idle()
+    importlib.import_module("task").do_task(Env())
+
+    # env = Env()
+    # print("开始任务!")
+    # env.do_task("grasp the pen")
     # while True:
     #     env.grasp_obj("pen_1")

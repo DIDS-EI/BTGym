@@ -136,12 +136,12 @@ def reach_pose(env, curobo_mg, pos,quat=None):
     # 2. 不固定方向抓
     # 定义多个可能的抓取朝向
     grasp_orientations = [
-        T.euler2quat(th.tensor([0, math.pi/2, 0], dtype=th.float32)),      # 从上往下抓
-        T.euler2quat(th.tensor([0, -math.pi/2, 0], dtype=th.float32)),     # 从下往上抓
-        T.euler2quat(th.tensor([0, 0, 0], dtype=th.float32)),              # 从前往后抓
-        T.euler2quat(th.tensor([0, math.pi, 0], dtype=th.float32)),        # 从后往前抓
-        T.euler2quat(th.tensor([0, 0, math.pi/2], dtype=th.float32)),      # 从左往右抓
-        T.euler2quat(th.tensor([0, 0, -math.pi/2], dtype=th.float32)),     # 从右往左抓
+        T.euler2quat(th.tensor([0, math.pi/2, math.pi/2], dtype=th.float32)),      # 从上往下抓
+        # T.euler2quat(th.tensor([0, -math.pi/2, 0], dtype=th.float32)),     # 从下往上抓
+        # T.euler2quat(th.tensor([0, 0, 0], dtype=th.float32)),              # 从前往后抓
+        # T.euler2quat(th.tensor([0, math.pi, 0], dtype=th.float32)),        # 从后往前抓
+        # T.euler2quat(th.tensor([0, 0, math.pi/2], dtype=th.float32)),      # 从左往右抓
+        # T.euler2quat(th.tensor([0, 0, -math.pi/2], dtype=th.float32)),     # 从右往左抓
         # T.euler2quat(th.tensor([0, 3*math.pi/4, 0], dtype=th.float32)) # 45度角抓取
     ]
     for grasp_quat in grasp_orientations:
