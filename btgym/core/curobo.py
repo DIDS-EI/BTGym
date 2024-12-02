@@ -228,11 +228,11 @@ class CuRoboMotionGenerator:
         ignore_paths = [] if ignore_paths is None else ignore_paths
         
         # 打印场景中所有对象及其属性
-        print("\n=== Scene Objects ===")
-        for obj in self.robot.scene.objects:
-            print(f"Object: {obj.prim_path}")
-            print(f"  Category: {obj.category}")
-            print(f"  Visual Only: {obj.visual_only}")
+        # print("\n=== Scene Objects ===")
+        # for obj in self.robot.scene.objects:
+        #     print(f"Object: {obj.prim_path}")
+        #     print(f"  Category: {obj.category}")
+        #     print(f"  Visual Only: {obj.visual_only}")
 
         # Ignore any visual only objects and any objects not part of the robot's current scene
         ignore_scenes = [scene.prim_path for scene in og.sim.scenes]
@@ -243,10 +243,10 @@ class CuRoboMotionGenerator:
         ground_paths = {obj.prim_path for obj in self.robot.scene.objects if obj.category in GROUND_CATEGORIES}
         
         # 打印将被忽略的路径
-        print("\n=== Ignored Paths ===")
-        print("Ignore Scenes:", ignore_scenes)
-        print("Ignore Visual Only:", ignore_visual_only)
-        print("Ground Paths:", ground_paths)
+        # print("\n=== Ignored Paths ===")
+        # print("Ignore Scenes:", ignore_scenes)
+        # print("Ignore Visual Only:", ignore_visual_only)
+        # print("Ground Paths:", ground_paths)
 
         obstacles = self._usd_help.get_obstacles_from_stage(
             reference_prim_path=self.robot.root_link.prim_path,
@@ -263,11 +263,19 @@ class CuRoboMotionGenerator:
             ],
         ).get_collision_check_world()
         
-        print("\n=== Detected Obstacles ===")
-        print(obstacles)
+        # from pxr import PhysxSchema, Sdf
+        # # 获取当前场景
+        # stage = og.sim.stage
+        # # 启用物理调试可视化
+        # physx_scene_api = PhysxSchema.PhysxSceneAPI.Get(stage, Sdf.Path('/'))
+        # if physx_scene_api:
+        #     physx_scene_api.CreateEnableDebugVizAttr().Set(True)
+        
+        # print("\n=== Detected Obstacles ===")
+        # print(obstacles)
     
         self.mg.update_world(obstacles)
-        print("Synced CuRobo world from stage.")
+        # print("Synced CuRobo world from stage.")
 
     def check_collisions(
         self,
