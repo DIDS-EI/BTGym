@@ -226,6 +226,13 @@ class CuRoboMotionGenerator:
         """
         print("Updating CuRobo world, reading w.r.t.", self.robot.prim_path)
         ignore_paths = [] if ignore_paths is None else ignore_paths
+        
+        # 打印场景中所有对象及其属性
+        print("\n=== Scene Objects ===")
+        for obj in self.robot.scene.objects:
+            print(f"Object: {obj.prim_path}")
+            print(f"  Category: {obj.category}")
+            print(f"  Visual Only: {obj.visual_only}")
 
         # Ignore any visual only objects and any objects not part of the robot's current scene
         ignore_scenes = [scene.prim_path for scene in og.sim.scenes]
@@ -234,6 +241,12 @@ class CuRoboMotionGenerator:
 
         # Filter out any objects corresponding to ground
         ground_paths = {obj.prim_path for obj in self.robot.scene.objects if obj.category in GROUND_CATEGORIES}
+        
+        # 打印将被忽略的路径
+        print("\n=== Ignored Paths ===")
+        print("Ignore Scenes:", ignore_scenes)
+        print("Ignore Visual Only:", ignore_visual_only)
+        print("Ground Paths:", ground_paths)
 
         obstacles = self._usd_help.get_obstacles_from_stage(
             reference_prim_path=self.robot.root_link.prim_path,
@@ -249,6 +262,10 @@ class CuRoboMotionGenerator:
                 *ignore_paths,  # Don't include any additional specified paths
             ],
         ).get_collision_check_world()
+        
+        print("\n=== Detected Obstacles ===")
+        print(obstacles)
+    
         self.mg.update_world(obstacles)
         print("Synced CuRobo world from stage.")
 
@@ -424,8 +441,10 @@ class CuRoboMotionGenerator:
 
         # Attach object to robot if requested
         if attached_obj is not None:
+             # 获取物体的碰撞网格路径
             obj_paths = [geom.prim_path for geom in attached_obj.root_link.collision_meshes.values()]
             assert len(obj_paths) <= 32, f"Expected obj_paths to be at most 32, got: {len(obj_paths)}"
+            # 将物体附加到机器人上进行规划
             self.mg.attach_objects_to_robot(
                 joint_state=cu_js_batch,
                 object_names=obj_paths,

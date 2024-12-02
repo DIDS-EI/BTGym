@@ -102,45 +102,49 @@ class Env:
         
         return [(grasp_pose, towards_object_in_world_frame)]
 
-    def open_gripper(self):
-        """打开夹爪"""
-        self.curobo_mg.mg.kinematics.lock_joints = {
-            "r_gripper_finger_joint": 0.05,
-            "l_gripper_finger_joint": 0.05
-        }
-        execute_controller(self.action_primitive._execute_release(), self.og_env)
-        self.gripper_open = True
-        for _ in range(10):
-            og.sim.step()
-        # current_joint_positions = self.robot.get_joint_positions()
-        # current_joint_positions[-1] = 0.05
-        # current_joint_positions[-2] = 0.05
-        # self.robot.set_joint_positions(current_joint_positions)
-        # for _ in range(20):
-        #     self.og_env.step(current_joint_positions)
-
     # def open_gripper(self):
-    #     """缓缓打开夹爪到最大"""
+    #     """打开夹爪"""
     #     self.curobo_mg.mg.kinematics.lock_joints = {
     #         "r_gripper_finger_joint": 0.05,
     #         "l_gripper_finger_joint": 0.05
     #     }
-
-    #     current_joint_positions = self.robot.get_joint_positions()
-    #     initial_gripper_width = current_joint_positions[-1]  # 获取初始夹爪宽度
-    #     max_gripper_width = 0.05  # 最大夹爪宽度
-
-    #     # 缓慢打开夹爪
-    #     for width in np.linspace(initial_gripper_width, max_gripper_width, 20):
-    #         # 更新夹爪位置
-    #         current_joint_positions[-1] = width
-    #         current_joint_positions[-2] = width
-    #         self.robot.set_joint_positions(current_joint_positions)
-
-    #         # 执行几步仿真以使动作生效
-    #         for _ in range(5):
-    #             og.sim.step()
+    #     execute_controller(self.action_primitive._execute_release(), self.og_env)
     #     self.gripper_open = True
+    #     for _ in range(10):
+    #         og.sim.step()
+    #     # current_joint_positions = self.robot.get_joint_positions()
+    #     # current_joint_positions[-1] = 0.05
+    #     # current_joint_positions[-2] = 0.05
+    #     # self.robot.set_joint_positions(current_joint_positions)
+    #     # for _ in range(20):
+    #     #     self.og_env.step(current_joint_positions)
+        
+        
+    def open_gripper(self):
+        """缓缓打开夹爪到最大"""
+        self.curobo_mg.mg.kinematics.lock_joints = {
+            "r_gripper_finger_joint": 0.05,
+            "l_gripper_finger_joint": 0.05
+        }
+
+        current_joint_positions = self.robot.get_joint_positions()
+        initial_gripper_width = current_joint_positions[-1]  # 获取初始夹爪宽度
+        max_gripper_width = 0.05  # 最大夹爪宽度
+
+        # 缓慢打开夹爪
+        for width in np.linspace(initial_gripper_width, max_gripper_width, 10):
+            # 更新夹爪位置
+            current_joint_positions[-1] = width
+            current_joint_positions[-2] = width
+            self.robot.set_joint_positions(current_joint_positions)
+
+            # 执行几步仿真以使动作生效
+            for _ in range(5):
+                og.sim.step()
+
+        self.gripper_open = True 
+
+
 
     # def close_gripper(self):
     #     """关闭夹爪"""
