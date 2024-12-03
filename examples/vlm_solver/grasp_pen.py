@@ -227,7 +227,8 @@ class Env:
         pos_sequence = th.stack([pos, pos])
         quat_sequence = th.stack([quat, quat])
         obj_in_hand = self.action_primitive._get_obj_in_hand()
-        successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
+        successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
+        # successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
         if successes[0]:
             self.execute_trajectory(paths[0])
 
