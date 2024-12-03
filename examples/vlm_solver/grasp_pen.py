@@ -18,6 +18,8 @@ from omnigibson.action_primitives.starter_semantic_action_primitives import (
     StarterSemanticActionPrimitives,
     StarterSemanticActionPrimitiveSet,
 )
+from btgym.utils.logger import log,set_logger_entry
+th.set_printoptions(precision=4)
 code_path = os.path.join(ROOT_PATH, "../examples/vlm_solver/cached")
 sys.path.append(code_path)
 
@@ -76,7 +78,7 @@ class Env:
         #     color=np.array([1.0, 0, 0]),
         #     size=0.05,
         # )
-        self.action_primitive = StarterSemanticActionPrimitives(self.og_env)
+        self.action_primitive = StarterSemanticActionPrimitives(self.og_env,enable_head_tracking=False)
 
         self.obj_name_map = {
             "pen_1": "Pen",
@@ -136,78 +138,27 @@ class Env:
     #     #     self.og_env.step(current_joint_positions)
         
         
+    def gripper_control(self, open=True):
+        joint_positions = self.robot.get_joint_positions()
+        action = th.zeros(self.robot.n_joints)
+        action[4] = joint_positions[2]
+        action[5] = joint_positions[4]
+        action[6:-2] = joint_positions[6:-2]
+        gripper_target = 0.05 if open else 0.0
+        action[-2:] = gripper_target
+        for _ in range(20):
+            self.og_env.step(action.to('cpu'))
+        self.gripper_open = open
+
+        for _ in range(20):
+            og.sim.step()
+
     def open_gripper(self):
-        """缓缓打开夹爪到最大"""
-        self.curobo_mg.mg.kinematics.lock_joints = {
-            "r_gripper_finger_joint": 0.05,
-            "l_gripper_finger_joint": 0.05
-        }
-
-        current_joint_positions = self.robot.get_joint_positions()
-        initial_gripper_width = current_joint_positions[-1]  # 获取初始夹爪宽度
-        max_gripper_width = 0.05  # 最大夹爪宽度
-
-        # 缓慢打开夹爪
-        for width in np.linspace(initial_gripper_width, max_gripper_width, 10):
-            # 更新夹爪位置
-            current_joint_positions[-1] = width
-            current_joint_positions[-2] = width
-            self.robot.set_joint_positions(current_joint_positions)
-
-            # 执行几步仿真以使动作生效
-            for _ in range(5):
-                og.sim.step()
-
-        self.gripper_open = True 
-
-
-
-    # def close_gripper(self):
-    #     """关闭夹爪"""
-    #     self.curobo_mg.mg.kinematics.lock_joints = {
-    #         "r_gripper_finger_joint": 0.0,
-    #         "l_gripper_finger_joint": 0.0
-    #     }
-    #     # execute_controller(self.action_primitive._execute_grasp(), self.og_env)
-
-    #     current_joint_positions = self.robot.get_joint_positions()
-    #     current_joint_positions[-1] = 0.0
-    #     current_joint_positions[-2] = 0.0
-    #     self.robot.set_joint_positions(current_joint_positions)
-    #     self.gripper_open = False
-
-    #     for _ in range(20):
-    #         og.sim.step()
-    #         # self.og_env.step(current_joint_positions)
+        self.gripper_control(open=True)
 
 
     def close_gripper(self):
-        """关闭夹爪,直到检测到物体"""
-        self.curobo_mg.mg.kinematics.lock_joints = {
-            "r_gripper_finger_joint": 0.0,
-            "l_gripper_finger_joint": 0.0
-        }
-
-        current_joint_positions = self.robot.get_joint_positions()
-        initial_gripper_width = current_joint_positions[-1]  # 获取初始夹爪宽度
-        
-        # 缓慢关闭夹爪
-        for width in np.linspace(initial_gripper_width, 0.0, 20):
-            # 检查是否有物体
-            if self.action_primitive._get_obj_in_hand() is not None:
-                break
-                
-            # 更新夹爪位置
-            current_joint_positions[-1] = width
-            current_joint_positions[-2] = width
-            self.robot.set_joint_positions(current_joint_positions)
-            
-            # 执行几步仿真以使动作生效
-            for _ in range(5):
-                og.sim.step()
-
-        self.gripper_open = False
-
+        self.gripper_control(open=False)
 
 
     def reach_pose(self, pose):
@@ -227,8 +178,8 @@ class Env:
         pos_sequence = th.stack([pos, pos])
         quat_sequence = th.stack([quat, quat])
         obj_in_hand = self.action_primitive._get_obj_in_hand()
-        successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
-        # successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
+        # successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
+        successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
         if successes[0]:
             self.execute_trajectory(paths[0])
 
@@ -244,8 +195,11 @@ class Env:
     def execute_trajectory(self, path):
         """执行轨迹"""
         joint_trajectory = self.curobo_mg.path_to_joint_trajectory(path)
-        
+        current_joint_positions = self.robot.get_joint_positions()
+        log(f"execute_trajectory current_joint_positions: {current_joint_positions}")
         for time_i, joint_positions in enumerate(joint_trajectory):
+            if time_i < 10:
+                log(f"execute_trajectory joint_positions: {joint_positions}")
             full_action = th.zeros(self.robot.n_joints, device=joint_positions.device)
             full_action[4:-2] = joint_positions[:-2]
             if self.gripper_open:
@@ -291,10 +245,7 @@ class Env:
 
 
 if __name__ == "__main__":
-    # spec = importlib.util.find_spec('task')
-    # module = importlib.util.module_from_spec(spec)
-    # spec.loader.exec_module(module)
-    # module.do_task(Env())
+    set_logger_entry(__file__)
 
     # Env().idle()
     importlib.import_module("task").do_task(Env())
@@ -304,3 +255,4 @@ if __name__ == "__main__":
     # env.do_task("grasp the pen")
     # while True:
     #     env.grasp_obj("pen_1")
+
