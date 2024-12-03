@@ -1,10 +1,11 @@
 import math
 import torch as th
+from omnigibson.utils import transform_utils as T
 
 class Pen:
-    def __init__(self, env, obj_name):
+    def __init__(self, env, obj):
         self.env = env
-        self.obj_name = obj_name
+        self.obj = obj
 
     def get_grasp_pose(self):
         pos = th.tensor([-0.15, -0.15, 0.72], dtype=th.float32)

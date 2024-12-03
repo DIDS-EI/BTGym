@@ -27,6 +27,17 @@ def execute_controller(ctrl_gen, env):
         env.step(action)
 
 
+class ObjInEnv:
+    def __init__(self, env, obj_name):
+        self.env = env
+        self.obj_name = obj_name
+
+    def get_bbox(self):
+        obj = self.env.scene.get_object(self.obj_name)
+        return obj.get_base_aligned_bbox(visual=False)
+
+
+
 class Env:
     def __init__(self):
         # 加载配置文件
@@ -66,6 +77,11 @@ class Env:
             size=0.05,
         )
         self.action_primitive = StarterSemanticActionPrimitives(self.og_env)
+
+        self.obj_name_map = {
+            "pen_1": "Pen",
+            "pencil_holder_1": "PencilHolder"
+        }
 
     def idle(self):
         while True:
@@ -253,9 +269,10 @@ class Env:
         obj_cls = importlib.import_module(f"{obj_name}.{obj_name}")
         return obj_cls.get_bbox()
 
-    def get_obj_cls(self, obj_name):
-        obj_cls = importlib.import_module(f"{obj_name}").__getattribute__(obj_name)
-        return obj_cls
+    def get_obj(self, obj_name):
+        plan_obj_name = self.obj_name_map[obj_name]
+        obj = importlib.import_module(f"{plan_obj_name}").__getattribute__(plan_obj_name)(self,self.scene.object_registry("name", obj_name))
+        return obj
     
     def get_involved_object_names(self):
         return ["pen_1", "pencil_holder_1"]

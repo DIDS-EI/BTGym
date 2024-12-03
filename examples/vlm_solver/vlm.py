@@ -5,6 +5,7 @@ from btgym.utils import cfgs
 import re
 import importlib
 import sys
+# cfgs.llm_model = "claude-3-5-sonnet-20240620"
 
 class VLM:
     def __init__(self):
