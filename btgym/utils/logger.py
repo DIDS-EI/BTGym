@@ -22,6 +22,7 @@ def set_logger_entry(file_path):
     logger.setLevel(logging.INFO)
 
     # 创建文件处理程序，将日志写入文件
+    os.makedirs(f'{log_path}', exist_ok=True)
     file_handler = logging.FileHandler(f'{log_path}/{file_name}.log')
     file_handler.setLevel(logging.INFO)
 

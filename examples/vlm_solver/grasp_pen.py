@@ -120,23 +120,6 @@ class Env:
         
         return [(grasp_pose, towards_object_in_world_frame)]
 
-    # def open_gripper(self):
-    #     """打开夹爪"""
-    #     self.curobo_mg.mg.kinematics.lock_joints = {
-    #         "r_gripper_finger_joint": 0.05,
-    #         "l_gripper_finger_joint": 0.05
-    #     }
-    #     execute_controller(self.action_primitive._execute_release(), self.og_env)
-    #     self.gripper_open = True
-    #     for _ in range(10):
-    #         og.sim.step()
-    #     # current_joint_positions = self.robot.get_joint_positions()
-    #     # current_joint_positions[-1] = 0.05
-    #     # current_joint_positions[-2] = 0.05
-    #     # self.robot.set_joint_positions(current_joint_positions)
-    #     # for _ in range(20):
-    #     #     self.og_env.step(current_joint_positions)
-        
         
     def gripper_control(self, open=True):
         joint_positions = self.robot.get_joint_positions()
@@ -178,7 +161,7 @@ class Env:
         pos_sequence = th.stack([pos, pos])
         quat_sequence = th.stack([quat, quat])
         obj_in_hand = self.action_primitive._get_obj_in_hand()
-        # successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
+        log(f"obj_in_hand: {obj_in_hand}")
         successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
         if successes[0]:
             self.execute_trajectory(paths[0])
@@ -196,10 +179,7 @@ class Env:
         """执行轨迹"""
         joint_trajectory = self.curobo_mg.path_to_joint_trajectory(path)
         current_joint_positions = self.robot.get_joint_positions()
-        log(f"execute_trajectory current_joint_positions: {current_joint_positions}")
         for time_i, joint_positions in enumerate(joint_trajectory):
-            if time_i < 10:
-                log(f"execute_trajectory joint_positions: {joint_positions}")
             full_action = th.zeros(self.robot.n_joints, device=joint_positions.device)
             full_action[4:-2] = joint_positions[:-2]
             if self.gripper_open:
