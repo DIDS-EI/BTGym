@@ -182,13 +182,13 @@ class CuRoboMotionGenerator:
             num_ik_seeds=12,
             num_batch_ik_seeds=12,
             num_batch_trajopt_seeds=1,
-            ik_opt_iters=60,  # 增加IK优化迭代次数 #60,
+            ik_opt_iters=100,  # 增加IK优化迭代次数 #60,
             optimize_dt=True,
             num_trajopt_seeds=4,
             num_graph_seeds=4,
             interpolation_dt=0.03,
             collision_cache={"obb": 10, "mesh": 1024},
-            collision_max_outside_distance=0.2, #0.05, 检测20cm范围内的所有潜在碰撞
+            collision_max_outside_distance=0.15, #0.05, 检测20cm范围内的所有潜在碰撞
             collision_activation_distance=0.1, #0.025, 机器人距离障碍物10cm时就开始规避
             acceleration_scale=1.0,
             self_collision_check=True,

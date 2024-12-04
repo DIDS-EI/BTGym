@@ -367,6 +367,10 @@ if __name__ == "__main__":
     env = Env()
     last_cam_obs = env.get_cam_obs()
     env.visualize_cam_obs(last_cam_obs)  # 添加这行来显示图像
+    
+    
+    # 把相机观察结果输入大模型，生成抓取动作
+    
 
     
     # spec = importlib.util.find_spec('task')
