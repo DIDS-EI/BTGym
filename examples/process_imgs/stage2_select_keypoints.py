@@ -157,11 +157,14 @@ def draw_points(img, point_dict):
     with open(os.path.join(folder_path, "camera_0_bbox_center_dict.pkl"), "rb") as f:
         point_center_dict = pickle.load(f)
 
-    h, w = img.shape[:2]
+    print(point_center_dict)
+    # h, w = img.shape[:2]
 
     for object_name in point_dict:
         for name, point in point_dict[object_name].items():
-            x, y = parse_point(point_center_dict[object_name], point)
+            center_point, w_h = point_center_dict[object_name]
+            w, h = w_h
+            x, y = parse_point(center_point, point)
             point_pos = (int(x*w), int(y*h))
             cv2.circle(img, point_pos, 5, (255, 255, 255), -1)
             cv2.putText(img, name, (point_pos[0]+10, point_pos[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
@@ -233,86 +236,97 @@ if __name__ == "__main__":
     # cv2.imwrite(save_path, merged_img)
 
 
-    cg = ConstraintGenerator()
-    # output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_merged_objects.png"),
-    output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_bbox_2d.png"),
-    # output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_seg_labeled.png"),
-                instruction="""
-the current task is:
-`reorient the red pen and drop it upright into the black pen holder`
-首先你需要在图片中找到相关物体和他们的序号，如3_pen, 4_pen holder
+#     cg = ConstraintGenerator()
+#     # output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_merged_objects.png"),
+#     output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_bbox_2d.png"),
+#     # output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_seg_labeled.png"),
+#                 instruction="""
+# the current task is:
+# `reorient the red pen and drop it upright into the black pen holder`
+# 首先你需要在图片中找到相关物体和他们的序号，如3_pen, 4_pen holder
 
 
-你现在需要在图片中给每个相关物体标注关键点，选关键点的过程采用二分法思维链。
+# 你现在需要在图片中给每个相关物体标注关键点，选关键点的过程采用二分法思维链。
 
-关键点分类：
-1. 抓取关键点，需要成对出现，用来描述两个夹爪的抓取位置
-2. 目标关键点，通常用来描述物体的移动相对目标，例如笔的中心点相对于笔架的中心点
-3. 姿态关键点，通常用来描述物体移动或最终的姿态，例如笔需要竖直放置
+# 关键点分类：
+# 1. 抓取关键点，需要成对出现，用来描述两个夹爪的抓取位置
+# 2. 目标关键点，通常用来描述物体的移动相对目标，例如笔的中心点相对于笔架的中心点
+# 3. 姿态关键点，通常用来描述物体移动或最终的姿态，例如笔需要竖直放置
 
-整体的思考过程分为两步：
-1. 先思考对于每个物体，需要哪些关键点，例如：
-对于笔来说，需要描述的关键点有：
-- 抓取关键点，grasp_point
-- 目标关键点，target_point_pen_center
-- 姿态关键点，已经有二个关键点，足以复用关键点来描述姿态
-对于笔筒来说，需要描述的关键点有：
-- 目标关键点，target_point_pencil_holder_center
+# 整体的思考过程分为两步：
+# 1. 先思考对于每个物体，需要哪些关键点，例如：
+# 对于笔来说，需要描述的关键点有：
+# - 抓取关键点，grasp_point
+# - 目标关键点，target_point_pen_center
+# - 姿态关键点，已经有二个关键点，足以复用关键点来描述姿态
+# 对于笔筒来说，需要描述的关键点有：
+# - 目标关键点，target_point_pencil_holder_center
 
-2. 确定每个关键点的坐标，使用二分法思维链：
-使用[(x_1,y_1),(x_2,y_2),...]的坐标对表示关键点，其中x_1,y_1表示第一个坐标对，x_2,y_2表示第二个坐标对，以此类推。
-其中x坐标只能为left或者right，y坐标只能为up或者bottom。不允许出现center!!!
+# 2. 确定每个关键点的坐标，使用二分法思维链：
+# 使用[(x_1,y_1),(x_2,y_2),...]的坐标对表示关键点，其中x_1,y_1表示第一个坐标对，x_2,y_2表示第二个坐标对，以此类推。
+# 其中x坐标只能为left或者right，y坐标只能为up或者bottom。不允许出现center!!!
 
-思考过程如下所示：
-笔的关键点确定：
-- 抓取关键点
-由于笔是长形物体，应该从笔的侧边进行抓取。在图片上两个抓取点应该是上下关系,且尽量位于物体中心。
-对于grasp_point_pen来说：
-1. 首先对图片四等分，选取笔的左下区域，相应坐标为(left,bottom)
-2. 然后再进一步四等分，选取以上区域的右上区域，相应坐标为(right,up)
-3. 最后再进一步四等分，选取以上区域的右上角点作为笔的中心点，相应坐标为(right,up)
-最后得到 grasp_point_pen = [(left,bottom),(right,up),(right,up)]
+# 思考过程如下所示：
+# 笔的关键点确定：
+# - 抓取关键点
+# 由于笔是长形物体，应该从笔的侧边进行抓取。在图片上两个抓取点应该是上下关系,且尽量位于物体中心。
+# 对于grasp_point_pen来说：
+# 1. 首先对图片四等分，选取笔的左下区域，相应坐标为(left,bottom)
+# 2. 然后再进一步四等分，选取以上区域的右上区域，相应坐标为(right,up)
+# 3. 最后再进一步四等分，选取以上区域的右上角点作为笔的中心点，相应坐标为(right,up)
+# 最后得到 grasp_point_pen = [(left,bottom),(right,up),(right,up)]
 
-对于target_point_pen_center来说：
-1. 首先对图片四等分，选取笔的左下区域，相应坐标为(left,bottom)
-2. 然后再进一步四等分，选取以上区域的左上区域，相应坐标为(left,up)
-3. 最后再进一步四等分，选取以上区域的左上角点作为笔的中心点，相应坐标为(left,up)
-最后得到 target_point_pen_center = [(left,bottom),(left,up),(left,up)]
+# 对于target_point_pen_center来说：
+# 1. 首先对图片四等分，选取笔的左下区域，相应坐标为(left,bottom)
+# 2. 然后再进一步四等分，选取以上区域的左上区域，相应坐标为(left,up)
+# 3. 最后再进一步四等分，选取以上区域的左上角点作为笔的中心点，相应坐标为(left,up)
+# 最后得到 target_point_pen_center = [(left,bottom),(left,up),(left,up)]
 
-对于target_point_pencil_holder_center来说：
-- 目标关键点
-由于笔筒是圆柱形物体，应该从笔筒的侧边进行抓取。在图片上两个抓取点应该是上下关系,且尽量位于物体中心。
-1. 首先对图片四等分，选取笔筒的左下区域，相应坐标为(left,bottom)
-2. 然后再进一步四等分，选取以上区域的右上区域，相应坐标为(right,up)
-3. 最后再进一步四等分，选取以上区域的右上角点作为笔筒的中心点，相应坐标为(right,up)
-最后得到 pencil_holder_center_point = [(left,bottom),(right,up),(right,up)]
+# 对于target_point_pencil_holder_center来说：
+# - 目标关键点
+# 由于笔筒是圆柱形物体，应该从笔筒的侧边进行抓取。在图片上两个抓取点应该是上下关系,且尽量位于物体中心。
+# 1. 首先对图片四等分，选取笔筒的左下区域，相应坐标为(left,bottom)
+# 2. 然后再进一步四等分，选取以上区域的右上区域，相应坐标为(right,up)
+# 3. 最后再进一步四等分，选取以上区域的右上角点作为笔筒的中心点，相应坐标为(right,up)
+# 最后得到 pencil_holder_center_point = [(left,bottom),(right,up),(right,up)]
 
 
-最终结果：
-```python
-point_dict = {
-    "3_pen": {
-        "grasp_point_pen": [(left,bottom),(right,up),(right,up)],
-        "target_point_pen_center": [(left,bottom),(left,up),(left,up)],
-    },
-    "4_pen_holder": {
-        "target_point_pencil_holder_center": [(left,bottom),(right,up),(right,up)],
-    }
-}
-```
+# 最终结果：
+# ```python
+# point_dict = {
+#     "3_pen": {
+#         "grasp_point_pen": [(left,bottom),(right,up),(right,up)],
+#         "target_point_pen_center": [(left,bottom),(left,up),(left,up)],
+#     },
+#     "4_pen_holder": {
+#         "target_point_pencil_holder_center": [(left,bottom),(right,up),(right,up)],
+#     }
+# }
+# ```
 
-以下是你的关键点思考过程和最终结果输出：
-""")
+# 以下是你的关键点思考过程和最终结果输出：
+# """)
     left = 0
     right = 1
     bottom = 0
     up = 1
-    point_dict_list = []
-    code = extract_code(output)
-    exec(code)
+#     point_dict_list = []
+#     code = extract_code(output)
+#     exec(code)
+
+
+    point_dict = {
+        "3_pen": {
+            "grasp_point_pen": [(right,up),(left,bottom),(left,bottom)],
+            "target_point_pen_center": [(right,bottom),(right,up),(right,up)],
+        },
+        "4_pencil_holder": {
+            "target_point_pencil_holder_center": [(right,up),(left,bottom),(left,bottom)],
+        }
+    }
 
     img = cv2.imread(os.path.join(folder_path, "camera_0_rgb.png"))
     merged_img = draw_points(img, point_dict)
     # merged_img = merge_imgs_with_points(img_list, point_dict_list)
     cv2.imwrite(os.path.join(folder_path, "camera_0_merged_objects_with_points.png"), merged_img)
-    print(point_dict_list)
+    print(point_dict)
