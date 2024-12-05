@@ -107,7 +107,7 @@ def process_segmentation(obs, output_dir, cam_id):
     return result, seg_instance, len(unique_ids)
 
 
-def crop_objects_by_ids(selected_ids, rgb, seg_instance, output_dir, cam_id, margin=0.1):
+def crop_objects_by_ids(selected_ids, rgb_img, seg_instance, output_dir, cam_id, margin=0.1):
     """裁剪指定编号的物体并保存
     
     Args:
@@ -123,8 +123,7 @@ def crop_objects_by_ids(selected_ids, rgb, seg_instance, output_dir, cam_id, mar
     # if not isinstance(rgb, np.ndarray):
     #     rgb = np.array(rgb)
     # if rgb.dtype != np.uint8:
-    #     rgb = (rgb * 255).astype(np.uint8)
-    rgb_img = np.array(rgb)  
+    #     rgb = (rgb * 255).astype(np.uint8) 
     
     height, width = rgb_img.shape[:2]
     cropped_images = []
@@ -175,6 +174,106 @@ def crop_objects_by_ids(selected_ids, rgb, seg_instance, output_dir, cam_id, mar
     return cropped_images, bboxes
 
 
+def get_bounding_boxes(obs, cam_id, bbox_type='bbox_2d_tight'):
+    """获取场景中物体的边界框
+    
+    Args:
+        cam_id (int): 相机ID
+        bbox_type (str): 边界框类型，可选 'bbox_2d_tight', 'bbox_2d_loose', 'bbox_3d'
+        
+    Returns:
+        list: 包含边界框信息的列表，每个元素为字典:
+            - 2D边界框: {
+                'semantic_id': int,  # 语义ID
+                'x_min': int,       # 左上角x坐标
+                'y_min': int,       # 左上角y坐标
+                'x_max': int,       # 右下角x坐标
+                'y_max': int,       # 右下角y坐标
+                'occlusion': float  # 遮挡比例
+            }
+            - 3D边界框: {
+                'semantic_id': int,    # 语义ID
+                'x_min': float,       # 最小x坐标
+                'y_min': float,       # 最小y坐标
+                'z_min': float,       # 最小z坐标
+                'x_max': float,       # 最大x坐标
+                'y_max': float,       # 最大y坐标
+                'z_max': float,       # 最大z坐标
+                'transform': np.array, # 4x4变换矩阵
+                'occlusion': float    # 遮挡比例
+            }
+    """
+    # 获取相机观察数据
+    # obs = self.cams[cam_id].get_obs()
+
+    
+    if bbox_type not in obs:
+        raise ValueError(f"无法获取 {bbox_type} 数据")
+    
+    bboxes = obs[bbox_type]
+    results = []
+    
+    # 处理边界框数据
+    for bbox in bboxes:
+        if bbox_type.startswith('bbox_2d'):
+            results.append({
+                'semantic_id': bbox[0],
+                'x_min': bbox[1],
+                'y_min': bbox[2],
+                'x_max': bbox[3],
+                'y_max': bbox[4],
+                'occlusion': bbox[5]
+            })
+        else:  # bbox_3d
+            results.append({
+                'semantic_id': bbox[0],
+                'x_min': bbox[1],
+                'y_min': bbox[2],
+                'z_min': bbox[3],
+                'x_max': bbox[4],
+                'y_max': bbox[5],
+                'z_max': bbox[6],
+                'transform': bbox[7].reshape(4, 4),
+                'occlusion': bbox[8]
+            })
+    
+    return results
+
+def visualize_bboxes(self, cam_id, rgb_img, bboxes, output_path=None):
+    """可视化边界框
+    
+    Args:
+        cam_id (int): 相机ID
+        rgb_img (np.ndarray): RGB图像
+        bboxes (list): 边界框列表
+        output_path (str, optional): 输出图像路径
+    """
+    # 复制图像以避免修改原图
+    img = rgb_img.copy()
+    
+    # 为每个边界框绘制矩形和标签
+    for bbox in bboxes:
+        # 获取语义类别名称
+        semantic_name = semantic_class_id_to_name().get(int(bbox['semantic_id']), 'unknown')
+        
+        # 绘制矩形
+        cv2.rectangle(img, 
+                    (bbox['x_min'], bbox['y_min']), 
+                    (bbox['x_max'], bbox['y_max']),
+                    (0, 255, 0), 2)
+        
+        # 添加标签
+        label = f"{semantic_name} ({bbox['occlusion']:.2f})"
+        cv2.putText(img, label, 
+                    (bbox['x_min'], bbox['y_min'] - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+    
+    if output_path:
+        cv2.imwrite(output_path, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+    
+    return img
+
+
 if __name__ == "__main__":
     cam_id = 0
     folder_path = os.path.join(ROOT_PATH, "../examples/process_imgs")
@@ -183,5 +282,9 @@ if __name__ == "__main__":
     
     # 选择输出裁剪的图片
     selected_ids = range(0, seg_num)#[2, 3]
-    cropped_images, bboxes = crop_objects_by_ids(selected_ids, obs['rgb'], seg_instance, folder_path, cam_id, margin=0.1)
+    cropped_images, bboxes = crop_objects_by_ids(selected_ids, np.array(obs['rgb']), seg_instance, folder_path, cam_id, margin=0.1)
+    
+    # 获取并可视化边界框
+    bboxes = get_bounding_boxes(obs, cam_id, 'bbox_2d_tight')
+    bbox_img = visualize_bboxes(cam_id, np.array(obs['rgb']), bboxes, os.path.join(folder_path, f'camera_{cam_id}_bbox.png'))
     

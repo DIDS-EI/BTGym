@@ -29,12 +29,20 @@ class OGCamera:
         ret = {}
         ret["rgb"] = obs[0]["rgb"][:,:,:3]  # H, W, 3
         ret["depth"] = obs[0]["depth_linear"]  # H, W
-        # ret["points"] = pixel_to_3d_points(ret["depth"], self.intrinsics, self.extrinsics)  # H, W, 3
-        # ret["seg"] = obs[0]["seg_semantic"]  # H, W
-        # ret["seg_semantic"] = obs[0]["seg_semantic"]  # H, W
+        ret["points"] = pixel_to_3d_points(ret["depth"], self.intrinsics, self.extrinsics)  # H, W, 3
+        ret["seg"] = obs[0]["seg_semantic"]  # H, W
         ret["seg_instance"] = obs[0]["seg_instance"]  # H, W
+        ret["seg_instance_id"] = obs[0]["seg_instance_id"]  # H, W
         ret["intrinsic"] = self.intrinsics
         ret["extrinsic"] = self.extrinsics
+        
+        # 添加边界框数据
+        if "bbox_2d_tight" in obs[0]:
+            ret["bbox_2d_tight"] = obs[0]["bbox_2d_tight"]
+        if "bbox_2d_loose" in obs[0]:
+            ret["bbox_2d_loose"] = obs[0]["bbox_2d_loose"]
+        if "bbox_3d" in obs[0]:
+            ret["bbox_3d"] = obs[0]["bbox_3d"]
         return ret
 
 def insert_camera(name, og_env, width=480, height=480):
@@ -44,7 +52,8 @@ def insert_camera(name, og_env, width=480, height=480):
             name=name,
             image_width=width,
             image_height=height,
-            modalities=["rgb", "depth_linear", "seg_instance"]
+            modalities=["rgb", "depth_linear", "seg_semantic","seg_instance","seg_instance_id", "bbox_2d_tight", "bbox_2d_loose", "bbox_3d"]
+            #modalities=["rgb", "depth_linear", "seg_semantic","seg_instance","seg_instance_id"]
         )
     except TypeError:
         cam = VisionSensor(
@@ -52,7 +61,8 @@ def insert_camera(name, og_env, width=480, height=480):
             name=name,
             image_width=width,
             image_height=height,
-            modalities=["rgb", "depth_linear", "seg_instance"]
+            modalities=["rgb", "depth_linear", "seg_semantic","seg_instance","seg_instance_id", "bbox_2d_tight", "bbox_2d_loose", "bbox_3d"]
+            #modalities=["rgb", "depth_linear", "seg_semantic","seg_instance","seg_instance_id"]
         )
     
     try:

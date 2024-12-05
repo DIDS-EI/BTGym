@@ -67,7 +67,9 @@ camera:
     position: [ 0.6137,  0.4764,  1.4565]
     orientation: [ 0.3212,  0.4682,  0.6788,  0.4656]
     resolution: 480
-    modalities: [rgb, depth_linear, seg_instance]
+    modalities: [rgb, depth_linear, seg_semantic, seg_instance, seg_instance_id, bbox_2d_tight, bbox_2d_loose, bbox_3d]
+    #modalities: [rgb, depth_linear, seg_semantic,seg_instance,seg_instance_id]
+    #modalities: [rgb, depth_linear, seg_instance]
 
   # vlm camera
   0:
@@ -75,7 +77,9 @@ camera:
     position: [-0.1655,  0.0167,  1.3664]
     orientation: [ 0.0550,  0.0544,  0.7010,  0.7090]
     resolution: 480
-    modalities: [rgb, depth_linear, seg_instance]
+    modalities: [rgb, depth_linear, seg_semantic, seg_instance, seg_instance_id, bbox_2d_tight, bbox_2d_loose, bbox_3d]
+    #modalities: [rgb, depth_linear,  seg_semantic,seg_instance,seg_instance_id]
+    #modalities: [rgb, depth_linear, seg_instance]
 
 
 
