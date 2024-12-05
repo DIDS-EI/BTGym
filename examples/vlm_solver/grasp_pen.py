@@ -102,7 +102,7 @@ class Env:
         for _ in range(10):
             og.sim.step()
 
-        self.save_images()    
+        # self.save_images()    
 
     def idle(self):
         while True:
@@ -191,6 +191,17 @@ class Env:
 
     def grasp_pos(self,grasp_point):
         """根据抓取点计算抓取位置"""
+        grasp_point = th.tensor(grasp_point, dtype=th.float32)
+
+        # 检查并调整关节位置
+        jp = self.robot.get_joint_positions(normalized=True)
+        if not th.all(th.abs(jp)[:-2] < 0.97):
+            new_jp = jp.clone()
+            new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
+            self.robot.set_joint_positions(new_jp, normalized=True)
+        og.sim.step()
+
+
         grasp_orientations = [
             T.euler2quat(th.tensor([0, math.pi/2, math.pi/2], dtype=th.float32)),      # 从上往下抓
             T.euler2quat(th.tensor([0, -math.pi/2, 0], dtype=th.float32)),     # 从下往上抓
@@ -205,41 +216,19 @@ class Env:
         for grasp_quat in grasp_orientations:
             # 根据抓取方向调整抓取点的偏移
             for offset in offset_list:
-                # 将抓取方向转换为欧拉角
-                euler = T.quat2euler(grasp_quat)
-                
-                # 根据抓取方向计算偏移向量
-                offset_vec = th.zeros(3)
-                if euler[1] == math.pi/2:  # 从上往下抓
-                    offset_vec[2] = offset  # z轴偏移
-                elif euler[1] == -math.pi/2:  # 从下往上抓
-                    offset_vec[2] = -offset  # z轴偏移
-                elif euler[1] == 0 and euler[2] == 0:  # 从前往后抓
-                    offset_vec[1] = offset  # y轴偏移
-                elif euler[1] == math.pi:  # 从后往前抓
-                    offset_vec[1] = -offset  # y轴偏移
-                elif euler[2] == math.pi/2:  # 从左往右抓
-                    offset_vec[0] = offset  # x轴偏移
-                elif euler[2] == -math.pi/2:  # 从右往左抓
-                    offset_vec[0] = -offset  # x轴偏移
-                elif euler[1] == 3*math.pi/4:  # 45度角抓取
-                    offset_vec[1] = offset * math.cos(math.pi/4)  # y轴偏移
-                    offset_vec[2] = offset * math.sin(math.pi/4)  # z轴偏移
-                
-                # 应用偏移得到最终抓取位置
-                pos = grasp_point + offset_vec
+                current_grasp_point = grasp_point[:]
 
+                current_grasp_point[2] += offset
 
-                pos_sequence = th.stack([pos, pos])
+                pos_sequence = th.stack([current_grasp_point, current_grasp_point])
                 quat_sequence = th.stack([grasp_quat, grasp_quat])
                 try:
-                    successes, paths = curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
+                    successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
                     if successes[0]:
                         break
                 except Exception as e:  # 规划失败，换个抓取方向再规划
                     print(f"Error: {e}")
                     continue
-
 
 
     def execute_trajectory(self, path):
