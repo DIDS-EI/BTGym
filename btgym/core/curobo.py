@@ -10,6 +10,8 @@ from omnigibson.object_states.factory import METALINK_PREFIXES
 from omnigibson.utils.constants import GROUND_CATEGORIES
 from omnigibson.utils.control_utils import FKSolver
 
+from btgym.utils.logger import log,set_logger_entry
+
 # Gives 1 - 5% better speedup, according to https://github.com/NVlabs/curobo/discussions/245#discussioncomment-9265692
 th.backends.cudnn.benchmark = True
 th.backends.cuda.matmul.allow_tf32 = True
@@ -180,19 +182,19 @@ class CuRoboMotionGenerator:
             num_ik_seeds=12,
             num_batch_ik_seeds=12,
             num_batch_trajopt_seeds=1,
-            ik_opt_iters=60,
+            ik_opt_iters=100,  # 增加IK优化迭代次数 #60,
             optimize_dt=True,
             num_trajopt_seeds=4,
             num_graph_seeds=4,
             interpolation_dt=0.03,
             collision_cache={"obb": 10, "mesh": 1024},
-            collision_max_outside_distance=0.05,
-            collision_activation_distance=0.025,
+            collision_max_outside_distance=0.15, #0.05, 检测20cm范围内的所有潜在碰撞
+            collision_activation_distance=0.1, #0.025, 机器人距离障碍物10cm时就开始规避
             acceleration_scale=1.0,
             self_collision_check=True,
             maximum_trajectory_dt=None,
             fixed_iters_trajopt=True,
-            finetune_trajopt_iters=100,
+            finetune_trajopt_iters=200,  # 增加轨迹优化迭代次数 #100,
             finetune_dt_scale=1.05,
             velocity_scale=[1.0] * robot.n_joints,
         )
@@ -271,8 +273,8 @@ class CuRoboMotionGenerator:
         # if physx_scene_api:
         #     physx_scene_api.CreateEnableDebugVizAttr().Set(True)
         
-        # print("\n=== Detected Obstacles ===")
-        # print(obstacles)
+        # log("\n=== Detected Obstacles ===")
+        # log(obstacles)
     
         self.mg.update_world(obstacles)
         # print("Synced CuRobo world from stage.")
