@@ -154,17 +154,17 @@ def parse_point(center,point):
     
 
 def draw_points(img, point_dict):
-    point_center_dict = {
-        "3_pen": [0,0],
-        "4_pen_holder": [0,0]
-    }
+    with open(os.path.join(folder_path, "camera_0_bbox_center_dict.pkl"), "rb") as f:
+        point_center_dict = pickle.load(f)
+
     h, w = img.shape[:2]
 
-    for name, point in point_dict.items():
-        x, y = parse_point(point_center_dict[name], point)
-        point_pos = (int(x*w), int(y*h))
-        cv2.circle(img, point_pos, 5, (255, 255, 255), -1)
-        cv2.putText(img, name, (point_pos[0]+10, point_pos[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+    for object_name in point_dict:
+        for name, point in point_dict[object_name].items():
+            x, y = parse_point(point_center_dict[object_name], point)
+            point_pos = (int(x*w), int(y*h))
+            cv2.circle(img, point_pos, 5, (255, 255, 255), -1)
+            cv2.putText(img, name, (point_pos[0]+10, point_pos[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
     return img
 
 def merge_imgs_with_points(img_list, point_dict_list):
