@@ -258,6 +258,8 @@ def visualize_bboxes_2d(cam_id, rgb_img, bboxes, output_path=None):
     # 复制图像以避免修改原图
     img = rgb_img.copy()
     
+    bbox_dict = {}
+    
     # 为每个边界框绘制矩形和标签
     for bi,bbox in enumerate(bboxes):
         # 获取语义类别名称
@@ -280,6 +282,17 @@ def visualize_bboxes_2d(cam_id, rgb_img, bboxes, output_path=None):
         cv2.putText(img, label, 
                     (x_min, y_min - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+        # 做一个字典保存为 pkl
+        # key 为 bbox 的序号 bi
+        # value 为 bbox 的中心点坐标（x,y）
+        bbox_center = ((x_min + x_max) / 2, (y_min + y_max) / 2)
+        bbox_dict[bi] = bbox_center
+        
+    # 保存 bbox_dict 为 pkl
+    bbox_dict_path = os.path.join(folder_path, f'camera_{cam_id}_bbox_center_dict.pkl')
+    with open(bbox_dict_path, 'wb') as f:
+        pickle.dump(bbox_dict, f)
     
     if output_path:
         cv2.imwrite(output_path, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
