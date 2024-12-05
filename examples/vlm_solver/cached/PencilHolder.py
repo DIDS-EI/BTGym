@@ -7,7 +7,7 @@ class PencilHolder:
         self.obj_name = obj_name
 
     def get_pen_release_pose(self, pen):
-        pos = th.tensor([-0.32, 0.15, 0.9], dtype=th.float32)
+        pos = th.tensor([-0.32, 0.15, 1.0], dtype=th.float32)
         euler = th.tensor([0, 0, -90], dtype=th.float32)
         pose = (pos, euler)
         return pose

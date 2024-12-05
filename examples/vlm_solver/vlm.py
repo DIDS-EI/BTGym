@@ -1,7 +1,7 @@
 
 import os
 from btgym.llm.llm import LLM
-from btgym.utils import cfgs
+from btgym.utils import cfg
 import re
 import importlib
 import sys
@@ -9,7 +9,7 @@ import sys
 
 class VLM:
     def __init__(self):
-        self.exp_output_path = os.path.join(cfgs.OUTPUTS_PATH, "vlm")
+        self.exp_output_path = os.path.join(cfg.OUTPUTS_PATH, "vlm")
         # 创建__init__.py文件
         init_file_path = os.path.join(self.exp_output_path, "__init__.py")
         if not os.path.exists(init_file_path):

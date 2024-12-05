@@ -12,3 +12,5 @@ class Pen:
         euler = th.tensor([0, 90, 90], dtype=th.float32)
         pose = (pos, euler)
         return pose
+
+    #根据物体的

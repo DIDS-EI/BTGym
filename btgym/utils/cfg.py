@@ -20,6 +20,8 @@ os.makedirs(TESTS_PATH, exist_ok=True)
 # Variables
 ##############
 
-llm_model = "claude-3-5-sonnet-20240620"
+llm_model = "gpt-4o"
+# llm_model = "claude"
+# llm_model = "claude-3-5-sonnet-20241022"
 llm_temperature = 0.5
 # llm_max_tokens = 2048

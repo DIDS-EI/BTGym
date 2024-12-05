@@ -29,8 +29,10 @@ class OGCamera:
         ret = {}
         ret["rgb"] = obs[0]["rgb"][:,:,:3]  # H, W, 3
         ret["depth"] = obs[0]["depth_linear"]  # H, W
-        ret["points"] = pixel_to_3d_points(ret["depth"], self.intrinsics, self.extrinsics)  # H, W, 3
-        ret["seg"] = obs[0]["seg_semantic"]  # H, W
+        # ret["points"] = pixel_to_3d_points(ret["depth"], self.intrinsics, self.extrinsics)  # H, W, 3
+        # ret["seg"] = obs[0]["seg_semantic"]  # H, W
+        # ret["seg_semantic"] = obs[0]["seg_semantic"]  # H, W
+        ret["seg_instance"] = obs[0]["seg_instance"]  # H, W
         ret["intrinsic"] = self.intrinsics
         ret["extrinsic"] = self.extrinsics
         return ret
@@ -42,7 +44,7 @@ def insert_camera(name, og_env, width=480, height=480):
             name=name,
             image_width=width,
             image_height=height,
-            modalities=["rgb", "depth_linear", "seg_semantic"]
+            modalities=["rgb", "depth_linear", "seg_instance"]
         )
     except TypeError:
         cam = VisionSensor(
@@ -50,7 +52,7 @@ def insert_camera(name, og_env, width=480, height=480):
             name=name,
             image_width=width,
             image_height=height,
-            modalities=["rgb", "depth_linear", "seg_semantic"]
+            modalities=["rgb", "depth_linear", "seg_instance"]
         )
     
     try:

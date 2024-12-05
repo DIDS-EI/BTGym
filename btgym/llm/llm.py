@@ -7,7 +7,7 @@ import parse
 import numpy as np
 import time
 from datetime import datetime
-from btgym.utils import cfgs
+from btgym.utils import cfg
 
 
 # Function to encode the image
@@ -19,6 +19,37 @@ class LLM:
     def __init__(self):
         self.client = OpenAI()
         # self.base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), './vlm_query')
+
+    def custom_request_no_stream(self, messages):
+        response = self.client.chat.completions.create(
+            model=cfg.llm_model, # gpt-4o
+            messages=messages,
+            temperature=cfg.llm_temperature #0
+            # max_tokens=cfg.llm_max_tokens*5 #2048
+        )
+        if isinstance(response, str):  # 检查是否为字符串
+            response = json.loads(response)  # 将其转换为 Python 对象
+        output = response.choices[0].message.content
+        print(f"custom_request_no_stream: {output}")
+        return output
+
+    def custom_request(self, messages):
+        # build prompt 构建提示
+        stream = self.client.chat.completions.create(model=cfg.llm_model,
+                                                        messages=messages,
+                                                        temperature=cfg.llm_temperature,
+                                                        stream=True)
+        output = ""
+        print("", end="", flush=True)  # 清空当前行
+        print("正在生成回答...\n")
+        for chunk in stream:
+            if chunk.choices[0].delta.content is not None:
+                content = chunk.choices[0].delta.content
+                print(content, end="", flush=True)
+                output += content
+        print("\n")
+        return output
+
 
     def _build_prompt_with_img(self, image_path, instruction):
         img_base64 = encode_image(image_path)
@@ -62,9 +93,9 @@ class LLM:
         """
         # build prompt 构建提示
         messages = self._build_prompt(instruction)
-        stream = self.client.chat.completions.create(model=cfgs.llm_model,
+        stream = self.client.chat.completions.create(model=cfg.llm_model,
                                                         messages=messages,
-                                                        temperature=cfgs.llm_temperature,
+                                                        temperature=cfg.llm_temperature,
                                                         stream=True)
         output = ""
         print("", end="", flush=True)  # 清空当前行
@@ -95,5 +126,5 @@ class LLM:
 
 if __name__ == "__main__":
     llm = LLM()
-    print(llm.request("generate a python code to print 'hello world'"))
-    # print(llm.get_model_list())
+    # print(llm.request("generate a python code to print 'hello world'"))
+    print(llm.get_model_list())

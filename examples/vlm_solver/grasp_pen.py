@@ -19,6 +19,9 @@ from omnigibson.action_primitives.starter_semantic_action_primitives import (
     StarterSemanticActionPrimitiveSet,
 )
 from btgym.utils.logger import log,set_logger_entry
+from btgym.utils import cfg
+import cv2
+
 th.set_printoptions(precision=4)
 code_path = os.path.join(ROOT_PATH, "../examples/vlm_solver/cached")
 sys.path.append(code_path)
@@ -46,7 +49,9 @@ class Env:
         config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
         self.config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
         self.config["scene"]["scene_file"] = os.path.join(ROOT_PATH, "assets/og_scene_file_red_pen.json")
-        
+        self.output_dir = os.path.join(cfg.OUTPUTS_PATH, "grasp_pen")
+        os.makedirs(self.output_dir, exist_ok=True)
+
         # 初始化环境
         self.og_env = og.Environment(configs=self.config)
         self.scene = self.og_env.scene
@@ -84,6 +89,11 @@ class Env:
             "pen_1": "Pen",
             "pencil_holder_1": "PencilHolder"
         }
+
+        for _ in range(10):
+            og.sim.step()
+
+        self.save_images()    
 
     def idle(self):
         while True:
@@ -168,12 +178,8 @@ class Env:
 
         for _ in range(50):
             og.sim.step()
-        # try:
-        #     successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
-        #     if successes[0]:
-        #         self.execute_trajectory(paths[0])
-        # except Exception as e:
-        #     print(f"Error: {e}")
+
+
 
     def execute_trajectory(self, path):
         """执行轨迹"""
@@ -203,6 +209,97 @@ class Env:
     #             print(f"Error: {e}")
     #         og.sim.step()
 
+    def get_cam_obs(self):
+        self.last_cam_obs = dict()
+        for cam_id in self.cams:
+            self.last_cam_obs[cam_id] = self.cams[cam_id].get_obs()  # each containing rgb, depth, points, seg
+        return self.last_cam_obs
+    
+
+    def save_images(self):
+        """保存所有相机图像"""
+        cam_obs = self.get_cam_obs()
+        
+        # 遍历每个相机
+        for cam_id, obs in cam_obs.items():
+            # 保存RGB图像
+            rgb = obs['rgb']
+            if rgb is not None:
+                rgb_path = os.path.join(self.output_dir, f'camera_{cam_id}_rgb.png')
+                # 确保rgb是numpy数组并且是uint8类型
+                if not isinstance(rgb, np.ndarray):
+                    rgb = np.array(rgb)
+                if rgb.dtype != np.uint8:
+                    rgb = (rgb * 255).astype(np.uint8)
+                # RGB转BGR
+                bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+                cv2.imwrite(rgb_path, bgr)
+                
+            # 保存深度图像
+            if 'depth' in obs and obs['depth'] is not None:
+                depth = obs['depth']
+                if not isinstance(depth, np.ndarray):
+                    depth = np.array(depth)
+                # 将深度图归一化到0-255范围
+                depth_normalized = ((depth - depth.min()) / (depth.max() - depth.min()) * 255).astype(np.uint8)
+                depth_path = os.path.join(self.output_dir, f'camera_{cam_id}_depth.png')
+                cv2.imwrite(depth_path, depth_normalized)
+                
+            # 保存分割图像
+            if 'seg_instance' in obs and obs['seg_instance'] is not None:
+                seg_instance = obs['seg_instance']
+
+                # TODO：1. seg_instance给每个像素分配了实例id，但还不知道每个id对应哪些物体，需要根据id获取物体
+                # TODO：2. 如何得到感兴趣的物体，并针对性的在物体上画格子？对于大小不同的物体，格子大小也不同吗？
+
+                if not isinstance(seg_instance, np.ndarray):
+                    seg_instance = np.array(seg_instance.cpu())
+                if seg_instance.dtype != np.uint8:
+                    seg_instance = seg_instance.astype(np.uint8)
+                seg_path = os.path.join(self.output_dir, f'camera_{cam_id}_seg.png')
+                cv2.imwrite(seg_path, seg_instance)
+
+            
+            # 获取seg中的唯一值
+            # unique_values = np.unique(seg_instance)
+            # log(f"unique_values: {unique_values}")
+            
+            # # 遍历每个uid并获取对应的物体
+            # for uid in unique_values:
+            #     log(f"uid: {uid}")
+            #     obj = self.get_obj_by_uid(uid)
+            #     if obj is not None:
+            #         log(f"Found object with uid {uid}: {obj.name}")
+            #     else:
+            #         log(f"No object found with uid {uid}")
+
+            # # 保存点云图像
+            # if 'points' in obs and obs['points'] is not None:
+            #     points = obs['points']
+            #     if not isinstance(points, np.ndarray):
+            #         points = np.array(points)
+            #     points_path = os.path.join(self.output_dir, f'camera_{cam_id}_points.npy')
+            #     np.save(points_path, points)
+                
+        print(f"图像已保存到目录: {self.output_dir}")
+
+    def get_obj_by_uid(self, uid):
+        """通过uid获取场景中的物体对象
+        
+        Args:
+            uid (int): 物体的唯一标识符
+            
+        Returns:
+            Object: OmniGibson物体对象，如果未找到则返回None
+        """
+        # 遍历场景中的所有物体
+        for obj in self.scene.objects:
+            # 获取物体的uid
+            obj_uid = obj.get_body_ids()[0]  # 获取物体的body id作为uid
+            if obj_uid == uid:
+                return obj
+        return None
+
     def get_obj_bbox(self, obj_name):
         obj_name = obj_name.capitalize()
         obj_cls = importlib.import_module(f"{obj_name}.{obj_name}")
@@ -218,18 +315,21 @@ class Env:
     
     def do_task(self,instruction):
         """现在先不管 instruction，先写好预定义的代码，跑通执行的pipeline。想清楚我们需要什么样的代码，再考虑大模型如何生成代码"""
-        spec = importlib.util.find_spec('task.do_task')
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        module.do_task(self)
+        pass
+        # self.save_images()
+        # spec = importlib.util.find_spec('task.do_task')
+        # module = importlib.util.module_from_spec(spec)
+        # spec.loader.exec_module(module)
+        # module.do_task(self)
 
 
 if __name__ == "__main__":
     set_logger_entry(__file__)
 
     # Env().idle()
-    importlib.import_module("task").do_task(Env())
-
+    env = Env()
+    importlib.import_module("task").do_task(env)
+    env.idle()
     # env = Env()
     # print("开始任务!")
     # env.do_task("grasp the pen")
