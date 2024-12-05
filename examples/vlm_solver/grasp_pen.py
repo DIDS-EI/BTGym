@@ -26,6 +26,11 @@ th.set_printoptions(precision=4)
 code_path = os.path.join(ROOT_PATH, "../examples/vlm_solver/cached")
 sys.path.append(code_path)
 
+
+# 固定种子
+random.seed(42)
+np.random.seed(42)
+
 def execute_controller(ctrl_gen, env):
     for action in ctrl_gen:
         # print(f"action: {action}")
@@ -245,19 +250,144 @@ class Env:
                 depth_path = os.path.join(self.output_dir, f'camera_{cam_id}_depth.png')
                 cv2.imwrite(depth_path, depth_normalized)
                 
-            # 保存分割图像
+            # # 保存分割图像
+            # if 'seg_instance' in obs and obs['seg_instance'] is not None:
+            #     seg_instance = obs['seg_instance']
+
+            #     # TODO：1. seg_instance给每个像素分配了实例id，但还不知道每个id对应哪些物体，需要根据id获取物体
+            #     # TODO：2. 如何得到感兴趣的物体，并针对性的在物体上画格子？对于大小不同的物体，格子大小也不同吗？
+
+            #     if not isinstance(seg_instance, np.ndarray):
+            #         seg_instance = np.array(seg_instance.cpu())
+            #     if seg_instance.dtype != np.uint8:
+            #         seg_instance = seg_instance.astype(np.uint8)
+            #     seg_path = os.path.join(self.output_dir, f'camera_{cam_id}_seg.png')
+            #     cv2.imwrite(seg_path, seg_instance)
+
+            
+
+            # 处理分割图像
             if 'seg_instance' in obs and obs['seg_instance'] is not None:
                 seg_instance = obs['seg_instance']
-
-                # TODO：1. seg_instance给每个像素分配了实例id，但还不知道每个id对应哪些物体，需要根据id获取物体
-                # TODO：2. 如何得到感兴趣的物体，并针对性的在物体上画格子？对于大小不同的物体，格子大小也不同吗？
-
+                
+                # 转换为numpy数组
                 if not isinstance(seg_instance, np.ndarray):
                     seg_instance = np.array(seg_instance.cpu())
                 if seg_instance.dtype != np.uint8:
                     seg_instance = seg_instance.astype(np.uint8)
+                    
+                # 获取唯一的实例ID
+                unique_ids = np.unique(seg_instance)
+                
+                        
+                # 创建彩色标记图像
+                rgb_img = np.array(obs['rgb'])
+                overlay = rgb_img.copy()
+                result = rgb_img.copy()  # 创建最终结果图像
+                
+                # 为每个实例创建彩色掩码
+                for i, instance_id in enumerate(unique_ids):
+                    if instance_id == 0:  # 跳过背景
+                        continue
+                        
+                    # 创建当前实例的掩码
+                    mask = (seg_instance == instance_id)
+                    
+                    # 为每个实例随机生成颜色
+                    color =  tuple(map(int, np.random.randint(0, 255, 3)))
+                    
+                    # 应用掩码
+                    overlay[mask] = color
+                    
+                    # 找到轮廓并绘制
+                    mask_uint8 = mask.astype(np.uint8) * 255
+                    contours, _ = cv2.findContours(mask_uint8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                    cv2.drawContours(overlay, contours, -1, color, 3)  # 3是轮廓的粗细
+                    
+                    # 计算掩码的重心作为标注位置
+                    y_coords, x_coords = np.where(mask)
+                    if len(y_coords) > 0:
+                        center_y = int(np.mean(y_coords))
+                        center_x = int(np.mean(x_coords))
+                
+                # 先混合原始图像和标记
+                result = cv2.addWeighted(rgb_img, 0.7, overlay, 0.3, 0)
+                
+                
+                # 在结果图像上重新绘制轮廓
+                for i, instance_id in enumerate(unique_ids):
+                    if instance_id == 0:
+                        continue
+                    mask = (seg_instance == instance_id)
+                    mask_uint8 = mask.astype(np.uint8) * 255
+                    contours, _ = cv2.findContours(mask_uint8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                    color = tuple(map(int, np.random.randint(0, 255, 3)))
+                    cv2.drawContours(result, contours, -1, color, 3)
+                
+                # 最后添加编号标注，确保在最上层
+                for i, instance_id in enumerate(unique_ids):
+                    if instance_id == 0:
+                        continue
+                        
+                    mask = (seg_instance == instance_id)
+                    y_coords, x_coords = np.where(mask)
+                    if len(y_coords) > 0:
+                        center_y = int(np.mean(y_coords))
+                        center_x = int(np.mean(x_coords))
+                        
+                        # 添加黑色描边的白色文字，使文字更清晰
+                        text = str(i) #str(instance_id)  #str(i)
+                        font = cv2.FONT_HERSHEY_SIMPLEX
+                        font_scale = 1
+                        thickness = 2
+                        
+                        # 先画黑色描边
+                        cv2.putText(result, text, (center_x-2, center_y-2),
+                                font, font_scale, (0, 0, 0), thickness+2)
+                        cv2.putText(result, text, (center_x+2, center_y+2),
+                                font, font_scale, (0, 0, 0), thickness+2)
+                        
+                        # 再画白色文字
+                        cv2.putText(result, text, (center_x, center_y),
+                                font, font_scale, (255, 255, 255), thickness)
+                
+
+                
+                
+                # 保存结果
+                seg_path = os.path.join(self.output_dir, f'camera_{cam_id}_seg_labeled.png')
+                cv2.imwrite(seg_path, cv2.cvtColor(result, cv2.COLOR_RGB2BGR))
+                
+                # 保存原始分割图
                 seg_path = os.path.join(self.output_dir, f'camera_{cam_id}_seg.png')
                 cv2.imwrite(seg_path, seg_instance)
+                
+                
+                # 识别物体
+                # 使用 GPT-4V 识别任务相关的物体
+                # try:
+                #     prompt = "这张图片中标注了不同的物体。请识别每个编号对应的物体名称，按照'编号：物体名称'的格式列出。"
+                #     response = request_gpt4v(prompt, seg_labeled_path)
+                #     print(f"\n物体识别结果:\n{response}")
+                # except Exception as e:
+                #     print(f"GPT-4V 识别失败: {e}")
+                
+                
+                # 假设选择了 3 和 2 物体，把物体框出来 裁剪
+                # 写成一个函数
+                # 裁剪选定物体
+                if cam_id == 0:
+                    selected_ids = [2, 3]  # 示例：裁剪编号为2和4的物体
+                    cropped_images, bboxes = self.crop_objects_by_ids(
+                        selected_ids, 
+                        rgb_img, 
+                        seg_instance, 
+                        self.output_dir, 
+                        cam_id
+                    )
+                
+                
+                
 
             
             # 获取seg中的唯一值
@@ -282,6 +412,67 @@ class Env:
             #     np.save(points_path, points)
                 
         print(f"图像已保存到目录: {self.output_dir}")
+        
+        
+    def crop_objects_by_ids(self, selected_ids, rgb_img, seg_instance, output_dir, cam_id, margin=0.1):
+        """裁剪指定编号的物体并保存
+        
+        Args:
+            selected_ids (List[int]): 要裁剪的物体编号列表(对应新标注的编号i)
+            rgb_img (np.ndarray): RGB图像
+            seg_instance (np.ndarray): 分割实例图像
+            output_dir (str): 输出目录
+            cam_id (int): 相机ID
+            margin (float): 裁剪边界外扩的边距比例，默认0.1
+        """
+        height, width = rgb_img.shape[:2]
+        cropped_images = []
+        bboxes = []
+        
+        # 获取唯一的实例ID(跳过背景0)
+        unique_ids = np.unique(seg_instance)
+        unique_ids = unique_ids[unique_ids != 0]  # 排除背景0
+        
+        for obj_id in selected_ids:
+            # obj_id 是新标注的编号i
+            instance_id = unique_ids[obj_id]  # 直接使用新标注的编号获取对应的实例ID
+            
+            # 创建该物体的掩码
+            mask = (seg_instance == instance_id)
+            mask = mask.astype(np.uint8) * 255
+            
+            # ... (其余裁剪代码保持不变) ...
+            y_indices, x_indices = np.where(mask > 0)
+            if len(y_indices) == 0 or len(x_indices) == 0:
+                continue
+                
+            x_min, x_max = x_indices.min(), x_indices.max()
+            y_min, y_max = y_indices.min(), y_indices.max()
+            
+            w = x_max - x_min
+            h = y_max - y_min
+            margin_x = int(w * margin)
+            margin_y = int(h * margin)
+            
+            x1 = max(0, x_min - margin_x)
+            y1 = max(0, y_min - margin_y)
+            x2 = min(width, x_max + margin_x)
+            y2 = min(height, y_max + margin_y)
+            
+            cropped = rgb_img[y1:y2, x1:x2].copy()
+            
+            # 保存时使用新标注的编号
+            crop_path = os.path.join(output_dir, f'camera_{cam_id}_object_{obj_id}.png')
+            cv2.imwrite(crop_path, cv2.cvtColor(cropped, cv2.COLOR_RGB2BGR))
+            
+            cropped_images.append(cropped)
+            bboxes.append((x1, y1, x2, y2))
+            
+            print(f"物体 {obj_id} 已裁剪并保存到: {crop_path}")
+            print(f"边界框: ({x1}, {y1}, {x2}, {y2})")
+            
+        return cropped_images, bboxes
+        
 
     def get_obj_by_uid(self, uid):
         """通过uid获取场景中的物体对象
