@@ -17,7 +17,13 @@ def encode_image(image_path):
 
 class LLM:
     def __init__(self):
+        # 检查必要的环境变量
+        if not os.getenv("OPENAI_API_KEY"):
+            raise ValueError("Please set the environment variable OPENAI_API_KEY (and OPENAI_BASE_URL)")
+        if not os.getenv("OPENAI_BASE_URL"): 
+            raise ValueError("Please set the environment variable OPENAI_BASE_URL (and OPENAI_API_KEY)")
         self.client = OpenAI()
+
         # self.base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), './vlm_query')
 
     def custom_request_no_stream(self, messages):

@@ -50,6 +50,7 @@ class ObjInEnv:
 
 class Env:
     def __init__(self):
+        self.gripper_length = 0.06
         # 加载配置文件
         config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
         self.config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
@@ -183,6 +184,57 @@ class Env:
 
         for _ in range(50):
             og.sim.step()
+
+    def grasp_pos(self,grasp_point):
+        """根据抓取点计算抓取位置"""
+        grasp_orientations = [
+            T.euler2quat(th.tensor([0, math.pi/2, math.pi/2], dtype=th.float32)),      # 从上往下抓
+            T.euler2quat(th.tensor([0, -math.pi/2, 0], dtype=th.float32)),     # 从下往上抓
+            T.euler2quat(th.tensor([0, 0, 0], dtype=th.float32)),              # 从前往后抓
+            T.euler2quat(th.tensor([0, math.pi, 0], dtype=th.float32)),        # 从后往前抓
+            T.euler2quat(th.tensor([0, 0, math.pi/2], dtype=th.float32)),      # 从左往右抓
+            T.euler2quat(th.tensor([0, 0, -math.pi/2], dtype=th.float32)),     # 从右往左抓
+            T.euler2quat(th.tensor([0, 3*math.pi/4, 0], dtype=th.float32)) # 45度角抓取
+        ]
+        offset_list = [-0.025 -0.02, 0, 0.02, 0.025]
+
+        for grasp_quat in grasp_orientations:
+            # 根据抓取方向调整抓取点的偏移
+            for offset in offset_list:
+                # 将抓取方向转换为欧拉角
+                euler = T.quat2euler(grasp_quat)
+                
+                # 根据抓取方向计算偏移向量
+                offset_vec = th.zeros(3)
+                if euler[1] == math.pi/2:  # 从上往下抓
+                    offset_vec[2] = offset  # z轴偏移
+                elif euler[1] == -math.pi/2:  # 从下往上抓
+                    offset_vec[2] = -offset  # z轴偏移
+                elif euler[1] == 0 and euler[2] == 0:  # 从前往后抓
+                    offset_vec[1] = offset  # y轴偏移
+                elif euler[1] == math.pi:  # 从后往前抓
+                    offset_vec[1] = -offset  # y轴偏移
+                elif euler[2] == math.pi/2:  # 从左往右抓
+                    offset_vec[0] = offset  # x轴偏移
+                elif euler[2] == -math.pi/2:  # 从右往左抓
+                    offset_vec[0] = -offset  # x轴偏移
+                elif euler[1] == 3*math.pi/4:  # 45度角抓取
+                    offset_vec[1] = offset * math.cos(math.pi/4)  # y轴偏移
+                    offset_vec[2] = offset * math.sin(math.pi/4)  # z轴偏移
+                
+                # 应用偏移得到最终抓取位置
+                pos = grasp_point + offset_vec
+
+
+                pos_sequence = th.stack([pos, pos])
+                quat_sequence = th.stack([grasp_quat, grasp_quat])
+                try:
+                    successes, paths = curobo_mg.compute_trajectories(pos_sequence, quat_sequence)
+                    if successes[0]:
+                        break
+                except Exception as e:  # 规划失败，换个抓取方向再规划
+                    print(f"Error: {e}")
+                    continue
 
 
 
@@ -377,7 +429,7 @@ class Env:
                 # 写成一个函数
                 # 裁剪选定物体
                 if cam_id == 0:
-                    selected_ids = [2, 3]  # 示例：裁剪编号为2和4的物体
+                    selected_ids = list(range(1,len(unique_ids)+1))  # 示例：裁剪编号为2和4的物体
                     cropped_images, bboxes = self.crop_objects_by_ids(
                         selected_ids, 
                         rgb_img, 

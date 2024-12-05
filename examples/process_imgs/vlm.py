@@ -8,12 +8,23 @@ import numpy as np
 import time
 from datetime import datetime
 from btgym.llm.llm import LLM
-
+import re
 folder_path = os.path.dirname(os.path.abspath(__file__))
 
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
+
+def extract_code(string):
+    # 使用正则表达式提取代码
+    pattern = r"```python\n(.*?)```"
+    match = re.search(pattern, string, re.DOTALL)
+    if match:
+        answer = match.group(1).strip()
+    else:
+        raise ValueError("No code found in the answer")
+    return answer
+
 
 class ConstraintGenerator:
     def __init__(self):
@@ -57,3 +68,5 @@ if __name__ == "__main__":
 2. 为每个对象输出python代码，每个对象描述为一个类，如Pen,PenHolder，每个类有get_grasp_pose和get_path_constraints两个函数，
 分别对应目标位姿和姿态约束的获取
 """)
+
+    
