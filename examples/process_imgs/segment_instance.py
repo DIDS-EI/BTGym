@@ -287,7 +287,7 @@ def visualize_bboxes_2d(cam_id, rgb_img, bboxes, output_path=None):
         # key 为 bbox 的序号 bi
         # value 为 bbox 的中心点坐标（x,y）
         bbox_center = ((x_min + x_max) / 2, (y_min + y_max) / 2)
-        bbox_dict[bi] = bbox_center
+        bbox_dict[f"{bi}_{semantic_name}"] = bbox_center
         
     # 保存 bbox_dict 为 pkl
     bbox_dict_path = os.path.join(folder_path, f'camera_{cam_id}_bbox_center_dict.pkl')
