@@ -9,6 +9,7 @@ import time
 from datetime import datetime
 from btgym.llm.llm import LLM
 import re
+import pickle
 folder_path = os.path.dirname(os.path.abspath(__file__))
 
 def encode_image(image_path):
@@ -137,14 +138,14 @@ def merge_imgs(img_list):
     return merged_img
 
 
-def parse_point(point):
+def parse_point(center,point):
     """
     将二分法坐标转换为图片上的相对坐标(0-1之间的小数)
     point: [(x1,y1), (x2,y2), (x3,y3), ...]
     return: (x, y) 相对坐标
     """
     print(point)
-    x, y = 0.0, 0.0
+    x, y = center[0], center[1]
     for i, (px, py) in enumerate(point):
         x += px * (0.5 ** (i+1))
         y += py * (0.5 ** (i+1))
@@ -152,6 +153,19 @@ def parse_point(point):
     return x, y
     
 
+def draw_points(img, point_dict):
+    point_center_dict = {
+        "3_pen": [0,0],
+        "4_pen_holder": [0,0]
+    }
+    h, w = img.shape[:2]
+
+    for name, point in point_dict.items():
+        x, y = parse_point(point_center_dict[name], point)
+        point_pos = (int(x*w), int(y*h))
+        cv2.circle(img, point_pos, 5, (255, 255, 255), -1)
+        cv2.putText(img, name, (point_pos[0]+10, point_pos[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+    return img
 
 def merge_imgs_with_points(img_list, point_dict_list):
     merged_width = 360
@@ -205,26 +219,30 @@ def extract_code(string):
 
 
 if __name__ == "__main__":
-    img_name_list = [ "camera_0_object_2.png", "camera_0_object_5.png" ]
-    img_list = []
-    for img_name in img_name_list:
-        img_path = os.path.join(folder_path, img_name)
-        img = cv2.imread(img_path)
-        img_list.append(img)
+    # img_name_list = [ "camera_0_object_2.png", "camera_0_object_3.png" ]
+    # img_list = []
+    # for img_name in img_name_list:
+    #     img_path = os.path.join(folder_path, img_name)
+    #     img = cv2.imread(img_path)
+    #     img_list.append(img)
 
-    merged_img = merge_imgs(img_list)
+    # merged_img = merge_imgs(img_list)
     # merged_img = merge_imgs_with_lines(img_list)
 
-    save_path = os.path.join(folder_path, "camera_0_merged_objects.png")
-    cv2.imwrite(save_path, merged_img)
+    # save_path = os.path.join(folder_path, "camera_0_merged_objects.png")
+    # cv2.imwrite(save_path, merged_img)
 
 
     cg = ConstraintGenerator()
     # output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_merged_objects.png"),
-    output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_seg_labeled.png"),
+    output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_bbox_2d.png"),
+    # output = cg.run_vlm(image_path=os.path.join(folder_path, "camera_0_seg_labeled.png"),
                 instruction="""
 the current task is:
 `reorient the red pen and drop it upright into the black pen holder`
+首先你需要在图片中找到相关物体和他们的序号，如3_pen, 4_pen holder
+
+
 你现在需要在图片中给每个相关物体标注关键点，选关键点的过程采用二分法思维链。
 
 关键点分类：
@@ -272,15 +290,15 @@ the current task is:
 
 最终结果：
 ```python
-point_dict_list = [
-    {
+point_dict = {
+    "3_pen": {
         "grasp_point_pen": [(left,bottom),(right,up),(right,up)],
         "target_point_pen_center": [(left,bottom),(left,up),(left,up)],
     },
-    {
+    "4_pen_holder": {
         "target_point_pencil_holder_center": [(left,bottom),(right,up),(right,up)],
     }
-]
+}
 ```
 
 以下是你的关键点思考过程和最终结果输出：
@@ -293,6 +311,8 @@ point_dict_list = [
     code = extract_code(output)
     exec(code)
 
-    merged_img = merge_imgs_with_points(img_list, point_dict_list)
+    img = cv2.imread(os.path.join(folder_path, "camera_0_rgb.png"))
+    merged_img = draw_points(img, point_dict)
+    # merged_img = merge_imgs_with_points(img_list, point_dict_list)
     cv2.imwrite(os.path.join(folder_path, "camera_0_merged_objects_with_points.png"), merged_img)
     print(point_dict_list)
