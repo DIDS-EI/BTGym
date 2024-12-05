@@ -22,6 +22,7 @@ from btgym.utils.logger import log,set_logger_entry
 from btgym.utils import cfg
 import cv2
 import pickle
+from omnigibson.utils.constants import semantic_class_id_to_name
 
 th.set_printoptions(precision=4)
 code_path = os.path.join(ROOT_PATH, "../examples/vlm_solver/cached")
@@ -58,6 +59,7 @@ class Env:
         self.config["scene"]["scene_file"] = os.path.join(ROOT_PATH, "assets/og_scene_file_red_pen.json")
         self.output_dir = os.path.join(cfg.OUTPUTS_PATH, "grasp_pen")
         os.makedirs(self.output_dir, exist_ok=True)
+
 
         # 初始化环境
         self.og_env = og.Environment(configs=self.config)
@@ -118,6 +120,7 @@ class Env:
         for cam_id in cam_config:
             cam_id = int(cam_id)
             self.cams[cam_id] = OGCamera(self.og_env, cam_config[cam_id])
+            log(f"Initialized camera {cam_id} with config: {cam_config[cam_id]}")  # 打印相机配置
         for _ in range(10): 
             og.sim.render()
 
@@ -270,7 +273,10 @@ class Env:
     def get_cam_obs(self):
         self.last_cam_obs = dict()
         for cam_id in self.cams:
-            self.last_cam_obs[cam_id] = self.cams[cam_id].get_obs()  # each containing rgb, depth, points, seg
+            # self.last_cam_obs[cam_id] = self.cams[cam_id].get_obs()  # each containing rgb, depth, points, seg
+            obs = self.cams[cam_id].get_obs()
+            log(f"Camera {cam_id} observation keys: {obs.keys()}")  # 打印 obs 的键
+            self.last_cam_obs[cam_id] = obs
         return self.last_cam_obs
     
 
@@ -316,6 +322,54 @@ class Env:
             #         seg_instance = seg_instance.astype(np.uint8)
             #     seg_path = os.path.join(self.output_dir, f'camera_{cam_id}_seg.png')
             #     cv2.imwrite(seg_path, seg_instance)
+            
+            
+            # print("\n分割图中的物体ID对应关系:")
+            # for uid in unique_ids:
+            #     if uid == 0:  # 0通常表示背景
+            #         print(f"ID {uid}: 背景")
+            #         continue
+                
+            #     # 尝试从semantic_class_id_to_name映射中获取类别名称
+            #     class_name = semantic_class_id_to_name().get(int(uid), "未知类别")
+            #     print(f"ID {uid}: {class_name}")
+                
+            #     # 获取该ID在分割图像中的位置和大小
+            #     mask = (seg_instance == uid)
+            #     y_coords, x_coords = np.where(mask)
+            #     if len(y_coords) > 0:
+            #         pixel_count = len(y_coords)
+            #         print(f"    覆盖像素数: {pixel_count}")
+            #         center_y = int(np.mean(y_coords))
+            #         center_x = int(np.mean(x_coords))
+            #         print(f"    中心位置: ({center_x}, {center_y})")
+
+            # # 打印所有可能的类别映射
+            # print("\n所有类别映射:")
+            # for class_id, class_name in semantic_class_id_to_name().items():
+            #     print(f"ID {class_id}: {class_name}")   
+                
+                
+            # 获取seg中的唯一值
+            # unique_values = np.unique(seg_instance)
+            # log(f"unique_values: {unique_values}")
+            
+            # # 遍历每个uid并获取对应的物体
+            # for uid in unique_values:
+            #     log(f"uid: {uid}")
+            #     obj = self.get_obj_by_uid(uid)
+            #     if obj is not None:
+            #         log(f"Found object with uid {uid}: {obj.name}")
+            #     else:
+            #         log(f"No object found with uid {uid}")
+
+            # # 保存点云图像
+            # if 'points' in obs and obs['points'] is not None:
+            #     points = obs['points']
+            #     if not isinstance(points, np.ndarray):
+            #         points = np.array(points)
+            #     points_path = os.path.join(self.output_dir, f'camera_{cam_id}_points.npy')
+            #     np.save(points_path, points)
 
             # obs
             obs_path = os.path.join(ROOT_PATH,"../examples/process_imgs/", f'camera_{cam_id}_obs.pkl')
@@ -334,7 +388,7 @@ class Env:
                 if seg_instance.dtype != np.uint8:
                     seg_instance = seg_instance.astype(np.uint8)
                     
-                # 获取唯一的实例ID
+                # 获取唯一的实例ID [0:6] : [2, 3, 4, 5, 7, 11]
                 unique_ids = np.unique(seg_instance)
                 
                         
@@ -443,31 +497,132 @@ class Env:
                         self.output_dir, 
                         cam_id
                     )
-                
-                
-                
-            # 获取seg中的唯一值
-            # unique_values = np.unique(seg_instance)
-            # log(f"unique_values: {unique_values}")
+                    
             
-            # # 遍历每个uid并获取对应的物体
-            # for uid in unique_values:
-            #     log(f"uid: {uid}")
-            #     obj = self.get_obj_by_uid(uid)
-            #     if obj is not None:
-            #         log(f"Found object with uid {uid}: {obj.name}")
-            #     else:
-            #         log(f"No object found with uid {uid}")
-
-            # # 保存点云图像
-            # if 'points' in obs and obs['points'] is not None:
-            #     points = obs['points']
-            #     if not isinstance(points, np.ndarray):
-            #         points = np.array(points)
-            #     points_path = os.path.join(self.output_dir, f'camera_{cam_id}_points.npy')
-            #     np.save(points_path, points)
+            
+            
+            # 得到 bounding box
+            # 写成一个函数
+            # 获取并可视化边界框
+            try:
+                bboxes = self.get_bounding_boxes(obs, cam_id, 'bbox_2d_tight')
+                bbox_img = self.visualize_bboxes(
+                    cam_id, 
+                    rgb_img,
+                    bboxes,
+                    os.path.join(self.output_dir, f'camera_{cam_id}_bbox.png')
+                )
+                print(f"边界框已保存到: {os.path.join(self.output_dir, f'camera_{cam_id}_bbox.png')}")
+            except Exception as e:
+                print(f"处理边界框时出错: {e}")
+            
                 
         print(f"图像已保存到目录: {self.output_dir}")
+    
+    def get_bounding_boxes(self, obs, cam_id, bbox_type='bbox_2d_tight'):
+        """获取场景中物体的边界框
+        
+        Args:
+            cam_id (int): 相机ID
+            bbox_type (str): 边界框类型，可选 'bbox_2d_tight', 'bbox_2d_loose', 'bbox_3d'
+            
+        Returns:
+            list: 包含边界框信息的列表，每个元素为字典:
+                - 2D边界框: {
+                    'semantic_id': int,  # 语义ID
+                    'x_min': int,       # 左上角x坐标
+                    'y_min': int,       # 左上角y坐标
+                    'x_max': int,       # 右下角x坐标
+                    'y_max': int,       # 右下角y坐标
+                    'occlusion': float  # 遮挡比例
+                }
+                - 3D边界框: {
+                    'semantic_id': int,    # 语义ID
+                    'x_min': float,       # 最小x坐标
+                    'y_min': float,       # 最小y坐标
+                    'z_min': float,       # 最小z坐标
+                    'x_max': float,       # 最大x坐标
+                    'y_max': float,       # 最大y坐标
+                    'z_max': float,       # 最大z坐标
+                    'transform': np.array, # 4x4变换矩阵
+                    'occlusion': float    # 遮挡比例
+                }
+        """
+        # 获取相机观察数据
+        # obs = self.cams[cam_id].get_obs()
+        
+        if bbox_type not in obs:
+            # 更新相机配置以包含所需的边界框类型
+            self.cams[cam_id].cam.modalities.append(bbox_type)
+            obs = self.cams[cam_id].get_obs()
+        
+        if bbox_type not in obs:
+            raise ValueError(f"无法获取 {bbox_type} 数据")
+        
+        bboxes = obs[bbox_type]
+        results = []
+        
+        # 处理边界框数据
+        for bbox in bboxes:
+            if bbox_type.startswith('bbox_2d'):
+                results.append({
+                    'semantic_id': bbox[0],
+                    'x_min': bbox[1],
+                    'y_min': bbox[2],
+                    'x_max': bbox[3],
+                    'y_max': bbox[4],
+                    'occlusion': bbox[5]
+                })
+            else:  # bbox_3d
+                results.append({
+                    'semantic_id': bbox[0],
+                    'x_min': bbox[1],
+                    'y_min': bbox[2],
+                    'z_min': bbox[3],
+                    'x_max': bbox[4],
+                    'y_max': bbox[5],
+                    'z_max': bbox[6],
+                    'transform': bbox[7].reshape(4, 4),
+                    'occlusion': bbox[8]
+                })
+        
+        return results
+
+    def visualize_bboxes(self, cam_id, rgb_img, bboxes, output_path=None):
+        """可视化边界框
+        
+        Args:
+            cam_id (int): 相机ID
+            rgb_img (np.ndarray): RGB图像
+            bboxes (list): 边界框列表
+            output_path (str, optional): 输出图像路径
+        """
+        # 复制图像以避免修改原图
+        img = rgb_img.copy()
+        
+        # 为每个边界框绘制矩形和标签
+        for bbox in bboxes:
+            # 获取语义类别名称
+            semantic_name = semantic_class_id_to_name().get(int(bbox['semantic_id']), 'unknown')
+            
+            # 绘制矩形
+            cv2.rectangle(img, 
+                        (bbox['x_min'], bbox['y_min']), 
+                        (bbox['x_max'], bbox['y_max']),
+                        (0, 255, 0), 2)
+            
+            # 添加标签
+            label = f"{semantic_name} ({bbox['occlusion']:.2f})"
+            cv2.putText(img, label, 
+                        (bbox['x_min'], bbox['y_min'] - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        
+        if output_path:
+            cv2.imwrite(output_path, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+        
+        return img
+        
+    
         
         
     def crop_objects_by_ids(self, selected_ids, rgb_img, seg_instance, output_dir, cam_id, margin=0.1):
