@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 from btgym import ROOT_PATH
 import pickle
+from omnigibson.utils.constants import semantic_class_id_to_name
+import torch
 
 def process_segmentation(obs, output_dir, cam_id):
     """处理分割图像并保存结果
@@ -239,15 +241,20 @@ def get_bounding_boxes(obs, cam_id, bbox_type='bbox_2d_tight'):
     
     return results
 
-def visualize_bboxes(self, cam_id, rgb_img, bboxes, output_path=None):
-    """可视化边界框
+def visualize_bboxes_2d(cam_id, rgb_img, bboxes, output_path=None):
+    """可视化2D边界框
     
     Args:
         cam_id (int): 相机ID
-        rgb_img (np.ndarray): RGB图像
-        bboxes (list): 边界框列表
+        rgb_img (torch.Tensor or np.ndarray): RGB图像
+        bboxes (list): 2D边界框列表
         output_path (str, optional): 输出图像路径
     """
+    
+    # 确保图像是uint8类型
+    if rgb_img.dtype != np.uint8:
+        rgb_img = (rgb_img * 255).astype(np.uint8)
+    
     # 复制图像以避免修改原图
     img = rgb_img.copy()
     
@@ -256,16 +263,22 @@ def visualize_bboxes(self, cam_id, rgb_img, bboxes, output_path=None):
         # 获取语义类别名称
         semantic_name = semantic_class_id_to_name().get(int(bbox['semantic_id']), 'unknown')
         
+        # 确保坐标是整数
+        x_min = int(bbox['x_min'])
+        y_min = int(bbox['y_min'])
+        x_max = int(bbox['x_max'])
+        y_max = int(bbox['y_max'])
+        
         # 绘制矩形
         cv2.rectangle(img, 
-                    (bbox['x_min'], bbox['y_min']), 
-                    (bbox['x_max'], bbox['y_max']),
-                    (0, 255, 0), 2)
+                     (x_min, y_min), 
+                     (x_max, y_max),
+                     (0, 255, 0), 2)
         
         # 添加标签
         label = f"{semantic_name} ({bbox['occlusion']:.2f})"
         cv2.putText(img, label, 
-                    (bbox['x_min'], bbox['y_min'] - 10),
+                    (x_min, y_min - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     
     if output_path:
@@ -273,6 +286,124 @@ def visualize_bboxes(self, cam_id, rgb_img, bboxes, output_path=None):
     
     return img
 
+def visualize_bboxes_3d(obs, cam_id, rgb_img, bboxes, output_path=None):
+    """可视化3D边界框
+    
+    Args:
+        obs (dict): 观察数据，包含相机参数
+        cam_id (int): 相机ID
+        rgb_img (torch.Tensor or np.ndarray): RGB图像
+        bboxes (list): 3D边界框列表
+        output_path (str, optional): 输出图像路径
+    """
+
+    # 将张量转换为numpy数组
+    if torch.is_tensor(rgb_img):
+        rgb_img = rgb_img.cpu().numpy()
+    
+    # 确保图像是uint8类型
+    if rgb_img.dtype != np.uint8:
+        rgb_img = (rgb_img * 255).astype(np.uint8)
+    
+    # 复制图像以避免修改原图
+    img = rgb_img.copy()
+    
+    # 获取相机参数
+    intrinsic = obs['intrinsic']
+    extrinsic = obs['extrinsic']
+    
+    # 为每个3D边界框绘制投影
+    for bbox in bboxes:
+        # 获取语义类别名称
+        semantic_name = semantic_class_id_to_name().get(int(bbox['semantic_id']), 'unknown')
+        
+        # 创建3D边界框的8个顶点
+        x_min, y_min, z_min = bbox['x_min'], bbox['y_min'], bbox['z_min']
+        x_max, y_max, z_max = bbox['x_max'], bbox['y_max'], bbox['z_max']
+        
+        vertices = np.array([
+            [x_min, y_min, z_min],
+            [x_max, y_min, z_min],
+            [x_max, y_max, z_min],
+            [x_min, y_max, z_min],
+            [x_min, y_min, z_max],
+            [x_max, y_min, z_max],
+            [x_max, y_max, z_max],
+            [x_min, y_max, z_max],
+        ])
+        
+        # 应用变换矩阵
+        transform = bbox['transform']
+        if torch.is_tensor(transform):
+            transform = transform.cpu().numpy()
+        vertices = (transform @ np.hstack((vertices, np.ones((8, 1)))).T).T[:, :3]
+        
+        # 将3D点投影到2D图像平面
+        points_2d = point_to_pixel(vertices, intrinsic, extrinsic)
+        points_2d = points_2d.astype(np.int32)
+        
+        # 绘制边界框的边
+        edges = [(0,1), (1,2), (2,3), (3,0),
+                (4,5), (5,6), (6,7), (7,4),
+                (0,4), (1,5), (2,6), (3,7)]
+        
+        for start, end in edges:
+            cv2.line(img, 
+                    tuple(points_2d[start]), 
+                    tuple(points_2d[end]), 
+                    (0, 255, 0), 2)
+        
+        # 添加标签（使用第一个顶点的位置）
+        label = f"{semantic_name} ({bbox['occlusion']:.2f})"
+        cv2.putText(img, label, 
+                    tuple(points_2d[0]), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+    
+    if output_path:
+        cv2.imwrite(output_path, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+    
+    return img
+
+def point_to_pixel(pt, intrinsics, extrinsics):
+    """将3D点投影到2D像素坐标
+    
+    Args:
+        pt (np.ndarray): (N, 3) 3D点坐标
+        intrinsics (torch.Tensor or np.ndarray): (3, 3) 相机内参矩阵
+        extrinsics (torch.Tensor or np.ndarray): (4, 4) 相机外参矩阵
+        
+    Returns:
+        np.ndarray: (N, 2) 2D像素坐标
+    """
+    # 确保所有输入都是numpy数组
+    if torch.is_tensor(intrinsics):
+        intrinsics = intrinsics.cpu().numpy()
+    if torch.is_tensor(extrinsics):
+        extrinsics = extrinsics.cpu().numpy()
+    if torch.is_tensor(pt):
+        pt = pt.cpu().numpy()
+    
+    # 将3D点转换为齐次坐标
+    pt_homo = np.hstack((pt, np.ones((pt.shape[0], 1))))  # (N, 4)
+    
+    # 将点转换到相机坐标系
+    pt_in_cam = extrinsics @ pt_homo.T  # (4, N)
+    
+    # 由于OmniGibson的坐标系约定，需要对y和z取反
+    pt_in_cam[1, :] *= -1
+    pt_in_cam[2, :] *= -1
+    
+    # 取前3个坐标
+    pt_in_cam = pt_in_cam[:3, :]  # (3, N)
+    
+    # 应用相机内参
+    pt_in_pixel = intrinsics @ pt_in_cam  # (3, N)
+    
+    # 归一化齐次坐标
+    pt_in_pixel = pt_in_pixel / pt_in_pixel[2, :]  # (3, N)
+    
+    # 返回像素坐标 (x, y)
+    return pt_in_pixel[:2, :].T  # (N, 2)
 
 if __name__ == "__main__":
     cam_id = 0
@@ -281,10 +412,16 @@ if __name__ == "__main__":
     result, seg_instance, seg_num = process_segmentation(obs,folder_path,cam_id)
     
     # 选择输出裁剪的图片
-    selected_ids = range(0, seg_num)#[2, 3]
+    selected_ids = [2, 3]  #range(0, seg_num)#[2, 3]
     cropped_images, bboxes = crop_objects_by_ids(selected_ids, np.array(obs['rgb']), seg_instance, folder_path, cam_id, margin=0.1)
     
-    # 获取并可视化边界框
+    # 获取并可视化2D边界框
     bboxes = get_bounding_boxes(obs, cam_id, 'bbox_2d_tight')
-    bbox_img = visualize_bboxes(cam_id, np.array(obs['rgb']), bboxes, os.path.join(folder_path, f'camera_{cam_id}_bbox.png'))
+    bbox_img = visualize_bboxes_2d(cam_id, np.array(obs['rgb']), bboxes, 
+                                os.path.join(folder_path, f'camera_{cam_id}_bbox_2d.png'))
+
+    # 获取并可视化3D边界框
+    bboxes = get_bounding_boxes(obs, cam_id, 'bbox_3d')
+    bbox_img = visualize_bboxes_3d(obs, cam_id, np.array(obs['rgb']), bboxes,
+                                os.path.join(folder_path, f'camera_{cam_id}_bbox_3d.png'))
     
