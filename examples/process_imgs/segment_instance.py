@@ -259,7 +259,7 @@ def visualize_bboxes_2d(cam_id, rgb_img, bboxes, output_path=None):
     img = rgb_img.copy()
     
     # 为每个边界框绘制矩形和标签
-    for bbox in bboxes:
+    for bi,bbox in enumerate(bboxes):
         # 获取语义类别名称
         semantic_name = semantic_class_id_to_name().get(int(bbox['semantic_id']), 'unknown')
         
@@ -276,7 +276,7 @@ def visualize_bboxes_2d(cam_id, rgb_img, bboxes, output_path=None):
                      (0, 255, 0), 2)
         
         # 添加标签
-        label = f"{semantic_name} ({bbox['occlusion']:.2f})"
+        label = f"{bi} {semantic_name}" # ({bbox['occlusion']:.2f})
         cv2.putText(img, label, 
                     (x_min, y_min - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
