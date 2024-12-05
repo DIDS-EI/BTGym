@@ -186,7 +186,7 @@ class Env:
         if successes[0]:
             self.execute_trajectory(paths[0])
 
-        for _ in range(5):
+        for _ in range(50):
             og.sim.step()
 
     def grasp_pos(self,grasp_point):
