@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 from btgym import ROOT_PATH
+import pickle
 
 def process_segmentation(obs, output_dir, cam_id):
     """处理分割图像并保存结果
@@ -100,12 +101,87 @@ def process_segmentation(obs, output_dir, cam_id):
     cv2.imwrite(seg_path, cv2.cvtColor(result, cv2.COLOR_RGB2BGR))
     
     # 保存原始分割图
-    seg_path = os.path.join(output_dir, f'camera_{cam_id}_seg.png')
-    cv2.imwrite(seg_path, seg_instance)
+    # seg_path = os.path.join(output_dir, f'camera_{cam_id}_seg.png')
+    # cv2.imwrite(seg_path, seg_instance)
 
-    return result, seg_instance
+    return result, seg_instance, len(unique_ids)
+
+
+def crop_objects_by_ids(selected_ids, rgb, seg_instance, output_dir, cam_id, margin=0.1):
+    """裁剪指定编号的物体并保存
+    
+    Args:
+        selected_ids (List[int]): 要裁剪的物体编号列表(对应新标注的编号i)
+        rgb_img (np.ndarray): RGB图像
+        seg_instance (np.ndarray): 分割实例图像
+        output_dir (str): 输出目录
+        cam_id (int): 相机ID
+        margin (float): 裁剪边界外扩的边距比例，默认0.1
+    """
+    # rgb
+    # 确保rgb是numpy数组并且是uint8类型
+    # if not isinstance(rgb, np.ndarray):
+    #     rgb = np.array(rgb)
+    # if rgb.dtype != np.uint8:
+    #     rgb = (rgb * 255).astype(np.uint8)
+    rgb_img = np.array(rgb)  
+    
+    height, width = rgb_img.shape[:2]
+    cropped_images = []
+    bboxes = []
+    
+    # 获取唯一的实例ID(跳过背景0)
+    unique_ids = np.unique(seg_instance)
+    unique_ids = unique_ids[unique_ids != 0]  # 排除背景0
+    
+    for obj_id in selected_ids:
+        # obj_id 是新标注的编号i
+        instance_id = unique_ids[obj_id]  # 直接使用新标注的编号获取对应的实例ID
+        
+        # 创建该物体的掩码
+        mask = (seg_instance == instance_id)
+        mask = mask.astype(np.uint8) * 255
+        
+        # ... (其余裁剪代码保持不变) ...
+        y_indices, x_indices = np.where(mask > 0)
+        if len(y_indices) == 0 or len(x_indices) == 0:
+            continue
+            
+        x_min, x_max = x_indices.min(), x_indices.max()
+        y_min, y_max = y_indices.min(), y_indices.max()
+        
+        w = x_max - x_min
+        h = y_max - y_min
+        margin_x = int(w * margin)
+        margin_y = int(h * margin)
+        
+        x1 = max(0, x_min - margin_x)
+        y1 = max(0, y_min - margin_y)
+        x2 = min(width, x_max + margin_x)
+        y2 = min(height, y_max + margin_y)
+        
+        cropped = rgb_img[y1:y2, x1:x2].copy()
+        
+        # 保存时使用新标注的编号
+        crop_path = os.path.join(output_dir, f'camera_{cam_id}_object_{obj_id}.png')
+        cv2.imwrite(crop_path, cv2.cvtColor(cropped, cv2.COLOR_RGB2BGR))
+        
+        cropped_images.append(cropped)
+        bboxes.append((x1, y1, x2, y2))
+        
+        print(f"物体 {obj_id} 已裁剪并保存到: {crop_path}")
+        print(f"边界框: ({x1}, {y1}, {x2}, {y2})")
+        
+    return cropped_images, bboxes
+
 
 if __name__ == "__main__":
+    cam_id = 0
     folder_path = os.path.join(ROOT_PATH, "../examples/process_imgs")
-    img = cv2.imread(os.path.join(folder_path, "camera_0_rgb.png"))
-    process_segmentation(img,folder_path,0)
+    obs = pickle.load(open(os.path.join(folder_path, f"camera_{cam_id}_obs.pkl"), "rb"))
+    result, seg_instance, seg_num = process_segmentation(obs,folder_path,cam_id)
+    
+    # 选择输出裁剪的图片
+    selected_ids = range(0, seg_num)#[2, 3]
+    cropped_images, bboxes = crop_objects_by_ids(selected_ids, obs['rgb'], seg_instance, folder_path, cam_id, margin=0.1)
+    
