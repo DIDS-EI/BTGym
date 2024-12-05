@@ -21,6 +21,7 @@ from omnigibson.action_primitives.starter_semantic_action_primitives import (
 from btgym.utils.logger import log,set_logger_entry
 from btgym.utils import cfg
 import cv2
+import pickle
 
 th.set_printoptions(precision=4)
 code_path = os.path.join(ROOT_PATH, "../examples/vlm_solver/cached")
@@ -316,6 +317,11 @@ class Env:
             #     seg_path = os.path.join(self.output_dir, f'camera_{cam_id}_seg.png')
             #     cv2.imwrite(seg_path, seg_instance)
 
+            # obs
+            obs_path = os.path.join(ROOT_PATH,"../examples/process_imgs/", f'camera_{cam_id}_obs.pkl')
+            os.makedirs(os.path.dirname(obs_path), exist_ok=True)
+            with open(obs_path, 'wb') as f:  # 使用二进制写入模式
+                pickle.dump(obs, f)
             
 
             # 处理分割图像
@@ -440,8 +446,6 @@ class Env:
                 
                 
                 
-
-            
             # 获取seg中的唯一值
             # unique_values = np.unique(seg_instance)
             # log(f"unique_values: {unique_values}")
