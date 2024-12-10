@@ -236,9 +236,8 @@ class Env:
         joint_trajectory = self.curobo_mg.path_to_joint_trajectory(path)
         current_joint_positions = self.robot.get_joint_positions()
         for time_i, joint_positions in enumerate(joint_trajectory):
-            # self.robot.n_joints 14
             full_action = th.zeros(self.robot.n_joints, device=joint_positions.device)
-            full_action[4:-2] = joint_positions[:-2] # joint_positions 10
+            full_action[4:-2] = joint_positions[:-2]
             if self.gripper_open:
                 full_action[-2:] = 0.05
             else:
@@ -715,6 +714,7 @@ class Env:
         # module.do_task(self)
 
 
+    
 
 
 if __name__ == "__main__":
@@ -722,7 +722,23 @@ if __name__ == "__main__":
 
     # Env().idle()
     env = Env()
-    importlib.import_module("task").do_task(env)
+    # importlib.import_module("task").do_task(env)
+    pen_obj, pencil_holder_obj = env.get_involved_object_names()
+    pen = env.get_obj("pen_1")
+    pencil_holder = env.get_obj("pencil_holder_1")
+    grasp_pose = pen.get_grasp_pose()
+    # grasp_point = [-0.15, -0.15, 0.72]
+    env.open_gripper()
+    env.reach_pose(grasp_pose)
+    env.close_gripper()
+    pen_release_pose = pencil_holder.get_pen_release_pose(pen)
+    
+    # 调用获取 subgoal 的函数
+    # pen_release_pose = 
+    
+    env.reach_pose(pen_release_pose)
+    env.open_gripper()
+    
     env.idle()
     # env = Env()
     # print("开始任务!")

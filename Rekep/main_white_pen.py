@@ -22,6 +22,9 @@ from utils import (
     print_opt_debug_dict,
 )
 
+os.chdir(os.path.dirname(__file__))
+
+
 class Main:
     def __init__(self, scene_file, visualize=False):
         global_config = get_config(config_path="./configs/config.yaml")
@@ -64,7 +67,7 @@ class Main:
         # = keypoint proposal and constraint generation 关键点提议和约束生成
         # ====================================
         if rekep_program_dir is None:
-            # 调用大模型获取关键点，KeypointProposer 可能使用视觉语言模型(VLM)来分析场景图像，识别关键物体和位置。
+            # 调用视觉模型获取关键点，KeypointProposer 可能使用视觉语言模型(VLM)来分析场景图像，识别关键物体和位置。
             keypoints, projected_img = self.keypoint_proposer.get_keypoints(rgb, points, mask)
             print(f'{bcolors.HEADER}Got {len(keypoints)} proposed keypoints{bcolors.ENDC}')
             # 显示包含关键点的2D图像
@@ -166,11 +169,20 @@ class Main:
                 # ====================================
                 # determine if we proceed to the next stage 确定是否进入下一个阶段
                 count = 0
-                while len(self.action_queue) > 0 and count < self.config['action_steps_per_iter']:
-                    next_action = self.action_queue.pop(0)
-                    precise = len(self.action_queue) == 0
-                    self.env.execute_action(next_action, precise=precise)
-                    count += 1
+                
+                # while len(self.action_queue) > 0 and count < 30: #self.config['action_steps_per_iter']
+                #     next_action = self.action_queue.pop(0)
+                #     precise = len(self.action_queue) == 0
+                #     self.env.execute_action(next_action, precise=precise,use_curobo=use_curobo)
+                #     count += 1
+                
+                # CuRobo模式: 一次性执行整个轨迹
+                precise = len(self.action_queue) == 0
+                next_action = self.action_queue  # 整个轨迹序列
+                self.env.execute_action(next_action, precise=precise, use_curobo=True)
+                self.action_queue = []  # 清空队列
+                count = len(self.action_queue)  # 结束循环
+                
                 if len(self.action_queue) == 0:
                     if self.is_grasp_stage:
                         self._execute_grasp_action()
@@ -209,38 +221,159 @@ class Main:
             self.visualizer.visualize_subgoal(subgoal_pose)
         return subgoal_pose
 
-    def _get_next_path(self, next_subgoal, from_scratch):
-        path_constraints = self.constraint_fns[self.stage]['path']
-        path, debug_dict = self.path_solver.solve(self.curr_ee_pose,
-                                                    next_subgoal,
-                                                    self.keypoints,
-                                                    self.keypoint_movable_mask,
-                                                    path_constraints,
-                                                    self.sdf_voxels,
-                                                    self.collision_points,
-                                                    self.curr_joint_pos,
-                                                    from_scratch=from_scratch)
-        print_opt_debug_dict(debug_dict)
-        processed_path = self._process_path(path)
-        if self.visualize:
-            self.visualizer.visualize_path(processed_path)
-        return processed_path
+    
+    # def _get_next_path2(self, next_subgoal, from_scratch):
+    #     path_constraints = self.constraint_fns[self.stage]['path']
+    #     path, debug_dict = self.path_solver.solve(self.curr_ee_pose,
+    #                                                 next_subgoal,
+    #                                                 self.keypoints,
+    #                                                 self.keypoint_movable_mask,
+    #                                                 path_constraints,
+    #                                                 self.sdf_voxels,
+    #                                                 self.collision_points,
+    #                                                 self.curr_joint_pos,
+    #                                                 from_scratch=from_scratch)
+    #     # 打印调试信息
+    #     # path shape 是 [2, 7]
+    #     # array([[-0.31993555, -0.14992112,  0.83190123,  0.47098515,  0.52738054,
+    #     #     -0.47304245,  0.52561734],
+    #     #    [-0.32717696, -0.09191327,  0.75094692,  0.46870999,  0.52146103,
+    #     #     -0.4760604 ,  0.53080678]])
+        
+    #     print_opt_debug_dict(debug_dict)
+    #     processed_path = self._process_path(path) 
+    #     # processed_path shape 是 [5, 8]
+    #     # array([[-0.31508186, -0.30122894,  0.81732434,  0.46871074,  0.52146082,
+    #     #         -0.47605978,  0.53080688,  0.        ],
+    #     #     [-0.31618748, -0.22934496,  0.84355521,  0.47000522,  0.52482328,
+    #     #         -0.47435278,  0.52786841,  0.        ],
+    #     #     [-0.31857187, -0.17049769,  0.84123593,  0.47100263,  0.52742602,
+    #     #         -0.47301897,  0.52557718,  0.        ],
+    #     #     [-0.32223503, -0.12468713,  0.8103665 ,  0.47036806,  0.52576981,
+    #     #         -0.47386929,  0.5270369 ,  0.        ],
+    #     #     [-0.32717696, -0.09191327,  0.75094692,  0.46870999,  0.52146103,
+    #     #         -0.4760604 ,  0.53080678,  0.        ]])
+    #     if self.visualize:
+    #         self.visualizer.visualize_path(processed_path)
+    #     return processed_path
 
-    def _process_path(self, path):
-        # spline interpolate the path from the current ee pose
-        full_control_points = np.concatenate([
-            self.curr_ee_pose.reshape(1, -1),
-            path,
-        ], axis=0)
-        num_steps = get_linear_interpolation_steps(full_control_points[0], full_control_points[-1],
-                                                    self.config['interpolate_pos_step_size'],
-                                                    self.config['interpolate_rot_step_size'])
-        dense_path = spline_interpolate_poses(full_control_points, num_steps)
-        # add gripper action
-        ee_action_seq = np.zeros((dense_path.shape[0], 8))
-        ee_action_seq[:, :7] = dense_path
-        ee_action_seq[:, 7] = self.env.get_gripper_null_action()
-        return ee_action_seq
+    def _get_next_path(self, next_subgoal, from_scratch):
+        # 使用 curobo 实现
+        # pass
+        # 初始化运动规划器
+        # subgoal_pose = [x, y, z, qx, qy, qz, qw]  # shape: (7,)
+        """使用 CuRobo 计算从当前位置到子目标的路径
+        Args:
+            next_subgoal (np.ndarray): 目标姿态 [x,y,z,qx,qy,qz,qw]
+            from_scratch (bool): 是否从头开始规划
+            
+        Returns:
+            np.ndarray: 路径点序列,每个点包含位置和姿态 [N, 8] (包含夹爪动作)
+        """
+        from btgym import ROOT_PATH
+        from btgym.core.curobo import CuRoboMotionGenerator
+        # 初始化 CuRobo 运动规划器(如果还没有初始化)
+        if not hasattr(self, 'curobo_mg'):
+            self.curobo_mg = CuRoboMotionGenerator(
+                self.env.robot,
+                robot_cfg_path=os.path.join(ROOT_PATH, "assets/fetch_description_curobo.yaml"),
+                debug=False
+            )
+            # 设置夹爪初始位置
+            self.curobo_mg.mg.kinematics.lock_joints = {
+                "r_gripper_finger_joint": 0.0,
+                "l_gripper_finger_joint": 0.0
+            }
+        target_pos = torch.tensor(next_subgoal[:3], dtype=torch.float32)
+        target_quat = torch.tensor(next_subgoal[3:], dtype=torch.float32)
+        # 构建位置和姿态序列
+        pos_sequence = torch.stack([target_pos, target_pos])
+        quat_sequence = torch.stack([target_quat, target_quat])
+        # 检查是否有物体被抓取
+        attached_obj = None
+        if self.env.is_grasping():
+            # 获取被抓取的物体
+            for obj in self.env.og_env.scene.objects:
+                if self.env.is_grasping(obj):
+                    attached_obj = obj
+                    break
+
+        # 计算轨迹
+        successes, paths = self.curobo_mg.compute_trajectories(
+            pos_sequence, 
+            quat_sequence,
+            attached_obj=attached_obj
+        )
+        if successes[0]:
+            # 获取路径点
+            joint_positions = paths[0].position.cpu().numpy()  # [N, 8] numpy array
+            
+            # joint_positions 中的 N 太大，删减一些
+            desired_steps = 5  # 期望的轨迹点数
+            step = max(len(joint_positions) // desired_steps, 1)  # 计算采样步长
+            joint_positions = joint_positions[::step]  # 等间隔采样 
+            
+            
+            
+            # 获取当前末端执行器位姿和目标位姿
+            start_pose = self.env.get_ee_pose()  # 当前末端执行器位姿
+            end_pose = next_subgoal  # 目标位姿
+            
+            # 构造用于可视化的位姿序列
+            num_steps = len(joint_positions)
+            ee_action_seq = np.zeros((num_steps, 8))
+            
+            # 在起点和终点之间进行线性插值
+            for i in range(num_steps):
+                t = i / (num_steps - 1)  # 插值参数 [0, 1]
+                # 位置线性插值
+                ee_action_seq[i, :3] = (1 - t) * start_pose[:3] + t * end_pose[:3]
+                # 姿态球面线性插值 (SLERP)
+                ee_action_seq[i, 3:7] = T.quat_slerp(start_pose[3:], end_pose[3:], t)
+                # 夹爪动作
+                ee_action_seq[i, 7] = self.env.get_gripper_null_action()
+            
+            # 可视化路径
+            if self.visualize:
+                self.visualizer.visualize_path(ee_action_seq)
+            return ee_action_seq
+        else:
+            raise RuntimeError("Failed to find valid path")  
+            # 获取路径点
+            # path_poses = paths[0]  # [N, 7] 位置和姿态
+            
+            # 添加夹爪动作
+            # gripper_actions = torch.full((path_poses.shape[0], 1), 
+            #                           self.env.get_gripper_null_action())
+            # path = torch.cat([path_poses, gripper_actions], dim=1)  # [N, 8]
+            
+            # 可视化路径(如果需要)
+            # if self.visualize:
+            #     self.visualizer.visualize_path(path.numpy())
+                
+            # return path.numpy()
+            
+        
+ 
+
+    # def _process_path(self, path):
+    #     # spline interpolate the path from the current ee pose
+    #     full_control_points = np.concatenate([
+    #         self.curr_ee_pose.reshape(1, -1),
+    #         path,
+    #     ], axis=0)
+    #     num_steps = get_linear_interpolation_steps(full_control_points[0], full_control_points[-1],
+    #                                                 self.config['interpolate_pos_step_size'],
+    #                                                 self.config['interpolate_rot_step_size'])
+    #     dense_path = spline_interpolate_poses(full_control_points, num_steps)
+    #     # add gripper action
+    #     ee_action_seq = np.zeros((dense_path.shape[0], 8))
+    #     ee_action_seq[:, :7] = dense_path
+    #     ee_action_seq[:, 7] = self.env.get_gripper_null_action()
+    #     return ee_action_seq # shape 为 （5, 8）
+
+
+
 
     def _update_stage(self, stage):
         # update stage
@@ -267,7 +400,7 @@ class Main:
         grasp_pose = pregrasp_pose.copy()
         grasp_pose[:3] += T.quat2mat(pregrasp_pose[3:]) @ np.array([self.config['grasp_depth'], 0, 0])
         grasp_action = np.concatenate([grasp_pose, [self.env.get_gripper_close_action()]])
-        self.env.execute_action(grasp_action, precise=True)
+        self.env.execute_action(grasp_action, precise=True,use_curobo=use_curobo)
     
     def _execute_release_action(self):
         self.env.open_gripper()
@@ -275,14 +408,19 @@ class Main:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--task', type=str, default='pen', help='task to perform')
-    parser.add_argument('--use_cached_query', action='store_true', help='instead of querying the VLM, use the cached query')
+    parser.add_argument('--use_cached_query', default=True, action='store_true', help='instead of querying the VLM, use the cached query')
     parser.add_argument('--apply_disturbance', action='store_true', help='apply disturbance to test the robustness')
-    parser.add_argument('--visualize', action='store_true', help='visualize each solution before executing (NOTE: this is blocking and needs to press "ESC" to continue)')
+    parser.add_argument('--visualize', default=True, action='store_true', help='visualize each solution before executing (NOTE: this is blocking and needs to press "ESC" to continue)')
     args = parser.parse_args()
 
     if args.apply_disturbance:
         assert args.task == 'pen' and args.use_cached_query, 'disturbance sequence is only defined for cached scenario'
 
+    
+    use_curobo = True
+    
+    
+    
     # ====================================
     # = pen task disturbance sequence
     # ====================================
@@ -371,13 +509,44 @@ if __name__ == "__main__":
             counter += 1
 
     task_list = {
+        # 'pen': {
+        # 'scene_file': './configs/og_scene_file_red_pen.json',
+        # 'instruction': 'reorient the red pen and drop it upright into the black pen holder',
+        # 'rekep_program_dir': './vlm_query/pen',
+        # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+        # },
+                
         'pen': {
-            'scene_file': './configs/og_scene_file_red_pen.json',
-            'instruction': 'reorient the red pen and drop it upright into the black pen holder',
+            'scene_file': './configs/og_scene_file_pen.json',
+            'instruction': 'reorient the white pen and drop it upright into the black pen holder',
             'rekep_program_dir': './vlm_query/pen',
-            'disturbance_seq': None,
-            # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+            'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
             },
+        
+        
+        # 'pen': {
+        #     'scene_file': './configs/og_scene_file_red_pen.json',
+        #     'instruction': 'reorient the red pen and drop it upright into the black pen holder',
+        #     'rekep_program_dir': './vlm_query/2024-10-14_08-44-42_reorient_the_red_pen_and_drop_it_upright_into_the_black_pen_holder',# './vlm_query/pen',
+        #     'disturbance_seq': None,
+        #     'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+        #     },
+        
+        
+        # 'bottle_of_cologne': {
+        #     'scene_file': './configs/og_scene_file_bottle_of_cologne.json',
+        #     'instruction': 'reorient the bottle_of_cologne and drop it upright into the black pen holder',
+        #     'rekep_program_dir': './vlm_query/bottle_of_cologne',
+        #     'disturbance_seq': None,
+        #     # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+        #     },
+        # 'cologne_to_table': {
+        #     'scene_file': './configs/og_scene_file_cologne_to_table.json',
+        #     'instruction': 'move the bottle_of_cologne to the other table on your right',
+        #     'rekep_program_dir': './vlm_query/cologne_to_table',
+        #     'disturbance_seq': None,
+        #     # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+        #     },
     }
     task = task_list['pen']
     scene_file = task['scene_file']
@@ -386,3 +555,6 @@ if __name__ == "__main__":
     main.perform_task(instruction,
                     rekep_program_dir=task['rekep_program_dir'] if args.use_cached_query else None,
                     disturbance_seq=task.get('disturbance_seq', None) if args.apply_disturbance else None)
+    
+    
+    
