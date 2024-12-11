@@ -188,8 +188,8 @@ class CuRoboMotionGenerator:
             num_graph_seeds=4,
             interpolation_dt=0.03,
             collision_cache={"obb": 10, "mesh": 1024},
-            collision_max_outside_distance=0.15, #0.05, 检测20cm范围内的所有潜在碰撞
-            collision_activation_distance=0.1, #0.025, 机器人距离障碍物10cm时就开始规避
+            collision_max_outside_distance=0.05, #0.05, 检测20cm范围内的所有潜在碰撞
+            collision_activation_distance=0.025, #0.025, 机器人距离障碍物10cm时就开始规避
             acceleration_scale=1.0,
             self_collision_check=True,
             maximum_trajectory_dt=None,
@@ -340,16 +340,16 @@ class CuRoboMotionGenerator:
         self,
         target_pos,
         target_quat,
-        is_local=False,
-        max_attempts=5,
-        timeout=2.0,
-        enable_graph_attempt=3,
-        ik_fail_return=5,
-        enable_finetune_trajopt=True,
-        finetune_attempts=1,
-        return_full_result=False,
-        success_ratio=None,
-        attached_obj=None,
+        is_local=False, # 指示target_pos和target_quat是否在机器人的局部坐标系中指定
+        max_attempts=5, # 最大尝试次数
+        timeout=5.0, # 2 超时时间
+        enable_graph_attempt=3, # 启用图规划的尝试次数
+        ik_fail_return=5, # 允许的逆运动学（IK）尝试次数，超过此次数将返回失败。
+        enable_finetune_trajopt=True, # 启用轨迹优化
+        finetune_attempts=1, # 轨迹优化尝试次数
+        return_full_result=False, # 是否返回完整结果    
+        success_ratio=None, # 成功率
+        attached_obj=None, # 附加物体
     ):
         """
         Computes the robot joint trajectory to reach the desired @target_pos and @target_quat
