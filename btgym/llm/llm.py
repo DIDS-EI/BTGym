@@ -130,7 +130,18 @@ class LLM:
         models = self.client.models.list()
         return [model.id for model in models]
 
+    def embedding(self, instruction):
+        response = self.client.embeddings.create(
+            model=cfg.llm_embedding_model,
+            input=instruction
+        )
+        return response.data[0].embedding
+
 if __name__ == "__main__":
     llm = LLM()
     # print(llm.request("generate a python code to print 'hello world'"))
-    print(llm.get_model_list())
+    # print(llm.get_model_list())
+
+    embedding = llm.embedding("reorient the white pen and drop it upright into the black pen holder")
+    print(embedding)
+    print(len(embedding))
