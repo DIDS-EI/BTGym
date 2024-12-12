@@ -9,6 +9,12 @@ import os
 from btgym import ROOT_PATH
 import torch as th
 
+
+# RGB图像，目标物体，目标物体的
+# 输出： 7维的向量，表示7个关节的角度
+
+
+
 class RobotDataset(Dataset):
     def __init__(self, dataset):
         self.dataset = dataset
