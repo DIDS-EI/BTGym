@@ -1,0 +1,71 @@
+
+
+
+2024-12-06 10:42
+
+你是一个智能机器人，现在需要根据人类指令来完成任务.你应该按照以下过程来一步步聪明地思考:
+
+1. 找到相关物体:先在图片中找到任务相关物体和他们的序号，如3_pen, 4_pen holder
+2. 关键点选取:在图片中给每个相关物体标注关键点，选关键点的过程采用二分法思维链。
+
+关键点分类：
+1. 抓取关键点，需要成对出现，用来描述两个夹爪的抓取位置
+2. 目标关键点，通常用来描述物体的移动相对目标，例如笔的中心点相对于笔架的中心点
+3. 姿态关键点，通常用来描述物体移动或最终的姿态，例如笔需要竖直放置
+
+整体的思考过程分为两步：
+1. 先思考对于每个物体，需要哪些关键点，例如：
+对于笔来说，需要描述的关键点有：
+- 抓取关键点，grasp_point
+- 目标关键点，target_point_pen_center
+- 姿态关键点，已经有二个关键点，足以复用关键点来描述姿态
+对于笔筒来说，需要描述的关键点有：
+- 目标关键点，target_point_pencil_holder_center
+
+2. 确定每个关键点的坐标，使用二分法思维链：
+使用[(x_1,y_1),(x_2,y_2),...]的坐标对表示关键点，其中x_1,y_1表示第一个坐标对，x_2,y_2表示第二个坐标对，以此类推。
+其中x坐标只能为left或者right，y坐标只能为up或者bottom。不允许出现center!!!
+
+思考过程如下所示：
+笔的关键点确定：
+- 抓取关键点
+由于笔是长形物体，应该从笔的侧边进行抓取。在图片上两个抓取点应该是上下关系,且尽量位于物体中心。
+对于grasp_point_pen来说：
+1. 首先对图片四等分，选取笔的左下区域，相应坐标为(left,bottom)
+2. 然后再进一步四等分，选取以上区域的右上区域，相应坐标为(right,up)
+3. 最后再进一步四等分，选取以上区域的右上角点作为笔的中心点，相应坐标为(right,up)
+最后得到 grasp_point_pen = [(left,bottom),(right,up),(right,up)]
+
+对于target_point_pen_center来说：
+1. 首先对图片四等分，选取笔的左下区域，相应坐标为(left,bottom)
+2. 然后再进一步四等分，选取以上区域的左上区域，相应坐标为(left,up)
+3. 最后再进一步四等分，选取以上区域的左上角点作为笔的中心点，相应坐标为(left,up)
+最后得到 target_point_pen_center = [(left,bottom),(left,up),(left,up)]
+
+对于target_point_pencil_holder_center来说：
+- 目标关键点
+由于笔筒是圆柱形物体，应该从笔筒的侧边进行抓取。在图片上两个抓取点应该是上下关系,且尽量位于物体中心。
+1. 首先对图片四等分，选取笔筒的左下区域，相应坐标为(left,bottom)
+2. 然后再进一步四等分，选取以上区域的右上区域，相应坐标为(right,up)
+3. 最后再进一步四等分，选取以上区域的右上角点作为笔筒的中心点，相应坐标为(right,up)
+最后得到 pencil_holder_center_point = [(left,bottom),(right,up),(right,up)]
+
+
+最终结果：
+```python
+point_dict = {
+    "3_pen": {
+        "grasp_point_pen": [(left,bottom),(right,up),(right,up)],
+        "target_point_pen_center": [(left,bottom),(left,up),(left,up)],
+    },
+    "4_pencil_holder": {
+        "target_point_pencil_holder_center": [(left,bottom),(right,up),(right,up)],
+    }
+}
+```
+"""+\
+f"""
+your current task is:
+`{instruction}`
+
+以下是你的关键点思考过程和最终结果输出：

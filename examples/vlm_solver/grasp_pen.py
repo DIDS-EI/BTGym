@@ -71,17 +71,15 @@ class Env:
         self._initialize_cameras(self.config['camera'])
         self.gripper_open = True
         # 初始化运动规划器
+        curobo_cfg_path = os.path.join(ROOT_PATH, "assets/fetch_description_curobo.yaml")
         self.curobo_mg = CuRoboMotionGenerator(
             self.robot,
-            robot_cfg_path=os.path.join(ROOT_PATH, "assets/fetch_description_curobo.yaml"),
+            robot_cfg_path=curobo_cfg_path,
+            batch_size=3,
             debug=False
         )
-        
-        # 设置夹爪初始位置
-        self.curobo_mg.mg.kinematics.lock_joints = {
-            "r_gripper_finger_joint": 0.0,
-            "l_gripper_finger_joint": 0.0
-        }
+
+        self.kinematics_config = self.curobo_mg.mg.robot_cfg.kinematics.kinematics_config
 
         # from omni.isaac.core.objects import cuboid
         # # 创建可视化目标点
@@ -158,10 +156,12 @@ class Env:
 
     def open_gripper(self):
         self.gripper_control(open=True)
+        self.kinematics_config.lock_jointstate.position = th.tensor([0.05, 0.05],device=self.kinematics_config.lock_jointstate.position.device)
 
 
     def close_gripper(self):
         self.gripper_control(open=False)
+        self.kinematics_config.lock_jointstate.position = th.tensor([0., 0.],device=self.kinematics_config.lock_jointstate.position.device)
 
 
     def reach_pose(self, pose):
@@ -178,8 +178,8 @@ class Env:
             self.robot.set_joint_positions(new_jp, normalized=True)
         og.sim.step()
 
-        pos_sequence = th.stack([pos, pos])
-        quat_sequence = th.stack([quat, quat])
+        pos_sequence = th.stack([pos, pos, pos])
+        quat_sequence = th.stack([quat, quat,quat])
         obj_in_hand = self.action_primitive._get_obj_in_hand()
         log(f"obj_in_hand: {obj_in_hand}")
         successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
@@ -237,11 +237,12 @@ class Env:
         current_joint_positions = self.robot.get_joint_positions()
         for time_i, joint_positions in enumerate(joint_trajectory):
             full_action = th.zeros(self.robot.n_joints, device=joint_positions.device)
-            full_action[4:-2] = joint_positions[:-2]
-            if self.gripper_open:
-                full_action[-2:] = 0.05
-            else:
-                full_action[-2:] = 0.0
+            full_action[4:] = joint_positions[:]
+            # full_action[4:-2] = joint_positions[:-2]
+            # if self.gripper_open:
+            #     full_action[-2:] = 0.05
+            # else:
+            #     full_action[-2:] = 0.0
             self.og_env.step(full_action.to('cpu'))
 
     # def follow_cube(self):

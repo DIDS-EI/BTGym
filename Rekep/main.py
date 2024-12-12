@@ -278,7 +278,7 @@ class Main:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--task', type=str, default='pen', help='task to perform')
-    parser.add_argument('--use_cached_query', action='store_true', help='instead of querying the VLM, use the cached query')
+    parser.add_argument('--use_cached_query', action='store_true', default=True, help='instead of querying the VLM, use the cached query')
     parser.add_argument('--apply_disturbance', action='store_true', help='apply disturbance to test the robustness')
     parser.add_argument('--visualize', action='store_true', help='visualize each solution before executing (NOTE: this is blocking and needs to press "ESC" to continue)')
     args = parser.parse_args()
