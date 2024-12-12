@@ -236,6 +236,7 @@ class Env:
         joint_trajectory = self.curobo_mg.path_to_joint_trajectory(path)
         current_joint_positions = self.robot.get_joint_positions()
         for time_i, joint_positions in enumerate(joint_trajectory):
+            # self.robot.n_joints 14
             full_action = th.zeros(self.robot.n_joints, device=joint_positions.device)
             full_action[4:] = joint_positions[:]
             # full_action[4:-2] = joint_positions[:-2]

@@ -339,6 +339,7 @@ class ReKepOGEnv:
             self,
             action,
             precise=True,
+            use_curobo=False
         ):
             """
             Moves the robot gripper to a target pose by specifying the absolute pose in the world frame and executes gripper action.
@@ -355,61 +356,132 @@ class ReKepOGEnv:
             else:
                 pos_threshold = 0.10
                 rot_threshold = 5.0
-            action = np.array(action).copy()
-            assert action.shape == (8,)
-            target_pose = action[:7]
-            gripper_action = action[7]
+            
+            # 这里价格判断 action 是list且是二维的即可
+            if use_curobo and (isinstance(action, list) and len(action) > 0 and isinstance(action[0], (list, np.ndarray))) :
+                # 对中间路径点，直接执行动作，不做精确检查
+                for waypoint in action[:-1]:
+                    # 直接转换位姿并执行动作，不进入循环检查
+                    # 计算相对位置和方向
+                    waypoint = np.array(waypoint)
+                    target_pose_robot = np.dot(self.world2robot_homo, T.convert_pose_quat2mat(waypoint[:7]))
+                    self.relative_eef_position = self.robot.get_relative_eef_position()
+                    if torch.is_tensor(self.relative_eef_position):
+                        self.relative_eef_position = self.relative_eef_position.detach().cpu().numpy()
+                    relative_position = target_pose_robot[:3, 3] - self.relative_eef_position
+                    relative_quat = T.quat_distance(T.mat2quat(target_pose_robot[:3, :3]), self.robot.get_relative_eef_orientation())
+                    # 构造动作命令
+                    action_step = np.zeros(12)
+                    action_step[4:7] = relative_position
+                    action_step[7:10] = T.quat2axisangle(relative_quat)
+                    action_step[10:] = [self.last_og_gripper_action, self.last_og_gripper_action]
+                    self._step(action=action_step)
 
-            # ======================================
-            # = status and safety check
-            # ======================================
-            if np.any(target_pose[:3] < self.bounds_min) \
-                 or np.any(target_pose[:3] > self.bounds_max):
-                print(f'{bcolors.WARNING}[environment.py | {get_clock_time()}] Target position is out of bounds, clipping to workspace bounds{bcolors.ENDC}')
-                target_pose[:3] = np.clip(target_pose[:3], self.bounds_min, self.bounds_max)
+                    # 处理夹爪
+                    gripper_action = waypoint[7]
+                    if gripper_action == self.get_gripper_open_action():
+                        self.open_gripper()
+                    elif gripper_action == self.get_gripper_close_action():
+                        self.close_gripper()
+                    elif gripper_action == self.get_gripper_null_action():
+                        pass
+                    else:
+                        raise ValueError(f"Invalid gripper action: {gripper_action}")
+                
+                # grasp_pen.py 中的方法
+                # joint_trajectory = self.curobo_mg.path_to_joint_trajectory(action)
+                # for time_i, joint_positions in enumerate(joint_trajectory):
+                #     # self.robot.n_joints 14
+                #     full_action = torch.zeros(self.robot.n_joints, device=joint_positions.device)
+                #     full_action[4:-2] = joint_positions[:-2] # joint_positions 10
+                #     if self.gripper_open:
+                #         full_action[-2:] = 0.05
+                #     else:
+                #         full_action[-2:] = 0.0
+                #     self.og_env.step(full_action.to('cpu'))
 
-            # ======================================
-            # = interpolation
-            # ======================================
-            current_pose = self.get_ee_pose()
-            pos_diff = np.linalg.norm(current_pose[:3] - target_pose[:3])
-            rot_diff = angle_between_quats(current_pose[3:7], target_pose[3:7])
-            pos_is_close = pos_diff < self.interpolate_pos_step_size
-            rot_is_close = rot_diff < self.interpolate_rot_step_size
-            if pos_is_close and rot_is_close:
-                self.verbose and print(f'{bcolors.WARNING}[environment.py | {get_clock_time()}] Skipping interpolation{bcolors.ENDC}')
-                pose_seq = np.array([target_pose])
+
+                
+                # 对最后一个路径点使用精确检查
+                final_waypoint = np.array(action[-1])
+                self._move_to_waypoint(
+                    final_waypoint[:7],
+                    pos_threshold=pos_threshold,
+                    rot_threshold=rot_threshold,
+                    max_steps=40 if precise else 20
+                )
+                
+                gripper_action = final_waypoint[7]
+                if gripper_action == self.get_gripper_open_action():
+                    self.open_gripper()
+                elif gripper_action == self.get_gripper_close_action():
+                    self.close_gripper()
+                elif gripper_action == self.get_gripper_null_action():
+                    pass
+                else:
+                    raise ValueError(f"Invalid gripper action: {gripper_action}")
+                    
+                # 计算并返回最终误差
+                pos_error, rot_error = self.compute_target_delta_ee(final_waypoint[:7])
+            
+                    
             else:
-                num_steps = get_linear_interpolation_steps(current_pose, target_pose, self.interpolate_pos_step_size, self.interpolate_rot_step_size)
-                pose_seq = linear_interpolate_poses(current_pose, target_pose, num_steps)
-                self.verbose and print(f'{bcolors.WARNING}[environment.py | {get_clock_time()}] Interpolating for {num_steps} steps{bcolors.ENDC}')
 
-            # ======================================
-            # = move to target pose
-            # ======================================
-            # move faster for intermediate poses
-            intermediate_pos_threshold = 0.10
-            intermediate_rot_threshold = 5.0
-            for pose in pose_seq[:-1]:
-                self._move_to_waypoint(pose, intermediate_pos_threshold, intermediate_rot_threshold)
-            # move to the final pose with required precision
-            pose = pose_seq[-1]
-            self._move_to_waypoint(pose, pos_threshold, rot_threshold, max_steps=20 if not precise else 40) 
-            # compute error
-            pos_error, rot_error = self.compute_target_delta_ee(target_pose)
-            self.verbose and print(f'\n{bcolors.BOLD}[environment.py | {get_clock_time()}] Move to pose completed (pos_error: {pos_error}, rot_error: {np.rad2deg(rot_error)}){bcolors.ENDC}\n')
+                action = np.array(action).copy()
+                assert action.shape == (8,)
+                target_pose = action[:7]
+                gripper_action = action[7]
 
-            # ======================================
-            # = apply gripper action
-            # ======================================
-            if gripper_action == self.get_gripper_open_action():
-                self.open_gripper()
-            elif gripper_action == self.get_gripper_close_action():
-                self.close_gripper()
-            elif gripper_action == self.get_gripper_null_action():
-                pass
-            else:
-                raise ValueError(f"Invalid gripper action: {gripper_action}")
+                # ======================================
+                # = status and safety check
+                # ======================================
+                if np.any(target_pose[:3] < self.bounds_min) \
+                    or np.any(target_pose[:3] > self.bounds_max):
+                    print(f'{bcolors.WARNING}[environment.py | {get_clock_time()}] Target position is out of bounds, clipping to workspace bounds{bcolors.ENDC}')
+                    target_pose[:3] = np.clip(target_pose[:3], self.bounds_min, self.bounds_max)
+
+                # ======================================
+                # = interpolation
+                # ======================================
+                current_pose = self.get_ee_pose()
+                pos_diff = np.linalg.norm(current_pose[:3] - target_pose[:3])
+                rot_diff = angle_between_quats(current_pose[3:7], target_pose[3:7])
+                pos_is_close = pos_diff < self.interpolate_pos_step_size
+                rot_is_close = rot_diff < self.interpolate_rot_step_size
+                if pos_is_close and rot_is_close:
+                    self.verbose and print(f'{bcolors.WARNING}[environment.py | {get_clock_time()}] Skipping interpolation{bcolors.ENDC}')
+                    pose_seq = np.array([target_pose])
+                else:
+                    num_steps = get_linear_interpolation_steps(current_pose, target_pose, self.interpolate_pos_step_size, self.interpolate_rot_step_size)
+                    pose_seq = linear_interpolate_poses(current_pose, target_pose, num_steps)
+                    self.verbose and print(f'{bcolors.WARNING}[environment.py | {get_clock_time()}] Interpolating for {num_steps} steps{bcolors.ENDC}')
+
+                # ======================================
+                # = move to target pose
+                # ======================================
+                # move faster for intermediate poses
+                intermediate_pos_threshold = 0.10
+                intermediate_rot_threshold = 5.0
+                for pose in pose_seq[:-1]:
+                    self._move_to_waypoint(pose, intermediate_pos_threshold, intermediate_rot_threshold)
+                # move to the final pose with required precision
+                pose = pose_seq[-1]
+                self._move_to_waypoint(pose, pos_threshold, rot_threshold, max_steps=20 if not precise else 40) 
+                # compute error
+                pos_error, rot_error = self.compute_target_delta_ee(target_pose)
+                self.verbose and print(f'\n{bcolors.BOLD}[environment.py | {get_clock_time()}] Move to pose completed (pos_error: {pos_error}, rot_error: {np.rad2deg(rot_error)}){bcolors.ENDC}\n')
+
+                # ======================================
+                # = apply gripper action
+                # ======================================
+                if gripper_action == self.get_gripper_open_action():
+                    self.open_gripper()
+                elif gripper_action == self.get_gripper_close_action():
+                    self.close_gripper()
+                elif gripper_action == self.get_gripper_null_action():
+                    pass
+                else:
+                    raise ValueError(f"Invalid gripper action: {gripper_action}")
             
             return pos_error, rot_error
     

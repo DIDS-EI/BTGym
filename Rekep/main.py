@@ -67,7 +67,7 @@ class Main:
         # = keypoint proposal and constraint generation 关键点提议和约束生成
         # ====================================
         if rekep_program_dir is None:
-            # 调用大模型获取关键点，KeypointProposer 可能使用视觉语言模型(VLM)来分析场景图像，识别关键物体和位置。
+            # 调用视觉模型获取关键点，KeypointProposer 可能使用视觉语言模型(VLM)来分析场景图像，识别关键物体和位置。
             keypoints, projected_img = self.keypoint_proposer.get_keypoints(rgb, points, mask)
             print(f'{bcolors.HEADER}Got {len(keypoints)} proposed keypoints{bcolors.ENDC}')
             # 显示包含关键点的2D图像
@@ -228,6 +228,7 @@ class Main:
         if self.visualize:
             self.visualizer.visualize_path(processed_path)
         return processed_path
+    
 
     def _process_path(self, path):
         # spline interpolate the path from the current ee pose
@@ -278,7 +279,7 @@ class Main:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--task', type=str, default='pen', help='task to perform')
-    parser.add_argument('--use_cached_query', action='store_true', default=True, help='instead of querying the VLM, use the cached query')
+    parser.add_argument('--use_cached_query', default=True, action='store_true', help='instead of querying the VLM, use the cached query')
     parser.add_argument('--apply_disturbance', action='store_true', help='apply disturbance to test the robustness')
     parser.add_argument('--visualize', action='store_true', help='visualize each solution before executing (NOTE: this is blocking and needs to press "ESC" to continue)')
     args = parser.parse_args()
@@ -374,27 +375,44 @@ if __name__ == "__main__":
             counter += 1
 
     task_list = {
+        # 'pen': {
+        # 'scene_file': './configs/og_scene_file_red_pen.json',
+        # 'instruction': 'reorient the red pen and drop it upright into the black pen holder',
+        # 'rekep_program_dir': './vlm_query/pen',
+        # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+        # },
+                
         'pen': {
-            'scene_file': './configs/og_scene_file_red_pen.json',
-            'instruction': 'reorient the red pen and drop it upright into the black pen holder',
+            'scene_file': './configs/og_scene_file_pen.json',
+            'instruction': 'reorient the white pen and drop it upright into the black pen holder',
             'rekep_program_dir': './vlm_query/pen',
-            'disturbance_seq': None,
-            # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+            'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
             },
-        'bottle_of_cologne': {
-            'scene_file': './configs/og_scene_file_bottle_of_cologne.json',
-            'instruction': 'reorient the bottle_of_cologne and drop it upright into the black pen holder',
-            'rekep_program_dir': './vlm_query/bottle_of_cologne',
-            'disturbance_seq': None,
-            # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
-            },
-        'cologne_to_table': {
-            'scene_file': './configs/og_scene_file_cologne_to_table.json',
-            'instruction': 'move the bottle_of_cologne to the other table on your right',
-            'rekep_program_dir': './vlm_query/cologne_to_table',
-            'disturbance_seq': None,
-            # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
-            },
+        
+        
+        # 'pen': {
+        #     'scene_file': './configs/og_scene_file_red_pen.json',
+        #     'instruction': 'reorient the red pen and drop it upright into the black pen holder',
+        #     'rekep_program_dir': './vlm_query/2024-10-14_08-44-42_reorient_the_red_pen_and_drop_it_upright_into_the_black_pen_holder',# './vlm_query/pen',
+        #     'disturbance_seq': None,
+        #     'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+        #     },
+        
+        
+        # 'bottle_of_cologne': {
+        #     'scene_file': './configs/og_scene_file_bottle_of_cologne.json',
+        #     'instruction': 'reorient the bottle_of_cologne and drop it upright into the black pen holder',
+        #     'rekep_program_dir': './vlm_query/bottle_of_cologne',
+        #     'disturbance_seq': None,
+        #     # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+        #     },
+        # 'cologne_to_table': {
+        #     'scene_file': './configs/og_scene_file_cologne_to_table.json',
+        #     'instruction': 'move the bottle_of_cologne to the other table on your right',
+        #     'rekep_program_dir': './vlm_query/cologne_to_table',
+        #     'disturbance_seq': None,
+        #     # 'disturbance_seq': {1: stage1_disturbance_seq, 2: stage2_disturbance_seq, 3: stage3_disturbance_seq},
+        #     },
     }
     task = task_list['pen']
     scene_file = task['scene_file']
