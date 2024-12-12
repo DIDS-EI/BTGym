@@ -208,6 +208,5 @@ if __name__ == "__main__":
     robot_pos = simulator.get_robot_pos()
     print(f"机器人位置: {robot_pos}")
 
-    simulator.navigate_to_object('switch.n.01_1')
     simulator.idle()
     # simulator.do_task()
