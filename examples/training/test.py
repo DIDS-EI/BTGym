@@ -51,24 +51,18 @@ class ObjInEnv:
 
 
 class Env:
-    def __init__(self, task_objects=None):
+    def __init__(self):
         self.gripper_length = 0.06
         # 加载配置文件
         config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
         self.config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
-        self.config["scene"]["scene_file"] = os.path.join(ROOT_PATH, "assets/og_scene_file_tasks.json")
-        
-        
-        # 如果有任务物体，添加到配置中
-        if task_objects:
-            if 'objects' not in self.config:
-                self.config['objects'] = []
-            self.config['objects'].extend(task_objects)
-        
+        self.config["scene"]["scene_file"] = os.path.join(ROOT_PATH, "assets/og_scene_file_red_pen.json")
         self.output_dir = os.path.join(cfg.OUTPUTS_PATH, "grasp_pen")
         os.makedirs(self.output_dir, exist_ok=True)
 
 
+
+        
         # 初始化环境
         self.og_env = og.Environment(configs=self.config)
         self.scene = self.og_env.scene
@@ -79,17 +73,15 @@ class Env:
         self._initialize_cameras(self.config['camera'])
         self.gripper_open = True
         # 初始化运动规划器
+        curobo_cfg_path = os.path.join(ROOT_PATH, "assets/fetch_description_curobo.yaml")
         self.curobo_mg = CuRoboMotionGenerator(
             self.robot,
-            robot_cfg_path=os.path.join(ROOT_PATH, "assets/fetch_description_curobo.yaml"),
+            robot_cfg_path=curobo_cfg_path,
+            batch_size=3,
             debug=False
         )
-        
-        # 设置夹爪初始位置
-        self.curobo_mg.mg.kinematics.lock_joints = {
-            "r_gripper_finger_joint": 0.0,
-            "l_gripper_finger_joint": 0.0
-        }
+
+        self.kinematics_config = self.curobo_mg.mg.robot_cfg.kinematics.kinematics_config
 
         # from omni.isaac.core.objects import cuboid
         # # 创建可视化目标点
@@ -166,15 +158,24 @@ class Env:
 
     def open_gripper(self):
         self.gripper_control(open=True)
+        self.kinematics_config.lock_jointstate.position = th.tensor([0.05, 0.05],device=self.kinematics_config.lock_jointstate.position.device)
 
 
     def close_gripper(self):
         self.gripper_control(open=False)
+        self.kinematics_config.lock_jointstate.position = th.tensor([0., 0.],device=self.kinematics_config.lock_jointstate.position.device)
 
 
     def reach_pose(self, pose):
         """到达指定位姿"""
         pos, euler = pose
+        
+        # 确保输入是tensor类型
+        if isinstance(euler, np.ndarray):
+            euler = th.tensor(euler, dtype=th.float32)
+        if isinstance(pos, np.ndarray):
+            pos = th.tensor(pos, dtype=th.float32)
+        
         euler = euler * math.pi / 180
         quat = T.euler2quat(euler)
 
@@ -186,8 +187,8 @@ class Env:
             self.robot.set_joint_positions(new_jp, normalized=True)
         og.sim.step()
 
-        pos_sequence = th.stack([pos, pos])
-        quat_sequence = th.stack([quat, quat])
+        pos_sequence = th.stack([pos, pos, pos])
+        quat_sequence = th.stack([quat, quat,quat])
         obj_in_hand = self.action_primitive._get_obj_in_hand()
         log(f"obj_in_hand: {obj_in_hand}")
         successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence, attached_obj=obj_in_hand)
@@ -246,11 +247,12 @@ class Env:
         for time_i, joint_positions in enumerate(joint_trajectory):
             # self.robot.n_joints 14
             full_action = th.zeros(self.robot.n_joints, device=joint_positions.device)
-            full_action[4:-2] = joint_positions[:-2] # joint_positions 10
-            if self.gripper_open:
-                full_action[-2:] = 0.05
-            else:
-                full_action[-2:] = 0.0
+            full_action[4:] = joint_positions[:]
+            # full_action[4:-2] = joint_positions[:-2]
+            # if self.gripper_open:
+            #     full_action[-2:] = 0.05
+            # else:
+            #     full_action[-2:] = 0.0
             self.og_env.step(full_action.to('cpu'))
 
     # def follow_cube(self):
@@ -621,30 +623,7 @@ class Env:
         return img
         
     
-    def visualize_cam_obs(self, cam_obs):
-        """可视化相机观察结果
-        Args:
-            cam_obs: 相机观察字典，包含rgb、depth等信息
-        """
-        import matplotlib.pyplot as plt
-        num_cams = len(cam_obs)
-        fig, axes = plt.subplots(2, num_cams, figsize=(5*num_cams, 8))
         
-        for i, (cam_id, obs) in enumerate(cam_obs.items()):
-            # RGB图像
-            rgb_img = obs['rgb']
-            axes[0, i].imshow(rgb_img)
-            axes[0, i].set_title(f'Camera {cam_id} - RGB')
-            axes[0, i].axis('off')
-            
-            # 深度图
-            depth_img = obs['depth']
-            axes[1, i].imshow(depth_img, cmap='viridis')
-            axes[1, i].set_title(f'Camera {cam_id} - Depth')
-            axes[1, i].axis('off')
-        
-        plt.tight_layout()
-        plt.show()   
         
     def crop_objects_by_ids(self, selected_ids, rgb_img, seg_instance, output_dir, cam_id, margin=0.1):
         """裁剪指定编号的物体并保存
@@ -736,122 +715,153 @@ class Env:
     def get_involved_object_names(self):
         return ["pen_1", "pencil_holder_1"]
     
-    def do_task(self,instruction):
-        """现在先不管 instruction，先写好预定义的代码，跑通执行的pipeline。想清楚我们需要什么样的代码，再考虑大模型如何生成代码"""
-        pass
-        # self.save_images()
-        # spec = importlib.util.find_spec('task.do_task')
-        # module = importlib.util.module_from_spec(spec)
-        # spec.loader.exec_module(module)
-        # module.do_task(self)
 
-
-def generate_task_list():
-    # 定义任务列表
-    task_list = [
-        {
-            'name': 'eraser_to_holder',
-            'instruction': 'Put the eraser into the pencil holder',
-            "objects": [
-                {
-                    "type": "DatasetObject",
-                    "name": "eraser_1",
-                    "category": "rubber_eraser",
-                    "model": "cungod",
-                    "position": [0.05, -0.25, 0.7163046002388],
-                    "orientation": [-0.7071068, 0, 0, 0.7071068],
-                    "scale": [2.0, 2.0, 2.0],
-                },
-                {
-                    "type": "DatasetObject",
-                    "name": "pencil_holder_1",
-                    "category": "pencil_holder",
-                    "model": "qwqsgi",
-                    "position": [-0.30, 0.15, 0.7163046002388],
-                    "orientation": [-0.7071068, 0, 0, 0.7071068],
-                    "scale": [2.0, 2.0, 1.0],
-                }
-            ]
-        }                       
-    ]
-    return task_list
+    def get_arm_joint_postions(self):
+        # assert isinstance(self.robot, Fetch), "The IK solver assumes the robot is a Fetch robot"
+        arm = self.robot.arm_names[0]
+        dof_idx = np.concatenate([self.robot.trunk_control_idx, self.robot.arm_control_idx[arm]])
+        arm_joint_pos = self.robot.get_joint_positions()[dof_idx]
+        return arm_joint_pos
+    def get_ee_pose(self):
+        ee_pos, ee_xyzw = (self.robot.get_eef_position(), self.robot.get_eef_orientation())
+        ee_pose = np.concatenate([ee_pos, ee_xyzw])  # [7]
+        return ee_pose
+    def is_grasping(self, candidate_obj=None):
+        from omnigibson.controllers import IsGraspingState
+        return self.robot.is_grasping(candidate_obj=candidate_obj) == IsGraspingState.TRUE
 
 if __name__ == "__main__":
     set_logger_entry(__file__)
+    
+
+    env = Env()
+    
 
     
+    # 导入训练好的模型
+    from train import RobotControlNet
+    device = th.device('cuda' if th.cuda.is_available() else 'cpu')
+    model = RobotControlNet().to(device)
+    model_path = os.path.join(ROOT_PATH, '../examples/training/subgoal_pose_net.pth')
+    model.load_state_dict(th.load(model_path))
+    model.eval()
+    # 加载数据
+    with open(os.path.join(ROOT_PATH, '../examples/training/dataset_with_embedding.pkl'), 'rb') as f:
+        embedding_data = pickle.load(f)
     
-    task_list = generate_task_list()
-    # for task in task_list:
-    #     env.do_task(task['instruction'])
-    task = task_list[0]
-    
-    
-    # 创建环境时传入任务物体
-    env = Env(task_objects=task['objects'])
-    
-    # # 保存场景图像
-    # env.save_images()
-    
-    # # 获取相机观察
-    cam_obs = env.get_cam_obs()
-    env.visualize_cam_obs(cam_obs)  # 添加这行来显示图像
-    
-    
-    
-    # # 遍历执行抓取和放置
-    while True:
-        # 获取分割图像
-        rgb = cam_obs[0]['rgb']
-        seg = cam_obs[0]['seg_instance']
+    dataset = pickle.load(open(os.path.join(ROOT_PATH, '../examples/training/dataset_full.pkl'), 'rb'))
+    """
+    for data in dataset:
+        data['embedding'].shape = (1, 1572)
+        data['robot_state'].shape = (1, 10)
+        data['rgb'].shape = (480, 480, 3)
+        data['label'].shape = (1, 7)
+    """
+    assert isinstance(dataset[0]['embedding'], list) and len(dataset[0]['embedding']) == 1536
+    assert isinstance(dataset[0]['robot_state'], dict)
+    assert isinstance(dataset[0]['robot_state']['joint_positions'], th.Tensor) and dataset[0]['robot_state']['joint_positions'].shape == (8,)
+    assert isinstance(dataset[0]['robot_state']['ee_pose'], np.ndarray) and dataset[0]['robot_state']['ee_pose'].shape == (7,)
+    assert isinstance(dataset[0]['robot_state']['gripper_state'], bool)
+    assert isinstance(dataset[0]['rgb'], np.ndarray) and dataset[0]['rgb'].shape == (480, 480, 3)
+    assert isinstance(dataset[0]['label'], np.ndarray) and dataset[0]['label'].shape == (7,)
+
+    # 3个阶段
+    for step_i in range(3):
+        log(f"\n执行第 {step_i} 阶段:")
         
-        # TODO: 调用视觉语言模型分析场景,决定下一步动作
-        # 这里先用简单的规则:先抓取,后放置
-        if not env.is_grasping():  # 如果没有抓取物体
-            # 获取目标物体
-            target_obj = env.scene.get_object(list(task['objects'].keys())[0])
-            grasp_point = target_obj.get_position()
-            
-            # 尝试抓取
-            env.open_gripper()
-            env.grasp_pos(grasp_point)
-            env.close_gripper()
-            
-        else:  # 如果已经抓取物体
-            # 获取放置目标
-            if len(task['objects']) > 1:  # 如果有指定放置目标
-                target_obj = env.scene.get_object(list(task['objects'].keys())[1])
-                place_point = target_obj.get_position()
-                place_point[2] += 0.1  # 稍微抬高放置点
-            else:  # 否则放在默认位置
-                place_point = [-0.3, 0.15, 0.71]
-                
-            # 尝试放置
-            env.reach_pose((place_point, [0, math.pi/2, 0]))
-            env.open_gripper()
-            break
-            
-        # 更新相机观察
+        # 准备输入数据
+        embedding = th.tensor(embedding_data[step_i]['embedding'], dtype=th.float32).unsqueeze(0).to(device)
+        
+        # 获取当前机器人状态 - 参考_collect_state_info中的格式
+        robot_state_dict = {
+            'joint_positions': env.get_arm_joint_postions(),  # 使用env的方法获取关节位置
+            'ee_pose': env.get_ee_pose(),  # 使用env的方法获取末端执行器姿态
+            'gripper_state': env.is_grasping()  # 使用env的方法获取夹爪状态
+        }
+        # 将字典转换为tensor
+        joint_positions = th.tensor(robot_state_dict['joint_positions'], dtype=th.float32)
+        ee_pose = th.tensor(robot_state_dict['ee_pose'], dtype=th.float32)
+        gripper_state = th.tensor([float(robot_state_dict['gripper_state'])], dtype=th.float32)
+        # 组合robot_state
+        robot_state = th.cat([joint_positions, ee_pose, gripper_state]).unsqueeze(0).to(device)
+        
+        # 利用模型得到 label，即下一步的 subgoal
+        # 模型的输入是 embedding，robot_state，rgb
+        # 得到 label 为 x,y,z，qx,qy,qz,qw 为相对机器人的坐标
+        # 需要转成全局坐标
+        # 然后将全局坐标输出来
+        # 获取相机观察
         cam_obs = env.get_cam_obs()
+        rgb = th.tensor(cam_obs[0]['rgb'], dtype=th.float32).permute(2, 0, 1).unsqueeze(0).to(device) / 255.0
+
+        # 使用模型预测下一步子目标
+        with th.no_grad():
+            predicted_pose = model(embedding, robot_state, rgb)
+            predicted_pose = predicted_pose.cpu().numpy()[0]  # 转换回numpy数组
+            
+        # 不要用模型的输出，直接用grounding truth 的数据
+        # 直接使用训练数据中的label
+        # predicted_pose = dataset[step_i]['label']  # 这是相对姿态
+        log(f"predicted_pose: {predicted_pose}")
+
+        # 获取当前末端执行器姿态
+        current_ee_pose = env.get_ee_pose()
+        current_ee_pos = current_ee_pose[:3]
+        current_ee_quat = current_ee_pose[3:]
+        log(f"当前末端执行器姿态:")
+        log(f"当前位置: {current_ee_pos}")
+        log(f"当前四元数: {current_ee_quat}")
+
+
+
+        # 分解目标相对姿态
+        relative_pos = predicted_pose[:3]
+        relative_quat = predicted_pose[3:]
         
-    # log(f"任务 {task['name']} 执行完成\n")
+        # 计算全局位置
+        global_pos = current_ee_pos + relative_pos
+        
+        # 将numpy数组转换为tensor后再进行四元数乘法
+        current_ee_quat_tensor = th.tensor(current_ee_quat, dtype=th.float32)
+        relative_quat_tensor = th.tensor(relative_quat, dtype=th.float32)
+        global_quat = T.quat_multiply(current_ee_quat_tensor, relative_quat_tensor)
+        
+        # 将四元数转换为欧拉角（弧度制）
+        euler = T.quat2euler(global_quat) * 180 / math.pi  # 转换为角度制
+        
+        log(f"计算得到的全局目标姿态:")
+        log(f"全局位置: {global_pos}")
+        log(f"欧拉角(度): {euler}")
+        
+        # 执行运动到目标姿态
+        env.reach_pose((global_pos, euler))
+        
+        # 根据阶段执行抓取/释放动作
+        if step_i == 0:  # 第一阶段后抓取
+            env.close_gripper()
+        elif step_i == 2:  # 最后阶段后释放
+            env.open_gripper()
     
-    env.idle()
     
     
     
-    
-    
-    
-    
+# relative_subgoal [ 1.12866159e-01  1.03729437e-02 -2.10488782e-01 -1.27509565e-07
+#  -4.77337671e-07 -8.71813810e-07  1.00000000e+00]
+# relative_subgoal [-0.3537966   0.00900968 -0.0649059   0.09614594 -0.66226785  0.09538431
+#  -0.73692543]
+# relative_subgoal [ 0.2592307   0.11855527  0.08460874 -0.02504426  0.06845336 -0.01528245
+#   0.99722283]
     
 
-    # env = Env()
     # pen_obj, pencil_holder_obj = env.get_involved_object_names()
     # pen = env.get_obj("pen_1")
     # pencil_holder = env.get_obj("pencil_holder_1")
+    
     # grasp_pose = pen.get_grasp_pose()
     # # grasp_point = [-0.15, -0.15, 0.72]
+    # # grasp_pose = 
+    
+    
     # env.open_gripper()
     # env.reach_pose(grasp_pose)
     # env.close_gripper()
@@ -863,6 +873,7 @@ if __name__ == "__main__":
     # env.reach_pose(pen_release_pose)
     # env.open_gripper()
     
-    # env.idle()
-    
+    env.idle()
+
+
 

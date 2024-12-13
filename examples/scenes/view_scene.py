@@ -71,8 +71,8 @@ class Simulator:
         self.current_task_name = task_name
         log(f"load_behavior_task: {task_name}")
 
-        # config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
-        config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
+        config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
+        # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
         config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
 
         # Update it to run a grocery shopping task
@@ -197,8 +197,8 @@ class Simulator:
         self.add_control(primitive_action)
 
 if __name__ == "__main__":
-    simulator = Simulator()
-    simulator.load_behavior_task_by_name('turning_out_all_lights_before_sleep')
+    simulator = Simulator() #installing_a_scanner
+    simulator.load_behavior_task_by_name('cleaning_driveway') #turning_out_all_lights_before_sleep
     simulator.init_action_primitives()
     # 获取场景名称
     scene_name = simulator.get_scene_name()
@@ -210,3 +210,13 @@ if __name__ == "__main__":
 
     simulator.idle()
     # simulator.do_task()
+
+
+# error
+# tidy_your_garden
+
+# correct
+# buy_a_keg
+# lighting_fireplace
+# bringing_in_mail
+# setting_up_room_for_games 把东西放抽屉里
