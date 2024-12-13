@@ -75,8 +75,8 @@ class Simulator:
         self.current_task_name = task_name
         log(f"load_behavior_task: {task_name}")
 
-        # config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
-        config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
+        config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
+        # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
         config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
 
         # Update it to run a grocery shopping task
@@ -218,3 +218,13 @@ if __name__ == "__main__":
 
     simulator.idle()
     # simulator.do_task()
+
+
+# error
+# tidy_your_garden
+
+# correct
+# buy_a_keg
+# lighting_fireplace
+# bringing_in_mail
+# setting_up_room_for_games 把东西放抽屉里

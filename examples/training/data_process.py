@@ -266,6 +266,9 @@ if __name__ == "__main__":
         robot_ee_pose = state_data['robot_state']['ee_pose']
         relative_subgoal = transform_to_robot_frame(subgoal, robot_ee_pose)
         dataset_full[data_idx]['label'] = relative_subgoal
+        
+        print(f"relative_subgoal",relative_subgoal)
+        
 
     # 保存数据集
     output_path = os.path.join(ROOT_PATH, '../examples/training/dataset_full.pkl')
