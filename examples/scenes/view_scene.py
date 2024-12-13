@@ -207,8 +207,8 @@ if __name__ == "__main__":
     # simulator.init_action_primitives()
     # gm.USE_GPU_DYNAMICS = True
     # gm.ENABLE_FLATCACHE = False
-
-    simulator.load_behavior_task_by_name('adding_chemicals_to_hot_tub')
+    #adding_chemicals_to_hot_tub
+    simulator.load_behavior_task_by_name('folding_clothes')
 
     # scene_name = simulator.get_scene_name()
     # print(f"当前场景名称: {scene_name}")
