@@ -1,3 +1,4 @@
+import btgym
 import os
 import queue
 import multiprocessing
@@ -19,8 +20,11 @@ import json
 import torch as th
 import omnigibson.utils.transform_utils as T
 
+gm.USE_GPU_DYNAMICS = True
+gm.ENABLE_FLATCACHE = False
 
-gm.ENABLE_FLATCACHE = True
+# gm.USE_GPU_DYNAMICS = False
+# gm.ENABLE_FLATCACHE = True
 
 def execute_controller(ctrl_gen, env):
     for action in ctrl_gen:
@@ -197,16 +201,20 @@ class Simulator:
         self.add_control(primitive_action)
 
 if __name__ == "__main__":
+    # print(gm.REMOTE_STREAMING)
     simulator = Simulator()
-    simulator.load_behavior_task_by_name('turning_out_all_lights_before_sleep')
-    simulator.init_action_primitives()
-    # 获取场景名称
-    scene_name = simulator.get_scene_name()
-    print(f"当前场景名称: {scene_name}")
+    # simulator.load_behavior_task_by_name('putting_shoes_on_rack')
+    # simulator.init_action_primitives()
+    # gm.USE_GPU_DYNAMICS = True
+    # gm.ENABLE_FLATCACHE = False
 
-    # 获取机器人位置
-    robot_pos = simulator.get_robot_pos()
-    print(f"机器人位置: {robot_pos}")
+    simulator.load_behavior_task_by_name('adding_chemicals_to_hot_tub')
+
+    # scene_name = simulator.get_scene_name()
+    # print(f"当前场景名称: {scene_name}")
+
+    # robot_pos = simulator.get_robot_pos()
+    # print(f"机器人位置: {robot_pos}")
 
     simulator.idle()
     # simulator.do_task()

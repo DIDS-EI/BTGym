@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package simulator;
+
+service SimulatorService {
+  rpc LoadTask (LoadTaskRequest) returns (CommonResponse) {}
+  rpc InitActionPrimitives (Empty) returns (CommonResponse) {}
+  rpc NavigateToObject (NavigateRequest) returns (CommonResponse) {}
+  rpc GetSceneName (Empty) returns (SceneNameResponse) {}
+  rpc GetRobotPos (Empty) returns (RobotPosResponse) {}
+  rpc Step (Empty) returns (CommonResponse) {}
+}
+
+message Empty {}
+
+message LoadTaskRequest {
+  string task_name = 1;
+}
+
+message NavigateRequest {
+  string object_name = 1;
+}
+
+message CommonResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message SceneNameResponse {
+  string scene_name = 1;
+}
+
+message RobotPosResponse {
+  repeated float position = 1;
+} 
