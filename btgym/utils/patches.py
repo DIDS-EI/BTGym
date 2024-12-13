@@ -1,5 +1,5 @@
 is_patched = False
-
+import torch as th
 
 def patch_micro_particle_system():
     from omnigibson.systems.micro_particle_system import MicroPhysicalParticleSystem
@@ -38,7 +38,12 @@ def patch_vision_utils():
 def patch_cloth_prim():
     from omnigibson.prims.cloth_prim import ClothPrim
 
-    def set_particle_positions(self, positions, idxs=None):
+    if hasattr(ClothPrim, '_original_set_particle_positions'):
+        return
+
+    ClothPrim._original_set_particle_positions = ClothPrim.set_particle_positions
+
+    def new_set_particle_positions(self, positions, idxs=None):
         """
         Sets individual particle positions for this cloth prim
 
@@ -53,24 +58,13 @@ def patch_cloth_prim():
         # ), f"Got mismatch in particle setting size: {len(positions)}, vs. number of expected particles {n_expected}!"
 
         if len(positions) < n_expected:
-            positions = th.cat([positions, th.repeat(positions[-1], n_expected - len(positions), dim=0)], dim=0)
+            positions = th.cat([positions, positions[-1].repeat(n_expected - len(positions), 1)], dim=0)
         elif len(positions) > n_expected:
             positions = positions[:n_expected]
 
-        translation, rotation = self.get_position_orientation()
-        rotation = T.quat2mat(rotation)
-        scale = self.scale
-        p_local = (rotation.T @ (positions - translation).T).T / scale
+        return self._original_set_particle_positions(positions, idxs)
 
-        # Fill the idxs if requested
-        if idxs is not None:
-            p_local_old = vtarray_to_torch(self.get_attribute(attr="points"))
-            p_local_old[idxs] = p_local
-            p_local = p_local_old
-
-        self.set_attribute(attr="points", val=lazy.pxr.Vt.Vec3fArray(p_local.tolist()))
-
-    ClothPrim.set_particle_positions = ClothPrim.set_particle_positions
+    ClothPrim.set_particle_positions = new_set_particle_positions
 
 def apply_all_patches():
     global is_patched
@@ -79,4 +73,5 @@ def apply_all_patches():
     is_patched = True
     patch_micro_particle_system()
     patch_vision_utils()
+    patch_cloth_prim()
     print("omnigibson is patched by btgym")
