@@ -9,6 +9,7 @@ service SimulatorService {
   rpc GetSceneName (Empty) returns (SceneNameResponse) {}
   rpc GetRobotPos (Empty) returns (RobotPosResponse) {}
   rpc Step (Empty) returns (CommonResponse) {}
+  rpc GetRGBD (Empty) returns (ImageResponse) {}
 }
 
 message Empty {}
@@ -32,4 +33,12 @@ message SceneNameResponse {
 
 message RobotPosResponse {
   repeated float position = 1;
+}
+
+message ImageResponse {
+  bytes rgb = 1;
+  bytes depth = 2;
+  int32 height = 3;
+  int32 width = 4;
+  int32 channels = 5;
 } 

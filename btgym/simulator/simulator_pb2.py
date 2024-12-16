@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fsimulator.proto\x12\tsimulator\"\x07\n\x05\x45mpty\"$\n\x0fLoadTaskRequest\x12\x11\n\ttask_name\x18\x01 \x01(\t\"&\n\x0fNavigateRequest\x12\x13\n\x0bobject_name\x18\x01 \x01(\t\"2\n\x0e\x43ommonResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"\'\n\x11SceneNameResponse\x12\x12\n\nscene_name\x18\x01 \x01(\t\"$\n\x10RobotPosResponse\x12\x10\n\x08position\x18\x01 \x03(\x02\x32\xa4\x03\n\x10SimulatorService\x12\x43\n\x08LoadTask\x12\x1a.simulator.LoadTaskRequest\x1a\x19.simulator.CommonResponse\"\x00\x12\x45\n\x14InitActionPrimitives\x12\x10.simulator.Empty\x1a\x19.simulator.CommonResponse\"\x00\x12K\n\x10NavigateToObject\x12\x1a.simulator.NavigateRequest\x1a\x19.simulator.CommonResponse\"\x00\x12@\n\x0cGetSceneName\x12\x10.simulator.Empty\x1a\x1c.simulator.SceneNameResponse\"\x00\x12>\n\x0bGetRobotPos\x12\x10.simulator.Empty\x1a\x1b.simulator.RobotPosResponse\"\x00\x12\x35\n\x04Step\x12\x10.simulator.Empty\x1a\x19.simulator.CommonResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fsimulator.proto\x12\tsimulator\"\x07\n\x05\x45mpty\"$\n\x0fLoadTaskRequest\x12\x11\n\ttask_name\x18\x01 \x01(\t\"&\n\x0fNavigateRequest\x12\x13\n\x0bobject_name\x18\x01 \x01(\t\"2\n\x0e\x43ommonResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"\'\n\x11SceneNameResponse\x12\x12\n\nscene_name\x18\x01 \x01(\t\"$\n\x10RobotPosResponse\x12\x10\n\x08position\x18\x01 \x03(\x02\"\\\n\rImageResponse\x12\x0b\n\x03rgb\x18\x01 \x01(\x0c\x12\r\n\x05\x64\x65pth\x18\x02 \x01(\x0c\x12\x0e\n\x06height\x18\x03 \x01(\x05\x12\r\n\x05width\x18\x04 \x01(\x05\x12\x10\n\x08\x63hannels\x18\x05 \x01(\x05\x32\xdd\x03\n\x10SimulatorService\x12\x43\n\x08LoadTask\x12\x1a.simulator.LoadTaskRequest\x1a\x19.simulator.CommonResponse\"\x00\x12\x45\n\x14InitActionPrimitives\x12\x10.simulator.Empty\x1a\x19.simulator.CommonResponse\"\x00\x12K\n\x10NavigateToObject\x12\x1a.simulator.NavigateRequest\x1a\x19.simulator.CommonResponse\"\x00\x12@\n\x0cGetSceneName\x12\x10.simulator.Empty\x1a\x1c.simulator.SceneNameResponse\"\x00\x12>\n\x0bGetRobotPos\x12\x10.simulator.Empty\x1a\x1b.simulator.RobotPosResponse\"\x00\x12\x35\n\x04Step\x12\x10.simulator.Empty\x1a\x19.simulator.CommonResponse\"\x00\x12\x37\n\x07GetRGBD\x12\x10.simulator.Empty\x1a\x18.simulator.ImageResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -43,6 +43,8 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_SCENENAMERESPONSE']._serialized_end=208
   _globals['_ROBOTPOSRESPONSE']._serialized_start=210
   _globals['_ROBOTPOSRESPONSE']._serialized_end=246
-  _globals['_SIMULATORSERVICE']._serialized_start=249
-  _globals['_SIMULATORSERVICE']._serialized_end=669
+  _globals['_IMAGERESPONSE']._serialized_start=248
+  _globals['_IMAGERESPONSE']._serialized_end=340
+  _globals['_SIMULATORSERVICE']._serialized_start=343
+  _globals['_SIMULATORSERVICE']._serialized_end=820
 # @@protoc_insertion_point(module_scope)

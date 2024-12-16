@@ -12,6 +12,11 @@ from omnigibson.action_primitives.starter_semantic_action_primitives import (
     StarterSemanticActionPrimitives,
     StarterSemanticActionPrimitiveSet,
 )
+
+from btgym.core.action_starter import action_starter_map as action_map
+from btgym.core.action_starter import ActionPrimitives
+
+
 from omnigibson.macros import gm
 from btgym.utils.logger import log
 from omnigibson.robots.tiago import Tiago
@@ -52,6 +57,8 @@ class Simulator:
         -0.1485,  1.8101,  1.6337,  0.1376, -1.3249, -0.6841,  0.0450,  0.0450])
 
         self.load_empty_scene()
+
+        # self.load_behavior_task_by_name('putting_shoes_on_rack')
         # self.get_task_list()
 
 
@@ -72,7 +79,7 @@ class Simulator:
                 "type": "DummyTask"
             }
         }
-        self.og_sim = og.Environment(configs=config, in_vec_env=False)
+        self.og_sim = og.Environment(configs=config)
 
 
     def init_action_primitives(self):
@@ -130,7 +137,7 @@ class Simulator:
             og.sim.play()
             self.og_sim.post_play_load()
 
-        # self.reset()
+        
 
         self.scene = self.og_sim.scene
         self.robot = self.og_sim.robots[0]
@@ -138,9 +145,14 @@ class Simulator:
         # Allow user to move camera more easily
         # og.sim.enable_viewer_camera_teleoperation()
 
-        # self.action_primitives = StarterSemanticActionPrimitives(self.og_sim, enable_head_tracking=False)
+        if self.action_primitives is not None:
+            del self.action_primitives
+            
+        self.action_primitives = ActionPrimitives(self.og_sim, enable_head_tracking=False)
         og.sim.enable_viewer_camera_teleoperation()
         self.set_camera_lookat_robot()
+
+        log("load_behavior_task_by_name: " + task_name + " success!")
 
     def reset(self):
         self.og_sim.reset()
@@ -181,7 +193,10 @@ class Simulator:
     def idle(self):
         while True:
             og.sim.step()
-            
+    
+    def idle_step(self):
+        og.sim.step()
+
     def add_control(self,control):
         self.control_queue.put(control)
 
@@ -230,7 +245,7 @@ if __name__ == "__main__":
     # gm.USE_GPU_DYNAMICS = True
     # gm.ENABLE_FLATCACHE = False
     #adding_chemicals_to_hot_tub
-    simulator.load_behavior_task_by_name('folding_clothes')
+    # simulator.load_behavior_task_by_name('folding_clothes')
 
     # scene_name = simulator.get_scene_name()
     # print(f"当前场景名称: {scene_name}")
@@ -238,7 +253,7 @@ if __name__ == "__main__":
     # robot_pos = simulator.get_robot_pos()
     # print(f"机器人位置: {robot_pos}")
 
-    # simulator.idle()
+    simulator.idle()
     # simulator.do_task()
 
 
