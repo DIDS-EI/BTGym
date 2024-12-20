@@ -25,6 +25,9 @@ import json
 import torch as th
 import omnigibson.utils.transform_utils as T
 
+from btgym.core.curobo import CuRoboMotionGenerator
+import math
+
 gm.USE_GPU_DYNAMICS = True
 gm.ENABLE_FLATCACHE = False
 
@@ -33,7 +36,10 @@ gm.ENABLE_FLATCACHE = False
 
 def execute_controller(ctrl_gen, env):
     for action in ctrl_gen:
-        env.step(action)
+        if action:
+            env.step(action)
+        else:
+            og.sim.step()
 
 task_scene_map = json.load(open(f'{ROOT_PATH}/assets/task_to_scenes.json', 'r'))
 
@@ -42,12 +48,10 @@ class Simulator:
     Demonstrates how to use the action primitives to pick and place an object in an empty scene.
     """
 
-    def __init__(self):
+    def __init__(self,task_name='putting_shoes_on_rack'):
         self.og_sim = None
         self.current_task_name = None
-        # Load the config
-        # self.load_behavior_task_by_name('putting_shoes_on_rack')
-
+        self.device = th.device('cuda' if th.cuda.is_available() else 'cpu')
         
         # self.null_control = np.zeros(self.robot.action_space.shape)
         self.control_queue = queue.Queue()
@@ -55,12 +59,12 @@ class Simulator:
         self.idle_control = np.array([ 0.0000,  0.0000,  0.0000,  0.0000,  0.0000,  0.1700,  0.8585, -0.1485,
          1.8101,  1.6337,  0.1376, -1.3249, -0.6841,  0.0450,  0.0450,  0.8585,
         -0.1485,  1.8101,  1.6337,  0.1376, -1.3249, -0.6841,  0.0450,  0.0450])
+        self.action_primitives = None
 
-        self.load_empty_scene()
-
-        # self.load_behavior_task_by_name('putting_shoes_on_rack')
-        # self.get_task_list()
-
+        if task_name:
+            self.load_behavior_task_by_name(task_name)  
+        else:
+            self.load_empty_scene()
 
     def load_empty_scene(self):
         config = {
@@ -80,25 +84,6 @@ class Simulator:
             }
         }
         self.og_sim = og.Environment(configs=config)
-
-
-    def init_action_primitives(self):
-        self.action_primitives = StarterSemanticActionPrimitives(self.og_sim, enable_head_tracking=False)
-
-    def get_task_list(self):
-        plan_folder = f'{ROOT_PATH}/../outputs/bddl_planning/success'
-        self.task_list = os.listdir(plan_folder)
-        # for plan_file in os.listdir(plan_folder):
-        #     log("执行task: " + plan_file)
-        #     execute_task_single(plan_file, f'{plan_folder}/{plan_file}')
-
-        # task_name = 'putting_shoes_on_rack'
-        # plan_file = f'{plan_folder}/{task_name}'
-        # execute_task_single(task_name, plan_file)
-
-    def load_behavior_task_by_index(self, task_index):
-        task_name = self.task_list[task_index]
-        self.load_behavior_task_by_name(task_name)
 
     def load_behavior_task_by_name(self, task_name):
         self.current_task_name = task_name
@@ -137,8 +122,7 @@ class Simulator:
             og.sim.play()
             self.og_sim.post_play_load()
 
-        
-
+    
         self.scene = self.og_sim.scene
         self.robot = self.og_sim.robots[0]
 
@@ -147,10 +131,16 @@ class Simulator:
 
         if self.action_primitives is not None:
             del self.action_primitives
-            
-        self.action_primitives = ActionPrimitives(self.og_sim, enable_head_tracking=False)
+
+        self.action_primitives = ActionPrimitives(self)
         og.sim.enable_viewer_camera_teleoperation()
         self.set_camera_lookat_robot()
+
+
+        self.curobo_mg = CuRoboMotionGenerator(self.robot,
+            robot_cfg_path=f"{ROOT_PATH}/assets/fetch_description_curobo.yaml",
+            debug=False)
+
 
         log("load_behavior_task_by_name: " + task_name + " success!")
 
@@ -195,10 +185,9 @@ class Simulator:
             og.sim.step()
     
     def idle_step(self):
-        og.sim.step()
+        if og.sim:
+            og.sim.step()
 
-    def add_control(self,control):
-        self.control_queue.put(control)
 
     def get_scene_name(self):
         return self.scene.scene_model
@@ -209,37 +198,122 @@ class Simulator:
     def get_trav_map(self):
         return self.scene._trav_map
 
-    def do_task(self):
-        log("start do_task")
-        controller = StarterSemanticActionPrimitives(self.og_sim, enable_head_tracking=False)
+    def get_joint_states(self):
+        return self.robot.get_joint_positions()
 
-        # Grasp of cologne
-        grasp_obj = self.scene.object_registry("name", "cologne")
-        print("Executing controller")
+    def set_joint_states(self,joint_states):
+        joint_states = th.tensor(joint_states,device=self.device)
+        self.robot.set_joint_positions(joint_states)
 
-        primitive_action = controller.apply_ref(StarterSemanticActionPrimitiveSet.GRASP, grasp_obj,attempts=10)
+    def get_end_effector_pose(self):
+        return self.robot.get_eef_position_orientation()
 
+    def get_relative_eef_pose(self):
+        return self.robot.get_relative_eef_pose()
 
-        self.add_control(primitive_action)
-        # execute_controller(primitive_action, self.og_sim)
-        # print("Finished executing grasp")
-
-        # Place cologne on another table
-        print("Executing controller")
-        table = self.scene.object_registry("name", "table")
-        primitive_action = controller.apply_ref(StarterSemanticActionPrimitiveSet.PLACE_ON_TOP, table,attempts=10)
-        self.add_control(primitive_action)
-        # execute_controller(controller.apply_ref(StarterSemanticActionPrimitiveSet.PLACE_ON_TOP, table), self.og_sim)
-        # print("Finished executing place")
+    def get_task_objects(self):
+        return list(self.og_sim.task.object_instance_to_category.keys())
 
     def navigate_to_object(self, object_name):
-        object = self.scene.object_registry("name", object_name)
+        # object = self.scene.object_registry("name", object_name)
+        object = self.og_sim.task.object_scope[object_name]
         primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.NAVIGATE_TO, object)
-        self.add_control(primitive_action)
+        execute_controller(primitive_action, self.og_sim)
 
+    def grasp_object(self, object_name):
+        object = self.og_sim.task.object_scope[object_name]
+        primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.GRASP, object)
+        execute_controller(primitive_action, self.og_sim)
+
+
+    def add_control(self,control):
+        self.control_queue.put(control)
+
+
+    def reach_pose(self, pose, is_local=False):
+        robot = self.robot
+        pos = th.tensor(pose[:3],device=self.device)
+        euler = th.tensor(pose[3:],device=self.device)
+
+        if euler is None:
+            quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认从上往下抓
+        else:
+            quat = T.euler2quat(euler)
+        
+        # 将当前位置和目标位置拼接在一起
+        pos_sequence = th.stack([pos, pos])  # 形状变为 [2, 3]
+        quat_sequence = th.stack([quat, quat])  # 形状变为 [2, 4]
+
+        # 如果机器人接近关节限制，则调整关节位置
+        jp = robot.get_joint_positions(normalized=True)
+        if not th.all(th.abs(jp)[:-2] < 0.97):
+            new_jp = jp.clone()
+            new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
+            robot.set_joint_positions(new_jp, normalized=True)
+        og.sim.step()
+
+        successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence,is_local=is_local)
+
+        if successes[0]:
+            # 执行轨迹
+            joint_trajectory = self.curobo_mg.path_to_joint_trajectory(paths[0])
+            # 打印轨迹
+            print(joint_trajectory)
+            
+            for time_i,joint_positions in enumerate(joint_trajectory):
+                # joint_positions = joint_trajectory[-1]
+                full_action = th.zeros(robot.n_joints, device=joint_positions.device)
+
+                # full_action[2] = joint_positions[0]
+                full_action[4:] = joint_positions
+                
+                # robot.set_joint_positions(full_action)
+                
+                if time_i == len(joint_trajectory) - 1:
+                    full_action[-1] = 0.0
+                    full_action[-2] = 0.0
+                else:
+                    full_action[-1] = 0.05
+                    full_action[-2] = 0.05  
+
+                print(f"time_i: {time_i}, full_action: {full_action}")
+                self.og_sim.step(full_action.to('cpu'))
+
+    def reset_hand(self):
+        jp = self.get_joint_states()
+        self.set_joint_states([
+                0.0,
+                0.0,  # wheels
+                0.0,  # trunk
+                0.0,
+                -1.5,
+                0.0,  # head
+                -0.8,
+                1.7,
+                2.0,
+                -1.0,
+                1.36904,
+                1.90996,  # arm
+                jp[-2],
+                jp[-1],  # gripper
+            ])
+        
+    def save_camera_image(self, output_path):
+        """
+        保存机器人视角的RGB图像
+        Args:
+            output_path: 输出图像的路径，例如 "robot_view.png"
+        """
+        rgb_obs = list(self.robot.get_obs()[0].values())[0]['rgb'].cpu().numpy()
+        # 将numpy数组转换为PIL图像并保存
+        from PIL import Image
+        img = Image.fromarray(rgb_obs)
+        img = img.convert('RGB')  # 将RGBA转换为RGB
+        img.save(output_path, format='PNG')
+        
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
-    simulator = Simulator()
+    simulator = Simulator('putting_shoes_on_rack')
     # simulator.load_behavior_task_by_name('putting_shoes_on_rack')
     # simulator.init_action_primitives()
     # gm.USE_GPU_DYNAMICS = True

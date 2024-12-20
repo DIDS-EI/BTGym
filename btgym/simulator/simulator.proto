@@ -3,13 +3,21 @@ syntax = "proto3";
 package simulator;
 
 service SimulatorService {
-  rpc LoadTask (LoadTaskRequest) returns (CommonResponse) {}
-  rpc InitActionPrimitives (Empty) returns (CommonResponse) {}
-  rpc NavigateToObject (NavigateRequest) returns (CommonResponse) {}
+  rpc LoadTask (LoadTaskRequest) returns (Empty) {}
+  rpc InitActionPrimitives (Empty) returns (Empty) {}
+  rpc NavigateToObject (NavigateToObjectRequest) returns (Empty) {}
   rpc GetSceneName (Empty) returns (SceneNameResponse) {}
   rpc GetRobotPos (Empty) returns (RobotPosResponse) {}
-  rpc Step (Empty) returns (CommonResponse) {}
+  rpc Step (Empty) returns (Empty) {}
   rpc GetRGBD (Empty) returns (ImageResponse) {}
+  rpc GetRobotJointStates(Empty) returns (GetRobotJointStatesResponse) {}
+  rpc SetRobotJointStates(SetRobotJointStatesRequest) returns (Empty) {}
+  rpc GetRobotEEFPose(Empty) returns (EEFPoseResponse) {}
+  rpc GetRelativeEEFPose(Empty) returns (RelativeEEFPoseResponse) {}
+  rpc GetTaskObjects(Empty) returns (TaskObjectsResponse) {}
+  rpc GraspObject(GraspObjectRequest) returns (Empty) {}
+  rpc ReachPose(ReachPoseRequest) returns (Empty) {}
+  rpc SaveCameraImage(SaveCameraImageRequest) returns (Empty) {}
 }
 
 message Empty {}
@@ -18,13 +26,8 @@ message LoadTaskRequest {
   string task_name = 1;
 }
 
-message NavigateRequest {
+message NavigateToObjectRequest {
   string object_name = 1;
-}
-
-message CommonResponse {
-  bool success = 1;
-  string message = 2;
 }
 
 message SceneNameResponse {
@@ -41,4 +44,37 @@ message ImageResponse {
   int32 height = 3;
   int32 width = 4;
   int32 channels = 5;
-} 
+}
+
+message GetRobotJointStatesResponse {
+  repeated float joint_states = 1;
+}
+
+message SetRobotJointStatesRequest {
+  repeated float joint_states = 1;
+}
+
+message EEFPoseResponse {
+  repeated float eef_pose = 1;
+}
+
+message RelativeEEFPoseResponse {
+  repeated float relative_eef_pose = 1;
+}
+
+message TaskObjectsResponse {
+  repeated string object_names = 1;
+}
+
+message GraspObjectRequest {
+  string object_name = 1;
+}
+
+message ReachPoseRequest {
+  repeated float pose = 1;
+  bool is_local = 2;
+}
+
+message SaveCameraImageRequest {
+  string output_path = 1;
+}
