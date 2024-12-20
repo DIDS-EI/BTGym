@@ -1,33 +1,50 @@
 import grpc
+import sys
+from btgym import cfg
+sys.path.append(f'{cfg.ROOT_PATH}/simulator')
 import btgym.simulator.simulator_pb2 as simulator_pb2
 import btgym.simulator.simulator_pb2_grpc as simulator_pb2_grpc
 import numpy as np
 
 class SimulatorClient:
-    def __init__(self, timeout=10):
-        self.channel = grpc.insecure_channel('localhost:50051')
-        self.stub = simulator_pb2_grpc.SimulatorServiceStub(self.channel)
-        self.timeout = timeout  # 添加超时设置
+    def __init__(self):
+        i = 1
+        while True: 
+            try:
+                self.channel = grpc.insecure_channel('localhost:50052')
+                # 设置5秒超时
+                grpc.channel_ready_future(self.channel).result(timeout=5)
+                self.stub = simulator_pb2_grpc.SimulatorServiceStub(self.channel)
+                print(f"连接仿真器成功！")
+                break
+            except grpc.FutureTimeoutError:
+                print(f"连接仿真器超时，重试第{i}次")
+            except Exception as e:
+                print(f"连接仿真器错误，错误信息: {str(e)}，重试第{i}次")
+            i += 1
+
+    def call(self, func,**kwargs):
+        try:
+            if kwargs:
+                request = getattr(simulator_pb2, func+"Request")(**kwargs)
+            else:
+                request = simulator_pb2.Empty()
+            response = getattr(self.stub, func)(request)
+            return response
+        except Exception as e:
+            print(f"调用仿真器函数失败，错误信息: {str(e)}")
+            return None
 
     def load_task(self, task_name):
-        try:
-            request = simulator_pb2.LoadTaskRequest(task_name=task_name)
-            response = self.stub.LoadTask(
-                request, 
-                timeout=self.timeout
-            )
-            return response.success, response.message
-        except grpc.RpcError as e:
-            return False, f"RPC错误: {str(e)}"
+        request = simulator_pb2.LoadTaskRequest(task_name=task_name)
+        response = self.stub.LoadTask(request)
 
     def init_action_primitives(self):
         response = self.stub.InitActionPrimitives(simulator_pb2.Empty())
-        return response.success, response.message
 
     def navigate_to_object(self, object_name):
         request = simulator_pb2.NavigateRequest(object_name=object_name)
         response = self.stub.NavigateToObject(request)
-        return response.success, response.message
 
     def get_scene_name(self):
         response = self.stub.GetSceneName(simulator_pb2.Empty())
@@ -36,6 +53,14 @@ class SimulatorClient:
     def get_robot_pos(self):
         response = self.stub.GetRobotPos(simulator_pb2.Empty())
         return response.position
+
+    def get_robot_joint_states(self):
+        response = self.stub.GetRobotJointStates(simulator_pb2.Empty())
+        return response.joint_states
+
+    def get_robot_eef_pose(self):
+        response = self.stub.GetRobotEEFPose(simulator_pb2.Empty())
+        return response.eef_pose
 
     def step(self):
         response = self.stub.Step(simulator_pb2.Empty())
@@ -67,32 +92,37 @@ def main():
     client = SimulatorClient()
     
     # 测试加载任务
-    success, msg = client.load_task('putting_shoes_on_rack')
-    print(f"加载任务结果: {success}, {msg}")
-
-    # navigate_to_object_result = client.navigate_to_object("light_switch")
-    # print(f"导航结果: {navigate_to_object_result}")
-    # 初始化动作原语
-    # success, msg = client.init_action_primitives()
-    # print(f"初始化动作原语结果: {success}, {msg}")
-
-    # # 获取场景名称
-    # scene_name = client.get_scene_name()
-    # print(f"场景名称: {scene_name}")
-
-    # # 获取机器人位置
-    robot_pos = client.get_robot_pos()
-    print(f"机器人位置: {robot_pos}")
-
-    # # 导航到物体
-    # success, msg = client.navigate_to_object("light_switch")
-    # print(f"导航结果: {success}, {msg}")
-
-    # 测试获取图像
-    rgb, depth = client.get_rgbd()
-    if rgb is not None:
-        print(f"获取到RGB图像，形状: {rgb.shape}")
-        print(f"获取到深度图像，形状: {depth.shape}")
+    # response = client.call(func='LoadTask', task_name='putting_shoes_on_rack')
+    # response = client.call(func='GetTaskObjects')
+    # print(response)
+    # response = client.call(func='SetRobotJointStates',
+    #                        joint_states=[
+    #             0.0,
+    #             0.0,  # wheels
+    #             0.0,  # trunk
+    #             0.0,
+    #             -1.5,
+    #             0.0,  # head
+    #             -0.8,
+    #             1.7,
+    #             2.0,
+    #             -1.0,
+    #             1.36904,
+    #             1.90996,  # arm
+    #             0.05,
+    #             0.05,  # gripper
+    #         ])
+    # print(response)
+    # response = client.call(func='ReachPose',pose=[0.6,-0.2,1.418,180,0,0],is_local=True)
+    # print(response)
+    response = client.call(func='NavigateToObject', object_name='gym_shoe.n.01_1')
+    # response = client.call(func='GraspObject', object_name='gym_shoe.n.01_1')
+    
+    # # 测试获取图像
+    # rgb, depth = client.get_rgbd()
+    # if rgb is not None:
+    #     print(f"获取到RGB图像，形状: {rgb.shape}")
+    #     print(f"获取到深度图像，形状: {depth.shape}")
 
 if __name__ == '__main__':
     main() 

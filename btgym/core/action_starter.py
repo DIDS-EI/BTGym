@@ -122,11 +122,26 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
         Returns:
             th.tensor or None: Action array for one step for the robot to navigate in range or None if it is done navigating
         """
-        pose = self._sample_pose_near_object(obj, pose_on_obj=pose_on_obj, **kwargs)
+
+        # Allow grasping from suboptimal extents if we've tried enough times.
+        grasp_poses = get_grasp_poses_for_object_sticky(obj)
+        grasp_pose, object_direction = random.choice(grasp_poses)
+
+        # Prepare data for the approach later.
+        approach_pos = grasp_pose[0] + object_direction * m.GRASP_APPROACH_DISTANCE
+        approach_pose = (approach_pos, grasp_pose[1])
+
+        pose = self._sample_pose_near_object(obj, pose_on_obj=approach_pose, **kwargs)
         x,y,yaw = pose
         pose = (th.tensor([x, y, 0.0], dtype=th.float32), T.euler2quat(th.tensor([0, 0, yaw], dtype=th.float32)))
 
         self.robot.set_position_orientation(pose[0],pose[1])
+
+        # 获取物体的位置
+        # obj_pos = obj.get_position()
+        
+        # # 计算相机的目标位置 - 将相机对准物体
+        # self.simulator.set_camera_lookat(obj_pos)
 
         self.simulator.set_camera_lookat_robot()
 
@@ -383,9 +398,9 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
                     if obj.in_rooms
                     else [self.env.scene._seg_map.get_room_instance_by_point(pose_on_obj[0][:2])]
                 )
-                if self.env.scene._seg_map.get_room_instance_by_point(pose_2d[:2]) not in obj_rooms:
-                    indented_print("Candidate position is in the wrong room.")
-                    continue
+                # if self.env.scene._seg_map.get_room_instance_by_point(pose_2d[:2]) not in obj_rooms:
+                #     indented_print("Candidate position is in the wrong room.")
+                #     continue
 
                 if not self._test_pose(pose_2d, context, pose_on_obj=pose_on_obj, **kwargs):
                     continue
@@ -588,15 +603,20 @@ class ActionStarter:
         self.is_stoped = False
 
     def step(self):
-        try:
-            action = next(self.action_control_generator)
-            if action is not None:
-                self.simulator.add_control(action)
-            else:
-                log('Action is None!!')
-        except Exception as e:
-            log(f"Action Error: {self.__class__.__name__}({self.object_name}) ==> {e}")
-            self.start(self.action_primitives, self.simulator)
+        action = next(self.action_control_generator)
+        if action is not None:
+            self.simulator.add_control(action)
+        else:
+            log('Action is None!!')
+        # try:
+        #     action = next(self.action_control_generator)
+        #     if action is not None:
+        #         self.simulator.add_control(action)
+        #     else:
+        #         log('Action is None!!')
+        # except Exception as e:
+        #     log(f"Action Error: {self.__class__.__name__}({self.object_name}) ==> {e}")
+        #     self.start(self.action_primitives, self.simulator)
 
             # self.check_stop()
             # if self.is_stoped:

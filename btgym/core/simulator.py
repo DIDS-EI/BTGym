@@ -73,7 +73,7 @@ collecting_wood
         self.og_sim = None
         self.current_task_name = None
         # Load the config
-        self.load_behavior_task_by_name('putting_shoes_on_rack')
+        self.load_behavior_task_by_name('collecting_childrens_toys')
 
         
         self.null_control = np.zeros(self.robot.action_space.shape)
@@ -140,8 +140,8 @@ collecting_wood
         self.current_task_name = task_name
         log(f"load_behavior_task: {task_name}")
 
-        # config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
-        config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
+        config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
+        # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
         config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
 
         # Update it to run a grocery shopping task

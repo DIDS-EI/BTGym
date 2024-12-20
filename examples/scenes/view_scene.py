@@ -204,12 +204,12 @@ class Simulator:
 
         primitive_action = controller.apply_ref(StarterSemanticActionPrimitiveSet.GRASP, grasp_obj,attempts=10)
 
-
+ 
         self.add_control(primitive_action)
         # execute_controller(primitive_action, self.og_sim)
         # print("Finished executing grasp")
 
-        # Place cologne on another table
+       # Place cologne on another table
         print("Executing controller")
         table = self.scene.object_registry("name", "table")
         primitive_action = controller.apply_ref(StarterSemanticActionPrimitiveSet.PLACE_ON_TOP, table,attempts=10)
