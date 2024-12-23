@@ -68,7 +68,7 @@ class SimulatorCommandHandler:
 
     @RPCMethod(simulator_pb2.Empty)
     def LoadTask(self, request):
-        self.simulator.load_behavior_task_by_name(request.task_name)
+        self.simulator.load_task(request.task_name)
 
     @RPCMethod(simulator_pb2.NavigateToObjectRequest)
     def NavigateToObject(self, request):

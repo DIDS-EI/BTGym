@@ -92,7 +92,13 @@ def main():
     client = SimulatorClient()
     
     # 测试加载任务
-    # response = client.call(func='LoadTask', task_name='putting_shoes_on_rack')
+    response = client.call(func='LoadTask', task_name='test_task')
+    response = client.call(func='NavigateToObject', object_name='gym_shoe.n.01_1')
+
+
+
+
+
     # response = client.call(func='GetTaskObjects')
     # print(response)
     # response = client.call(func='SetRobotJointStates',
@@ -115,7 +121,6 @@ def main():
     # print(response)
     # response = client.call(func='ReachPose',pose=[0.6,-0.2,1.418,180,0,0],is_local=True)
     # print(response)
-    response = client.call(func='NavigateToObject', object_name='gym_shoe.n.01_1')
     # response = client.call(func='GraspObject', object_name='gym_shoe.n.01_1')
     
     # # 测试获取图像
