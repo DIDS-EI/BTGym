@@ -11,7 +11,8 @@ class SimulatorClient:
         i = 1
         while True: 
             try:
-                self.channel = grpc.insecure_channel('localhost:50052')
+                self.channel = grpc.insecure_channel('192.168.2.78:50052')
+                # self.channel = grpc.insecure_channel('localhost:50052')
                 # 设置5秒超时
                 grpc.channel_ready_future(self.channel).result(timeout=5)
                 self.stub = simulator_pb2_grpc.SimulatorServiceStub(self.channel)
