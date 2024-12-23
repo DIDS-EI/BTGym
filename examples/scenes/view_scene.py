@@ -19,12 +19,12 @@ from btgym.utils.path import ROOT_PATH
 import json
 import torch as th
 import omnigibson.utils.transform_utils as T
+from btgym.utils import cfg
+# gm.USE_GPU_DYNAMICS = True
+# gm.ENABLE_FLATCACHE = False
 
-gm.USE_GPU_DYNAMICS = True
-gm.ENABLE_FLATCACHE = False
-
-# gm.USE_GPU_DYNAMICS = False
-# gm.ENABLE_FLATCACHE = True
+gm.USE_GPU_DYNAMICS = False
+gm.ENABLE_FLATCACHE = True
 
 def execute_controller(ctrl_gen, env):
     for action in ctrl_gen:
@@ -51,16 +51,13 @@ class Simulator:
          1.8101,  1.6337,  0.1376, -1.3249, -0.6841,  0.0450,  0.0450,  0.8585,
         -0.1485,  1.8101,  1.6337,  0.1376, -1.3249, -0.6841,  0.0450,  0.0450])
 
-        self.load_empty_scene()
+        # self.load_empty_scene()
         # self.get_task_list()
 
 
     def load_empty_scene(self):
         config = {
             "env": {
-                "action_frequency": 60,    # 降低动作频率
-                "physics_frequency": 60,   # 降低物理模拟频率
-                "rendering_frequency": 60, # 降低渲染频率
             },
             "scene": {
                 "type": "Scene",
@@ -113,7 +110,7 @@ class Simulator:
             "activity_definition_id": 0,
             "activity_instance_id": 0,
             "predefined_problem": None,
-            "online_object_sampling": False,
+            "online_object_sampling": True,
         }
         # config["robot"]["grasping_mode"] = "sticky"
         # gm.USE_GPU_DYNAMICS = True
@@ -141,6 +138,37 @@ class Simulator:
         # self.action_primitives = StarterSemanticActionPrimitives(self.og_sim, enable_head_tracking=False)
         og.sim.enable_viewer_camera_teleoperation()
         self.set_camera_lookat_robot()
+
+
+
+    def create_my_task(self, task_name):
+        import omnigibson as og
+        from bddl import config
+        config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
+        from omnigibson.utils import bddl_utils 
+        bddl_utils.BEHAVIOR_ACTIVITIES.append(task_name)
+        cfgs = {
+            "scene": {
+                "type": "InteractiveTraversableScene",
+                "scene_model": "Rs_int",
+            },
+            "robots": [
+                {
+                    "type": "Fetch",
+                    "obs_modalities": ["rgb"],
+                    "default_arm_pose": "diagonal30",
+                    "default_reset_mode": "tuck",
+                },
+            ],
+            "task": {
+                "type": "BehaviorTask",
+                "activity_name": task_name,
+                "activity_definition_id": 0,
+                "activity_instance_id": 0,
+                "online_object_sampling": True,
+            },
+        }
+        env = og.Environment(configs=cfgs)
 
     def reset(self):
         self.og_sim.reset()
@@ -226,27 +254,11 @@ if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
     simulator = Simulator()
     # simulator.load_behavior_task_by_name('putting_shoes_on_rack')
-    # simulator.init_action_primitives()
-    # gm.USE_GPU_DYNAMICS = True
-    # gm.ENABLE_FLATCACHE = False
-    #adding_chemicals_to_hot_tub
-    simulator.load_behavior_task_by_name('folding_clothes')
+    simulator.create_my_task('collect_shoes')
 
-    # scene_name = simulator.get_scene_name()
-    # print(f"当前场景名称: {scene_name}")
+    
 
-    # robot_pos = simulator.get_robot_pos()
-    # print(f"机器人位置: {robot_pos}")
+    simulator.idle()
 
-    # simulator.idle()
+    # 调用大模型来执行任务
     # simulator.do_task()
-
-
-# error
-# tidy_your_garden
-
-# correct
-# buy_a_keg
-# lighting_fireplace
-# bringing_in_mail
-# setting_up_room_for_games 把东西放抽屉里

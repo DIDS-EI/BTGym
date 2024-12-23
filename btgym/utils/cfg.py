@@ -17,9 +17,6 @@ os.makedirs(TESTS_PATH, exist_ok=True)
 SUBGOAL_NET_PATH = os.path.join(ROOT_PATH, "../examples/training/subgoal_net.pth")
 
 
-
-
-
 ##############
 # Variables
 ##############

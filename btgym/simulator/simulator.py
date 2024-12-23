@@ -27,12 +27,18 @@ import omnigibson.utils.transform_utils as T
 
 from btgym.core.curobo import CuRoboMotionGenerator
 import math
+from btgym.utils import cfg
 
-gm.USE_GPU_DYNAMICS = True
-gm.ENABLE_FLATCACHE = False
+import os
 
-# gm.USE_GPU_DYNAMICS = False
-# gm.ENABLE_FLATCACHE = True
+task_list_path = os.path.join(cfg.ASSETS_PATH, 'tasks.txt')
+VALID_TASK_LIST = open(task_list_path, 'r').read().splitlines()
+
+# gm.USE_GPU_DYNAMICS = True
+# gm.ENABLE_FLATCACHE = False
+
+gm.USE_GPU_DYNAMICS = False
+gm.ENABLE_FLATCACHE = True
 
 def execute_controller(ctrl_gen, env):
     for action in ctrl_gen:
@@ -62,7 +68,7 @@ class Simulator:
         self.action_primitives = None
 
         if task_name:
-            self.load_behavior_task_by_name(task_name)  
+            self.load_task(task_name)
         else:
             self.load_empty_scene()
 
@@ -85,33 +91,8 @@ class Simulator:
         }
         self.og_sim = og.Environment(configs=config)
 
-    def load_behavior_task_by_name(self, task_name):
-        self.current_task_name = task_name
-        log(f"load_behavior_task: {task_name}")
 
-        config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
-        # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
-        config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
-
-        # Update it to run a grocery shopping task
-        scene_name = task_scene_map[task_name][0]
-        config["scene"]["scene_model"] = scene_name
-        log(f'scene: {scene_name}')
-        config["scene"]["load_task_relevant_only"] = True
-        # config["scene"]["not_load_object_categories"] = ["ceilings"]
-        config["task"] = {
-            "type": "BehaviorTask",
-            "activity_name": task_name,
-            "activity_definition_id": 0,
-            "activity_instance_id": 0,
-            "predefined_problem": None,
-            "online_object_sampling": False,
-        }
-        # config["robot"]["grasping_mode"] = "sticky"
-        # gm.USE_GPU_DYNAMICS = True
-        # gm.ENABLE_FLATCACHE = False
-
-
+    def load_from_config(self, config):
         # Load the environment
         if self.og_sim is None: 
             self.og_sim = og.Environment(configs=config)
@@ -141,8 +122,36 @@ class Simulator:
             robot_cfg_path=f"{ROOT_PATH}/assets/fetch_description_curobo.yaml",
             debug=False)
 
+        log("load task: success!")
 
-        log("load_behavior_task_by_name: " + task_name + " success!")
+
+    def load_behavior_task_by_name(self, task_name):
+        self.current_task_name = task_name
+        log(f"load_behavior_task: {task_name}")
+
+        config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
+        # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
+        config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
+
+        # Update it to run a grocery shopping task
+        scene_name = task_scene_map[task_name][0]
+        config["scene"]["scene_model"] = scene_name
+        log(f'scene: {scene_name}')
+        config["scene"]["load_task_relevant_only"] = True
+        # config["scene"]["not_load_object_categories"] = ["ceilings"]
+        config["task"] = {
+            "type": "BehaviorTask",
+            "activity_name": task_name,
+            "activity_definition_id": 0,
+            "activity_instance_id": 0,
+            "predefined_problem": None,
+            "online_object_sampling": False,
+        }
+        # config["robot"]["grasping_mode"] = "sticky"
+        # gm.USE_GPU_DYNAMICS = True
+        # gm.ENABLE_FLATCACHE = False
+
+        self.load_from_config(config)
 
     def reset(self):
         self.og_sim.reset()
@@ -310,7 +319,42 @@ class Simulator:
         img = Image.fromarray(rgb_obs)
         img = img.convert('RGB')  # 将RGBA转换为RGB
         img.save(output_path, format='PNG')
-        
+    
+    def load_task(self, task_name):
+        if task_name in VALID_TASK_LIST:
+            self.load_behavior_task_by_name(task_name)
+        else:
+            self.create_my_task(task_name)
+
+    def create_my_task(self, task_name):
+        import omnigibson as og
+        from bddl import config
+        config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
+        from omnigibson.utils import bddl_utils 
+        bddl_utils.BEHAVIOR_ACTIVITIES.append(task_name)
+        cfgs = {
+            "scene": {
+                "type": "InteractiveTraversableScene",
+                "scene_model": "Rs_int",
+            },
+            "robots": [
+                {
+                    "type": "Fetch",
+                    "obs_modalities": ["rgb"],
+                    "default_arm_pose": "diagonal30",
+                    "default_reset_mode": "tuck",
+                },
+            ],
+            "task": {
+                "type": "BehaviorTask",
+                "activity_name": task_name,
+                "activity_definition_id": 0,
+                "activity_instance_id": 0,
+                "online_object_sampling": True,
+            },
+        }
+        self.load_from_config(cfgs)
+
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
     simulator = Simulator('putting_shoes_on_rack')
