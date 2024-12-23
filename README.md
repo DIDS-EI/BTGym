@@ -7,11 +7,12 @@ A Platform for Behavior Tree Designing and Planning
 ## 安装OmniGibson
 
 ```shell
-conda create -n omnigibson python=3.10 pytorch torchvision torchaudio pytorch-cuda=12.4 "numpy<2" -c pytorch -c nvidia
+conda create -n omnigibson python=3.10 pytorch=2.5.1 torchvision torchaudio pytorch-cuda=12.4 "numpy<2" -c pytorch -c nvidia
 ```
 注意：
 - 安装pytorch-cuda=xxx的版本要和当前机器所用版本一致，如果cuda版本高于12.4，则安装12.4，否则安装兼容的[pytorch](https://pytorch.org/get-started/locally/)版本
-- 官方推荐的[cuda](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local)版本是11.8
+
+在windows下，omnigibson 会自动配置好 isaac-sim 的相关环境变量，所以应该不需要手动配置
 
 ## 安装BDDL
 BDDL是用来解析Behavior-1K任务的库
@@ -20,6 +21,41 @@ BDDL是用来解析Behavior-1K任务的库
 ```python
 git clone https://github.com/StanfordVL/bddl.git
 ```
+
+
+## 安装 cuRobo
+
+```shell
+conda activate omnigibson
+python -m pip install tomli wheel ninja
+git clone https://github.com/NVlabs/curobo.git
+cd curobo
+python -m pip install -e .[isaacsim] --no-build-isolation
+```
+
+测试安装是否成功
+```shell
+cd BTGym
+python examples/curobo_test/fetch_follow_cube.py
+```
+
+### windows下curobo安装问题
+
+#### torch 相关报错
+
+需要用到 omni.isaac 下的库，但又需要防止调用 omni.isaac 下的老版本 torch，一个简单办法是删除 omni.isaac 下的 torch 文件夹（或重命名），路径为：
+```
+~\AppData\Local\ov\pkg\isaac-sim-4.1.0\exts\omni.isaac.ml_archive\pip_prebundle\torch
+```
+
+#### gbk 相关报错
+
+控制面板 →  区域 →  管理 →  更改系统区域设置 →  勾选 "Beta版，使用Unicode UTF-8提供全球语言支持"
+
+
+#### 注意
+windows下curobo自带的 examples/isaac_sim/motion_gen_reacher.py 暂未成功运行，但暂时不影响omnigibson中的正常运行
+
 
 ## 安装OMPL
 OMPL (the Open Motion Planning Library)，开源运动规划库，由许多基于采样的先进的运动规划算法组成。[官网](https://ompl.kavrakilab.org/download.html)
@@ -159,6 +195,7 @@ cd btgym/planning/downward
     "XXX/Omnigibson"
 ]
 ```
+
 
 
 
