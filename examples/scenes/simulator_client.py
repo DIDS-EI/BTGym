@@ -5,10 +5,15 @@ sys.path.append(f'{cfg.ROOT_PATH}/simulator')
 import btgym.simulator.simulator_pb2 as simulator_pb2
 import btgym.simulator.simulator_pb2_grpc as simulator_pb2_grpc
 import numpy as np
-
+import json
+from btgym.utils import og_utils
+import torch as th
 class SimulatorClient:
     def __init__(self):
         i = 1
+
+        self.camera_info = None
+        self.obs = None
         while True: 
             try:
                 self.channel = grpc.insecure_channel('localhost:50052')
@@ -88,15 +93,97 @@ class SimulatorClient:
             print(f"获取图像失败: {str(e)}")
             return None, None
 
+    def get_obs(self):
+        raw_obs= self.call(func='GetObs')
+
+        rgb = np.frombuffer(raw_obs.rgb, dtype=np.uint8)
+        rgb = rgb.reshape((480, 480, 4))
+
+        depth = np.frombuffer(raw_obs.depth, dtype=np.float32)
+        depth = depth.reshape((480, 480))
+
+        seg_semantic = np.frombuffer(raw_obs.seg_semantic, dtype=np.int32)
+        seg_semantic = seg_semantic.reshape((480, 480))
+
+        self.obs = {
+            'rgb': rgb,
+            'depth': depth,
+            'seg_semantic': seg_semantic,
+            'seg_info': json.loads(raw_obs.seg_info),
+            'proprio': np.array(raw_obs.proprio)
+        }
+
+    def get_camera_info(self):
+        camera_info = self.call(func='GetCameraInfo')
+        intrinsics = np.array(camera_info.intrinsics).reshape(3,3)
+        extrinsics = th.tensor(camera_info.extrinsics).reshape(4,4)
+
+        self.camera_info = {
+            'intrinsics': intrinsics,
+            'extrinsics': extrinsics
+        }
+
+    def pixel_to_world(self, pixel_x, pixel_y):
+        p2w = og_utils.pixel_to_3d_points(self.obs['depth'], self.camera_info['intrinsics'], self.camera_info['extrinsics'])
+        return p2w[pixel_y,pixel_x]
+
+    def pixel_to_world1(self, pixel_x, pixel_y):
+        """
+        将图像上的像素点转换为世界坐标系中的3D点
+        
+        Args:
+            pixel_x (int): 像素x坐标
+            pixel_y (int): 像素y坐标  
+        
+        Returns:
+            np.array: 3D点在世界坐标系中的坐标 [x, y, z]
+        """
+        # 1. 获取图像分辨率
+        image_height = image_width = self.camera_info.renderProductResolution
+
+        # 2. 获取该像素的深度值
+        depth = self.obs['depth'][pixel_y, pixel_x]
+        print('depth', depth)
+        # 3. 计算归一化设备坐标(NDC)
+        # 注意y坐标需要翻转，因为图像坐标系原点在左上角
+        ndc_x = (2.0 * pixel_x / image_width - 1.0)
+        ndc_y = -(2.0 * pixel_y / image_height - 1.0)  # 翻转y轴
+        ndc_z = 2.0 * depth - 1.0  # 将深度值转换到NDC空间
+        
+        # 4. 构建NDC空间中的点
+        ndc_point = np.array([ndc_x, ndc_y, ndc_z, 1.0])
+        print('ndc_point', ndc_point)
+
+        # 5. 获取投影矩阵和视图矩阵
+        proj_matrix = np.array(self.camera_info.cameraProjection).reshape(4, 4)
+        view_matrix = np.array(self.camera_info.cameraViewTransform).reshape(4, 4)
+        
+        print('proj_matrix', proj_matrix)
+        print('view_matrix', view_matrix)
+
+        # 6. 计算投影-视图矩阵的逆矩阵
+        vp_matrix = view_matrix @ proj_matrix
+        vp_inv = np.linalg.inv(vp_matrix)
+        
+        # 7. 将NDC点转换到世界坐标系
+        world_point = vp_inv @ ndc_point
+        world_point = world_point / world_point[3]  # 透视除法
+        
+        return world_point[:3]  # 返回xyz坐标
+
+
 def main():
     client = SimulatorClient()
     
     # 测试加载任务
-    response = client.call(func='LoadTask', task_name='test_task')
-    response = client.call(func='NavigateToObject', object_name='gym_shoe.n.01_1')
+    # response = client.call(func='LoadTask', task_name='test_task')
+    # response = client.call(func='NavigateToObject', object_name='gym_shoe.n.01_1')
 
-
-
+    client.get_obs()
+    client.get_camera_info()
+    pos = client.pixel_to_world(33,240)
+    print(pos)
+    response = client.call(func='SetTargetVisualPose', pose=[*pos, 0, 0, 0])
 
 
     # response = client.call(func='GetTaskObjects')
@@ -123,7 +210,7 @@ def main():
     # print(response)
     # response = client.call(func='GraspObject', object_name='gym_shoe.n.01_1')
     
-    # # 测试获取图像
+    # # ��试获取图像
     # rgb, depth = client.get_rgbd()
     # if rgb is not None:
     #     print(f"获取到RGB图像，形状: {rgb.shape}")

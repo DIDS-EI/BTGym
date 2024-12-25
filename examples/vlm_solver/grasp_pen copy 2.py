@@ -19,7 +19,7 @@ from omnigibson.action_primitives.starter_semantic_action_primitives import (
     StarterSemanticActionPrimitiveSet,
 )
 from btgym.utils.logger import log,set_logger_entry
-from btgym.utils import cfg
+from btgym.dataclass.cfg import cfg
 import cv2
 import pickle
 from omnigibson.utils.constants import semantic_class_id_to_name

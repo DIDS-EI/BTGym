@@ -123,16 +123,20 @@ class SimulatorCommandHandler:
     def SaveCameraImage(self, request) -> Dict:
         self.simulator.save_camera_image(request.output_path)
 
-    @RPCMethod(simulator_pb2.ImageResponse)
-    def GetRGBD(self, request) -> Dict:
-        rgb, depth = self.simulator.get_camera_images()
-        return {
-            'rgb': rgb.tobytes(),
-            'depth': depth.tobytes(),
-            'height': rgb.shape[0],
-            'width': rgb.shape[1],
-            'channels': rgb.shape[2] if len(rgb.shape) > 2 else 1
-        }
+    @RPCMethod(simulator_pb2.SetTargetVisualPoseRequest)
+    def SetTargetVisualPose(self, request) -> Dict:
+        self.simulator.set_target_visual_pose(request.pose)
+
+    @RPCMethod(simulator_pb2.GetCameraInfoResponse)
+    def GetCameraInfo(self, request) -> Dict:
+        camera_info = self.simulator.get_camera_info()
+        return camera_info
+
+    @RPCMethod(simulator_pb2.GetObsResponse)
+    def GetObs(self, request) -> Dict:
+        obs = self.simulator.get_obs()
+        return obs
+
 
 # 动态添加方法到ServicerClass
 for method_name, method_info in RPCMethod.registry.items():

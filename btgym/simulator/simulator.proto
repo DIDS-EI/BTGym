@@ -18,6 +18,9 @@ service SimulatorService {
   rpc GraspObject(GraspObjectRequest) returns (Empty) {}
   rpc ReachPose(ReachPoseRequest) returns (Empty) {}
   rpc SaveCameraImage(SaveCameraImageRequest) returns (Empty) {}
+  rpc SetTargetVisualPose(SetTargetVisualPoseRequest) returns (Empty) {}
+  rpc GetObs(Empty) returns (GetObsResponse) {}
+  rpc GetCameraInfo(Empty) returns (GetCameraInfoResponse) {}
 }
 
 message Empty {}
@@ -77,4 +80,22 @@ message ReachPoseRequest {
 
 message SaveCameraImageRequest {
   string output_path = 1;
+}
+
+message SetTargetVisualPoseRequest {
+  repeated float pose = 1;
+}
+
+message GetCameraInfoResponse {
+  repeated float intrinsics = 1;
+  repeated float extrinsics = 2;
+}
+
+
+message GetObsResponse {
+  bytes rgb = 1;
+  bytes depth = 2;
+  bytes seg_semantic = 3;
+  string seg_info = 4;
+  repeated float proprio = 5;
 }

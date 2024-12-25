@@ -1,7 +1,7 @@
 
 import os
 from btgym.llm.llm import LLM
-from btgym.utils import cfg
+from btgym.dataclass.cfg import cfg
 import re
 import importlib
 import sys

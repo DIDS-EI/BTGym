@@ -7,7 +7,7 @@ import parse
 import numpy as np
 import time
 from datetime import datetime
-from btgym.utils import cfg
+from btgym.dataclass.cfg import cfg
 
 
 # Function to encode the image

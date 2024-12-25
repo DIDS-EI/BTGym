@@ -109,6 +109,21 @@ class SimulatorServiceStub(object):
                 request_serializer=simulator__pb2.SaveCameraImageRequest.SerializeToString,
                 response_deserializer=simulator__pb2.Empty.FromString,
                 _registered_method=True)
+        self.SetTargetVisualPose = channel.unary_unary(
+                '/simulator.SimulatorService/SetTargetVisualPose',
+                request_serializer=simulator__pb2.SetTargetVisualPoseRequest.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.GetObs = channel.unary_unary(
+                '/simulator.SimulatorService/GetObs',
+                request_serializer=simulator__pb2.Empty.SerializeToString,
+                response_deserializer=simulator__pb2.GetObsResponse.FromString,
+                _registered_method=True)
+        self.GetCameraInfo = channel.unary_unary(
+                '/simulator.SimulatorService/GetCameraInfo',
+                request_serializer=simulator__pb2.Empty.SerializeToString,
+                response_deserializer=simulator__pb2.GetCameraInfoResponse.FromString,
+                _registered_method=True)
 
 
 class SimulatorServiceServicer(object):
@@ -204,6 +219,24 @@ class SimulatorServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetTargetVisualPose(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetObs(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCameraInfo(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SimulatorServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -281,6 +314,21 @@ def add_SimulatorServiceServicer_to_server(servicer, server):
                     servicer.SaveCameraImage,
                     request_deserializer=simulator__pb2.SaveCameraImageRequest.FromString,
                     response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'SetTargetVisualPose': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetTargetVisualPose,
+                    request_deserializer=simulator__pb2.SetTargetVisualPoseRequest.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'GetObs': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetObs,
+                    request_deserializer=simulator__pb2.Empty.FromString,
+                    response_serializer=simulator__pb2.GetObsResponse.SerializeToString,
+            ),
+            'GetCameraInfo': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCameraInfo,
+                    request_deserializer=simulator__pb2.Empty.FromString,
+                    response_serializer=simulator__pb2.GetCameraInfoResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -688,6 +736,87 @@ class SimulatorService(object):
             '/simulator.SimulatorService/SaveCameraImage',
             simulator__pb2.SaveCameraImageRequest.SerializeToString,
             simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetTargetVisualPose(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/SetTargetVisualPose',
+            simulator__pb2.SetTargetVisualPoseRequest.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetObs(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/GetObs',
+            simulator__pb2.Empty.SerializeToString,
+            simulator__pb2.GetObsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCameraInfo(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/GetCameraInfo',
+            simulator__pb2.Empty.SerializeToString,
+            simulator__pb2.GetCameraInfoResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -1,6 +1,6 @@
 import sys
 from btgym.utils.path import ROOT_PATH
-from btgym.utils import cfg
+from btgym.dataclass.cfg import cfg
 from btgym.utils.patches import apply_all_patches
 
 apply_all_patches()

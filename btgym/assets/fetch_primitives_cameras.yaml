@@ -32,7 +32,7 @@ scene:
 
 robots:
   - type: Fetch
-    obs_modalities: [rgb, depth_linear, seg_semantic, camera_params]
+    obs_modalities: [rgb]
     scale: 1.0
     self_collisions: true
     action_normalize: false
@@ -43,11 +43,10 @@ robots:
     default_arm_pose: diagonal30
     position: [-0.8, 0.0, 0.]
     sensor_config:
-      VisionSensor:
-        enabled: True,
-        sensor_kwargs:
-          image_width: 480
-          image_height: 480
+        RGBCamera:
+          width: 128
+          height: 128
+          modalities: ["rgb"]
     controller_config:
       base:
         name: DifferentialDriveController
@@ -65,6 +64,27 @@ robots:
       camera:
         name: JointController
         use_delta_commands: False
+
+camera:
+  # recorder 
+  1:
+    name: cam_1
+    position: [ 0.6137,  0.4764,  1.4565]
+    orientation: [ 0.3212,  0.4682,  0.6788,  0.4656]
+    resolution: 480
+    modalities: [rgb, depth_linear, seg_semantic, seg_instance, seg_instance_id, bbox_2d_tight, bbox_2d_loose, bbox_3d]
+    #modalities: [rgb, depth_linear, seg_semantic,seg_instance,seg_instance_id]
+    #modalities: [rgb, depth_linear, seg_instance]
+
+  # vlm camera
+  0:
+    name: cam_0
+    position: [-0.1655,  0.0167,  1.3664]
+    orientation: [ 0.0550,  0.0544,  0.7010,  0.7090]
+    resolution: 480
+    modalities: [rgb, depth_linear, seg_semantic, seg_instance, seg_instance_id, bbox_2d_tight, bbox_2d_loose, bbox_3d]
+    #modalities: [rgb, depth_linear,  seg_semantic,seg_instance,seg_instance_id]
+    #modalities: [rgb, depth_linear, seg_instance]
 
 
 

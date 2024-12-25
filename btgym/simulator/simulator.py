@@ -27,9 +27,10 @@ import omnigibson.utils.transform_utils as T
 
 from btgym.core.curobo import CuRoboMotionGenerator
 import math
-from btgym.utils import cfg
+from btgym.dataclass.cfg import cfg
 
 import os
+import btgym.utils.og_utils as og_utils
 
 task_list_path = os.path.join(cfg.ASSETS_PATH, 'tasks.txt')
 VALID_TASK_LIST = open(task_list_path, 'r').read().splitlines()
@@ -71,6 +72,18 @@ class Simulator:
             self.load_task(task_name)
         else:
             self.load_empty_scene()
+
+
+        from omni.isaac.core.objects import cuboid
+
+        # Make a target to follow
+        self.target_visual = cuboid.VisualCuboid(
+            "/World/visual",
+            position=np.array([0.3, 0, 0.67]),
+            orientation=np.array([0, 1, 0, 0]),
+            color=np.array([1.0, 0, 0]),
+            size=0.2,
+        )
 
     def load_empty_scene(self):
         config = {
@@ -129,7 +142,9 @@ class Simulator:
         self.current_task_name = task_name
         log(f"load_behavior_task: {task_name}")
 
-        config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
+
+        config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
+        # config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
         # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
         config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
 
@@ -355,6 +370,91 @@ class Simulator:
         }
         self.load_from_config(cfgs)
 
+    def set_target_visual_pose(self, pose):
+        pos = th.tensor(pose[:3],device=self.device)
+        euler = th.tensor(pose[3:],device=self.device)
+        if euler is None:
+            quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32))
+        else:
+            quat = T.euler2quat(euler)
+        
+        self.target_visual.set_world_pose(pos, quat)
+
+
+    def pixel_to_world(self, pixel_x, pixel_y):
+        """
+        将图像上的像素点转换为世界坐标系中的3D点
+        
+        Args:
+            pixel_x (int): 像素x坐标
+            pixel_y (int): 像素y坐标  
+            depth (float): 该像素点的深度值
+            camera_info (dict): 相机参数信息
+        
+        Returns:
+            np.array: 3D点在世界坐标系中的坐标 [x, y, z]
+        """
+        camera_info = list(self.robot.sensors.values())[0].camera_parameters
+        # 1. 获取图像分辨率
+        image_height, image_width = camera_info['renderProductResolution']
+        
+        # 2. 将像素坐标归一化到 [-1, 1] 范围
+        x = (2.0 * pixel_x / image_width - 1.0)
+        y = (2.0 * pixel_y / image_height - 1.0)
+        
+        # 3. 构建齐次坐标
+        pixel_point = np.array([x, y, -1.0, 1.0])
+        
+        # 4. 获取投影矩阵的逆矩阵
+        proj_matrix = camera_info['cameraProjection'].reshape(4, 4)
+        proj_inv = np.linalg.inv(proj_matrix)
+        
+        # 5. 获取视图矩阵的逆矩阵
+        view_matrix = camera_info['cameraViewTransform'].reshape(4, 4)
+        view_inv = np.linalg.inv(view_matrix)
+        
+        # 6. 计算相机空间中的点
+        camera_point = proj_inv @ pixel_point
+        camera_point = camera_point / camera_point[3]  # 归一化
+
+        depth_obs = list(self.robot.get_obs()[0].values())[0]['depth_linear']
+        depth = depth_obs[pixel_y, pixel_x]
+        camera_point *= depth  # 应用深度值
+        
+        # 7. 转换到世界坐标系
+        world_point = view_inv @ camera_point
+        
+        return world_point[:3]  # 返回xyz坐标
+
+
+    def get_camera_info(self):
+        sensor = list(self.robot.sensors.values())[0]
+        intrinsics = sensor.intrinsic_matrix.reshape(-1).cpu().numpy()
+        pose = sensor.get_position_orientation()
+        extrinsics = T.pose_inv(T.pose2mat(pose)).reshape(-1).cpu().numpy()
+
+        return {
+            'intrinsics': intrinsics,
+            'extrinsics': extrinsics,
+        }
+
+
+    def get_obs(self):
+        sensor_obs = list(self.robot.sensors.values())[0].get_obs()
+        rgb_obs = sensor_obs[0]['rgb'].cpu().numpy().tobytes()
+        depth_obs = sensor_obs[0]['depth_linear'].cpu().numpy().tobytes()
+        seg_obs = sensor_obs[0]['seg_semantic'].cpu().numpy().tobytes()
+        seg_info = json.dumps(sensor_obs[1]['seg_semantic'])
+        proprio_obs = self.robot.get_proprioception()[0].cpu().numpy()
+
+        return {
+            'rgb': rgb_obs,
+            'depth': depth_obs,
+            'seg_semantic': seg_obs,
+            'seg_info': seg_info,
+            'proprio': proprio_obs,
+        }
+
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
     simulator = Simulator('putting_shoes_on_rack')
@@ -370,7 +470,9 @@ if __name__ == "__main__":
 
     # robot_pos = simulator.get_robot_pos()
     # print(f"机器人位置: {robot_pos}")
-
+    # simulator.get_obs()
+    camera_info = simulator.get_camera_info()
+    print(f"相机信息: {camera_info}")
     simulator.idle()
     # simulator.do_task()
 
