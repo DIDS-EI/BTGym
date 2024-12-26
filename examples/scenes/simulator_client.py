@@ -8,6 +8,8 @@ import numpy as np
 import json
 from btgym.utils import og_utils
 import torch as th
+
+
 class SimulatorClient:
     def __init__(self):
         i = 1
@@ -177,15 +179,26 @@ def main():
     client = SimulatorClient()
     
     # 测试加载任务
-    # response = client.call(func='LoadTask', task_name='test_task')
-    # response = client.call(func='NavigateToObject', object_name='gym_shoe.n.01_1')
+    # response = client.call(func='LoadTask', task_name='putting_shoes_on_rack')
+    # response = client.call(func='NavigateToObject', object_name='shelf.n.01_1')
 
     client.get_obs()
     client.get_camera_info()
-    pos = client.pixel_to_world(33,240)
-    print(pos)
+    pos = client.pixel_to_world(40,140)
+    # # print(pos)
+    pos = [0,1,1]
     response = client.call(func='SetTargetVisualPose', pose=[*pos, 0, 0, 0])
+    response = client.call(func='SetCameraLookatPos', pos=pos)
 
+
+    # 关节状态 limits
+    # tensor([-1.0000e+03, -1.0000e+03,  0.0000e+00, -1.5700e+00, -1.6056e+00,
+    #     -7.6000e-01, -1.2210e+00, -6.2832e+00, -2.2510e+00, -6.2832e+00,
+    #     -2.1600e+00, -6.2832e+00,  0.0000e+00,  0.0000e+00])
+
+    # tensor([1.0000e+03, 1.0000e+03, 3.8615e-01, 1.5700e+00, 1.6056e+00, 1.4500e+00,
+    #         1.5180e+00, 6.2832e+00, 2.2510e+00, 6.2832e+00, 2.1600e+00, 6.2832e+00,
+    #         5.0000e-02, 5.0000e-02])
 
     # response = client.call(func='GetTaskObjects')
     # print(response)
@@ -194,9 +207,9 @@ def main():
     #             0.0,
     #             0.0,  # wheels
     #             0.0,  # trunk
-    #             0.0,
-    #             -1.5,
-    #             0.0,  # head
+    #             1.2,
+    #             0,
+    #             -2,  # head
     #             -0.8,
     #             1.7,
     #             2.0,

@@ -2,7 +2,7 @@
     (:domain omnigibson)
 
     (:objects
-        shelf.n.01_1 - shelf.n.01
+        breakfast_table.n.01_1 - breakfast_table.n.01
         coffee_table.n.01_1 - coffee_table.n.01
         pen.n.01_1 - pen.n.01
         floor.n.01_1 - floor.n.01
@@ -11,10 +11,10 @@
     
     (:init 
         (inroom floor.n.01_1 living_room)
-        (inroom shelf.n.01_1 living_room)
+        (inroom breakfast_table.n.01_1 living_room)
         (inroom coffee_table.n.01_1 living_room)
 
-        (ontop pen.n.01_1 shelf.n.01_1)
+        (ontop pen.n.01_1 breakfast_table.n.01_1)
         (ontop agent.n.01_1 floor.n.01_1)
     )
     

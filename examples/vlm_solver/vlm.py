@@ -20,7 +20,7 @@ class VLM:
             sys.path.append(self.exp_output_path)
 
         self.llm = LLM()
-        answer = self.llm.request("generate a python code to model the object 'pen', named Pen. including get_grasp_pose()")
+        answer = self.llm.request_instruction("generate a python code to model the object 'pen', named Pen. including get_grasp_pose()")
         self.convert_answer_to_file(answer)
 
     def convert_answer_to_file(self, answer):

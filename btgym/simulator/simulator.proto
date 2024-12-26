@@ -21,6 +21,7 @@ service SimulatorService {
   rpc SetTargetVisualPose(SetTargetVisualPoseRequest) returns (Empty) {}
   rpc GetObs(Empty) returns (GetObsResponse) {}
   rpc GetCameraInfo(Empty) returns (GetCameraInfoResponse) {}
+  rpc SetCameraLookatPos(SetCameraLookatPosRequest) returns (Empty) {}
 }
 
 message Empty {}
@@ -98,4 +99,8 @@ message GetObsResponse {
   bytes seg_semantic = 3;
   string seg_info = 4;
   repeated float proprio = 5;
+}
+
+message SetCameraLookatPosRequest {
+  repeated float pos = 1;
 }

@@ -137,6 +137,9 @@ class SimulatorCommandHandler:
         obs = self.simulator.get_obs()
         return obs
 
+    @RPCMethod(simulator_pb2.SetCameraLookatPosRequest)
+    def SetCameraLookatPos(self, request) -> Dict:
+        self.simulator.set_camera_lookat_pos(request.pos)
 
 # 动态添加方法到ServicerClass
 for method_name, method_info in RPCMethod.registry.items():

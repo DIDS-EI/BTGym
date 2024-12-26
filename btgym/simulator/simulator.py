@@ -31,10 +31,15 @@ from btgym.dataclass.cfg import cfg
 
 import os
 import btgym.utils.og_utils as og_utils
+from bddl.object_taxonomy import ObjectTaxonomy
+import time
+
+
+OBJECT_TAXONOMY = ObjectTaxonomy()
 
 task_list_path = os.path.join(cfg.ASSETS_PATH, 'tasks.txt')
 VALID_TASK_LIST = open(task_list_path, 'r').read().splitlines()
-
+VALID_SCENE_LIST = open(os.path.join(cfg.ASSETS_PATH, 'scene_list.txt'), 'r').read().splitlines()
 # gm.USE_GPU_DYNAMICS = True
 # gm.ENABLE_FLATCACHE = False
 
@@ -55,7 +60,7 @@ class Simulator:
     Demonstrates how to use the action primitives to pick and place an object in an empty scene.
     """
 
-    def __init__(self,task_name='putting_shoes_on_rack'):
+    def __init__(self,task_name='putting_shoes_on_rack',load_mode=None):
         self.og_sim = None
         self.current_task_name = None
         self.device = th.device('cuda' if th.cuda.is_available() else 'cpu')
@@ -68,11 +73,7 @@ class Simulator:
         -0.1485,  1.8101,  1.6337,  0.1376, -1.3249, -0.6841,  0.0450,  0.0450])
         self.action_primitives = None
 
-        if task_name:
-            self.load_task(task_name)
-        else:
-            self.load_empty_scene()
-
+        self.load_task(task_name,load_mode)
 
         from omni.isaac.core.objects import cuboid
 
@@ -85,12 +86,19 @@ class Simulator:
             size=0.2,
         )
 
+    def idle(self):
+        while True:
+            og.sim.step()
+    
+    def idle_step(self):
+        if og.sim:
+            og.sim.step()
+
+
+
     def load_empty_scene(self):
         config = {
             "env": {
-                "action_frequency": 60,    # 降低动作频率
-                "physics_frequency": 60,   # 降低物理模拟频率
-                "rendering_frequency": 60, # 降低渲染频率
             },
             "scene": {
                 "type": "Scene",
@@ -105,6 +113,56 @@ class Simulator:
         self.og_sim = og.Environment(configs=config)
 
 
+
+    def load_task(self, task_name=None,load_mode='my_task'):
+
+        if load_mode == 'sample_task':
+            self.sample_task(task_name)
+        elif load_mode == 'load_sampled_task':
+            self.load_sampled_task(task_name)
+        elif task_name in VALID_TASK_LIST:
+            self.load_behavior_task_by_name(task_name)
+        elif task_name in VALID_SCENE_LIST:
+            self.load_scene(task_name)
+        elif task_name.endswith('.json'):
+            self.load_from_config(task_name)
+        elif task_name:
+            self.load_my_task(task_name)
+        else:
+            self.load_empty_scene()
+
+
+    def load_sampled_task(self, task_name):
+        self.load_from_json(f'{cfg.OUTPUTS_PATH}/sampled_tasks/{task_name}.json')
+
+    def load_my_task(self, task_name):
+        import omnigibson as og
+        from bddl import config
+        config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
+        from omnigibson.utils import bddl_utils 
+        bddl_utils.BEHAVIOR_ACTIVITIES.append(task_name)
+
+        config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
+        cfgs = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
+        cfgs["scene"]["scene_model"] = "Rs_int"
+        cfgs['task'] = {
+                "type": "BehaviorTask",
+                "activity_name": task_name,
+                "activity_definition_id": 0,
+                "activity_instance_id": 0,
+                "online_object_sampling": True,
+            }
+        self.load_from_config(cfgs)
+
+
+    def load_scene(self, scene_name):
+        config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
+        config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
+        config["scene"]["scene_model"] = scene_name
+        # config["scene"]["load_task_relevant_only"] = True
+        # config["scene"]["not_load_object_categories"] = ["ceilings"]
+        self.load_from_config(config)
+
     def load_from_config(self, config):
         # Load the environment
         if self.og_sim is None: 
@@ -115,7 +173,6 @@ class Simulator:
             self.og_sim.reload(configs=config)
             og.sim.play()
             self.og_sim.post_play_load()
-
     
         self.scene = self.og_sim.scene
         self.robot = self.og_sim.robots[0]
@@ -128,14 +185,35 @@ class Simulator:
 
         self.action_primitives = ActionPrimitives(self)
         og.sim.enable_viewer_camera_teleoperation()
+        self.reset_hand()
         self.set_camera_lookat_robot()
-
 
         self.curobo_mg = CuRoboMotionGenerator(self.robot,
             robot_cfg_path=f"{ROOT_PATH}/assets/fetch_description_curobo.yaml",
             debug=False)
 
         log("load task: success!")
+
+        self.camera = list(self.robot.sensors.values())[0]
+
+    def load_from_json(self, json_path):
+        config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
+        config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
+        config["scene"]["scene_file"] = json_path
+
+        self.load_from_config(config)
+
+    def load_from_json_task(self, json_path, task_name):
+        pass
+        # config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
+        # config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
+        # config["task"] = {
+        #     "type": "BehaviorTask",
+        #     "activity_name": task_name,
+        #     "activity_definition_id": 0,
+        #     "activity_instance_id": 0,
+        #     "online_object_sampling": True,
+        # }
 
 
     def load_behavior_task_by_name(self, task_name):
@@ -204,14 +282,6 @@ class Simulator:
         camera_quat = T.euler2quat(th.tensor([0.45,0,angle]))
         og.sim.viewer_camera.set_position_orientation(camera_pos, camera_quat)
 
-    def idle(self):
-        while True:
-            og.sim.step()
-    
-    def idle_step(self):
-        if og.sim:
-            og.sim.step()
-
 
     def get_scene_name(self):
         return self.scene.scene_model
@@ -260,7 +330,7 @@ class Simulator:
         euler = th.tensor(pose[3:],device=self.device)
 
         if euler is None:
-            quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认从上往下抓
+            quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认��上往下抓
         else:
             quat = T.euler2quat(euler)
         
@@ -335,41 +405,6 @@ class Simulator:
         img = img.convert('RGB')  # 将RGBA转换为RGB
         img.save(output_path, format='PNG')
     
-    def load_task(self, task_name):
-        if task_name in VALID_TASK_LIST:
-            self.load_behavior_task_by_name(task_name)
-        else:
-            self.create_my_task(task_name)
-
-    def create_my_task(self, task_name):
-        import omnigibson as og
-        from bddl import config
-        config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
-        from omnigibson.utils import bddl_utils 
-        bddl_utils.BEHAVIOR_ACTIVITIES.append(task_name)
-        cfgs = {
-            "scene": {
-                "type": "InteractiveTraversableScene",
-                "scene_model": "Rs_int",
-            },
-            "robots": [
-                {
-                    "type": "Fetch",
-                    "obs_modalities": ["rgb"],
-                    "default_arm_pose": "diagonal30",
-                    "default_reset_mode": "tuck",
-                },
-            ],
-            "task": {
-                "type": "BehaviorTask",
-                "activity_name": task_name,
-                "activity_definition_id": 0,
-                "activity_instance_id": 0,
-                "online_object_sampling": True,
-            },
-        }
-        self.load_from_config(cfgs)
-
     def set_target_visual_pose(self, pose):
         pos = th.tensor(pose[:3],device=self.device)
         euler = th.tensor(pose[3:],device=self.device)
@@ -380,51 +415,72 @@ class Simulator:
         
         self.target_visual.set_world_pose(pos, quat)
 
+    def set_camera_lookat_pos(self,pos):
+        z_limits = [-1.57, 1.57]
+        y_limits = [-0.76, 1.45]
+        
+        target_position = th.tensor(pos)
+        current_camera_position = self.camera.get_position_orientation()[0]
+        current_robot_quat = self.robot.get_position_orientation()[1]
+        robot_euler = T.quat2euler(current_robot_quat)
+        robot_euler[0] = 0.0
+        robot_euler[1] = 0.0
+        direction = target_position - current_camera_position
+        
+        # 考虑机器人朝向x轴正方向的情况
+        cos_yaw = th.cos(robot_euler[2])
+        sin_yaw = th.sin(robot_euler[2])
+        
+        # 修改：交换x和y的角色，因为机器人朝向x轴
+        rel_x = direction[1] * cos_yaw - direction[0] * sin_yaw
+        rel_y = direction[0] * cos_yaw + direction[1] * sin_yaw
+        rel_z = direction[2]
+        
+        target_z_angle = th.atan2(rel_x, rel_y)
+        distance_horizontal = th.sqrt(rel_x**2 + rel_y**2)
+        target_y_angle = -th.atan2(rel_z, distance_horizontal)
+        
+        target_z_angle = th.clamp(target_z_angle, min=z_limits[0], max=z_limits[1])
+        target_y_angle = th.clamp(target_y_angle, min=y_limits[0], max=y_limits[1])
+        
+        joint_state = self.get_joint_states()
+        joint_state[3] = target_z_angle
+        joint_state[5] = target_y_angle
+        print(f"target_z_angle: {target_z_angle}, target_y_angle: {target_y_angle}")
+        self.robot.set_joint_positions(joint_state)
 
-    def pixel_to_world(self, pixel_x, pixel_y):
-        """
-        将图像上的像素点转换为世界坐标系中的3D点
-        
-        Args:
-            pixel_x (int): 像素x坐标
-            pixel_y (int): 像素y坐标  
-            depth (float): 该像素点的深度值
-            camera_info (dict): 相机参数信息
-        
-        Returns:
-            np.array: 3D点在世界坐标系中的坐标 [x, y, z]
-        """
-        camera_info = list(self.robot.sensors.values())[0].camera_parameters
-        # 1. 获取图像分辨率
-        image_height, image_width = camera_info['renderProductResolution']
-        
-        # 2. 将像素坐标归一化到 [-1, 1] 范围
-        x = (2.0 * pixel_x / image_width - 1.0)
-        y = (2.0 * pixel_y / image_height - 1.0)
-        
-        # 3. 构建齐次坐标
-        pixel_point = np.array([x, y, -1.0, 1.0])
-        
-        # 4. 获取投影矩阵的逆矩阵
-        proj_matrix = camera_info['cameraProjection'].reshape(4, 4)
-        proj_inv = np.linalg.inv(proj_matrix)
-        
-        # 5. 获取视图矩阵的逆矩阵
-        view_matrix = camera_info['cameraViewTransform'].reshape(4, 4)
-        view_inv = np.linalg.inv(view_matrix)
-        
-        # 6. 计算相机空间中的点
-        camera_point = proj_inv @ pixel_point
-        camera_point = camera_point / camera_point[3]  # 归一化
+        # self.set_camear_lookat_pos_ori(pos)
 
-        depth_obs = list(self.robot.get_obs()[0].values())[0]['depth_linear']
-        depth = depth_obs[pixel_y, pixel_x]
-        camera_point *= depth  # 应用深度值
+
+    #TODO 目前无法使物体在相机的正中心，有待修正
+    def set_camear_lookat_pos_ori(self,pos):
+        pos = [0,0,1]
+        v1 = [0,0,-1]
+        target_pos = th.tensor(pos)
+        current_pos = self.camera.get_position_orientation()[0]
+        v2 = target_pos - current_pos
+
+
+        v1 = v1 / np.linalg.norm(v1)
+        v2 = v2 / np.linalg.norm(v2)
         
-        # 7. 转换到世界坐标系
-        world_point = view_inv @ camera_point
+        # 计算旋转轴
+        axis = np.cross(v1, v2)
+        axis = axis / np.linalg.norm(axis)
         
-        return world_point[:3]  # 返回xyz坐标
+        # 计算旋转角度
+        angle = np.arccos(np.dot(v1, v2))
+        
+        # 计算四元数的各个分量
+        w = math.cos(angle / 2.0)
+        x = axis[0] * math.sin(angle / 2.0)
+        y = axis[1] * math.sin(angle / 2.0)
+        z = axis[2] * math.sin(angle / 2.0)
+        # 将旋转矩阵转换为四元数
+        quat = th.tensor([w,x,y,z])
+        
+        self.camera.set_position_orientation(current_pos, quat)
+
 
 
     def get_camera_info(self):
@@ -455,9 +511,43 @@ class Simulator:
             'proprio': proprio_obs,
         }
 
+
+    def get_available_objects(self):
+        exclude_prefix = ['wall', 'floor', 'ceilings']
+        fixed_object_names = set(self.scene.fixed_objects)
+
+        exclude_objects = []
+        fixed_objects = []
+        moveable_objects = []
+        for obj in self.scene.objects:
+            category = obj.category
+            if any(category.startswith(prefix) for prefix in exclude_prefix):
+                exclude_objects.append(obj.name)
+            elif obj.name in fixed_object_names:
+                fixed_objects.append(obj.name)
+                synset = OBJECT_TAXONOMY.get_synset_from_category(obj.category)
+                print(f'fixed: {synset}')
+            else:
+                moveable_objects.append(obj.name)
+                synset = OBJECT_TAXONOMY.get_synset_from_category(obj.category)
+                print(f'moveable: {synset}')
+
+        return {'moveable_objects': moveable_objects,
+                'fixed_objects': fixed_objects}
+
+
+    def sample_task(self,task_name):
+        self.load_my_task(task_name)
+        os.makedirs(f'{cfg.OUTPUTS_PATH}/sampled_tasks',exist_ok=True)
+        og.sim.save(json_paths=[f'{cfg.OUTPUTS_PATH}/sampled_tasks/{task_name}_{int(time.time())}.json'])
+        # __loader__
+        # save
+
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
-    simulator = Simulator('putting_shoes_on_rack')
+    simulator = Simulator(task_name='test_task', load_mode='sample_task')
+    # simulator = Simulator('Rs_int')
+    # simulator = Simulator('putting_shoes_on_rack')
     # simulator.load_behavior_task_by_name('putting_shoes_on_rack')
     # simulator.init_action_primitives()
     # gm.USE_GPU_DYNAMICS = True
@@ -471,8 +561,11 @@ if __name__ == "__main__":
     # robot_pos = simulator.get_robot_pos()
     # print(f"机器人位置: {robot_pos}")
     # simulator.get_obs()
-    camera_info = simulator.get_camera_info()
-    print(f"相机信息: {camera_info}")
+    # camera_info = simulator.get_camera_info()
+    # print(f"相机信息: {camera_info}")
+
+    # available_objects = simulator.get_available_objects()
+    # print(f"可用的物体: {available_objects}")
     simulator.idle()
     # simulator.do_task()
 
