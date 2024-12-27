@@ -144,6 +144,11 @@ class SimulatorServiceStub(object):
                 request_serializer=simulator__pb2.SetCameraLookatPosRequest.SerializeToString,
                 response_deserializer=simulator__pb2.Empty.FromString,
                 _registered_method=True)
+        self.GetObjectPos = channel.unary_unary(
+                '/simulator.SimulatorService/GetObjectPos',
+                request_serializer=simulator__pb2.GetObjectPosRequest.SerializeToString,
+                response_deserializer=simulator__pb2.GetObjectPosResponse.FromString,
+                _registered_method=True)
 
 
 class SimulatorServiceServicer(object):
@@ -281,6 +286,12 @@ class SimulatorServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetObjectPos(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SimulatorServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -393,6 +404,11 @@ def add_SimulatorServiceServicer_to_server(servicer, server):
                     servicer.SetCameraLookatPos,
                     request_deserializer=simulator__pb2.SetCameraLookatPosRequest.FromString,
                     response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'GetObjectPos': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetObjectPos,
+                    request_deserializer=simulator__pb2.GetObjectPosRequest.FromString,
+                    response_serializer=simulator__pb2.GetObjectPosResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -989,6 +1005,33 @@ class SimulatorService(object):
             '/simulator.SimulatorService/SetCameraLookatPos',
             simulator__pb2.SetCameraLookatPosRequest.SerializeToString,
             simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetObjectPos(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/GetObjectPos',
+            simulator__pb2.GetObjectPosRequest.SerializeToString,
+            simulator__pb2.GetObjectPosResponse.FromString,
             options,
             channel_credentials,
             insecure,

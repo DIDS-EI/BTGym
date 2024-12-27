@@ -60,22 +60,20 @@ class Simulator:
     Demonstrates how to use the action primitives to pick and place an object in an empty scene.
     """
 
-    def __init__(self,task_name='putting_shoes_on_rack'):
+    def __init__(self,task_name=None):
         self.og_sim = None
         self.current_task_name = None
         self.device = th.device('cuda' if th.cuda.is_available() else 'cpu')
         
         self.robot = None
         self.scene = None
-        # self.null_control = np.zeros(self.robot.action_space.shape)
-        self.control_queue = queue.Queue()
-        # # Allow user to move camera more easily
-        self.idle_control = np.array([ 0.0000,  0.0000,  0.0000,  0.0000,  0.0000,  0.1700,  0.8585, -0.1485,
-         1.8101,  1.6337,  0.1376, -1.3249, -0.6841,  0.0450,  0.0450,  0.8585,
-        -0.1485,  1.8101,  1.6337,  0.1376, -1.3249, -0.6841,  0.0450,  0.0450])
         self.action_primitives = None
-
+        self.curobo_mg = None
+        self.camera = None
+        self.target_visual = None
+        
         self.load_task(task_name)
+
 
     def idle(self):
         while True:
@@ -192,23 +190,38 @@ class Simulator:
         if self.og_sim is None: 
             self.og_sim = og.Environment(configs=config)
         else:
-            og.clear()
             og.sim.stop()
+            og.clear()
+            
+            # 确保在重新加载前清理所有相机相关资源
+            if self.action_primitives is not None:
+                del self.action_primitives
+            if self.curobo_mg is not None:
+                del self.curobo_mg
+            if self.target_visual is not None:
+                del self.target_visual
+            if self.camera is not None:
+                del self.camera
+            
             self.og_sim.reload(configs=config)
             og.sim.play()
             self.og_sim.post_play_load()
-    
+
+        # 等待几帧确保相机初始化完成
+        for _ in range(10):
+            self.idle_step()
+        
+        # 然后再设置相机
+        og.sim.enable_viewer_camera_teleoperation()
+
         self.scene = self.og_sim.scene
         self.robot = self.og_sim.robots[0]
+        self.camera = list(self.robot.sensors.values())[0]
 
         # Allow user to move camera more easily
         # og.sim.enable_viewer_camera_teleoperation()
 
-        if self.action_primitives is not None:
-            del self.action_primitives
-
         self.action_primitives = ActionPrimitives(self)
-        og.sim.enable_viewer_camera_teleoperation()
         self.reset_hand()
         self.set_camera_lookat_robot()
 
@@ -217,8 +230,6 @@ class Simulator:
             debug=False)
 
         log("load task: success!")
-
-        self.camera = list(self.robot.sensors.values())[0]
 
         from omni.isaac.core.objects import cuboid
 
@@ -230,6 +241,9 @@ class Simulator:
             color=np.array([1.0, 0, 0]),
             size=0.2,
         )
+
+        for i in range(10):
+            self.idle_step()
 
 
     # def load_from_json(self, task_name, json_path):
@@ -336,7 +350,7 @@ class Simulator:
         euler = th.tensor(pose[3:],device=self.device)
 
         if euler is None:
-            quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认��上往下抓
+            quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认上往下抓
         else:
             quat = T.euler2quat(euler)
         
@@ -455,6 +469,8 @@ class Simulator:
         print(f"target_z_angle: {target_z_angle}, target_y_angle: {target_y_angle}")
         self.robot.set_joint_positions(joint_state)
 
+        for i in range(10):
+            self.idle_step()
         # self.set_camear_lookat_pos_ori(pos)
 
 
@@ -491,7 +507,8 @@ class Simulator:
 
     def get_camera_info(self):
         sensor = list(self.robot.sensors.values())[0]
-        intrinsics = sensor.intrinsic_matrix.reshape(-1).cpu().numpy()
+        intrinsics = og_utils.get_cam_intrinsics(sensor).reshape(-1)
+        # intrinsics = sensor.intrinsic_matrix.reshape(-1).cpu().numpy()
         pose = sensor.get_position_orientation()
         extrinsics = T.pose_inv(T.pose2mat(pose)).reshape(-1).cpu().numpy()
 
@@ -541,11 +558,33 @@ class Simulator:
         return {'moveable_objects': moveable_objects,
                 'fixed_objects': fixed_objects}
 
+    def get_object_pos(self,object_name):
+        obj = self.og_sim.task.object_scope[object_name]
+        pos = obj.get_position_orientation()[0]
+        return {'pos': pos}
 
 
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
-    simulator = Simulator(task_name='test_task')
+    simulator = Simulator(task_name=None)
+    simulator.load_behavior_task('putting_shoes_on_rack')
+
+    print(simulator.get_object_pos('shoe_1'))
+
+    # simulator.get_obs()
+    # simulator.get_camera_info()
+    # pos = [0,1,1]
+    # simulator.set_target_visual_pose([*pos,0,0,0])
+    # simulator.set_camera_lookat_pos(pos)
+
+
+    # simulator.load_behavior_task('putting_shoes_on_rack')
+    # simulator.get_obs()
+    # simulator.get_camera_info()
+    # pos = [0,1,1]
+    # simulator.set_target_visual_pose([*pos,0,0,0])
+    # simulator.set_camera_lookat_pos(pos)
+
     # simulator = Simulator('Rs_int')
     # simulator = Simulator('putting_shoes_on_rack')
     # simulator.load_behavior_task_by_name('putting_shoes_on_rack')

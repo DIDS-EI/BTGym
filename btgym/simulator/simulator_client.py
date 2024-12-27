@@ -8,12 +8,15 @@ import numpy as np
 import json
 from btgym.utils import og_utils
 import torch as th
+import threading
 
 
 class SimulatorClient:
     def __init__(self):
         i = 1
-
+        # 添加线程锁
+        self._lock = threading.Lock()
+        
         self.camera_info = None
         self.obs = None
         while True: 
@@ -32,16 +35,18 @@ class SimulatorClient:
             i += 1
 
     def call(self, func,**kwargs):
-        try:
-            if kwargs:
-                request = getattr(simulator_pb2, func+"Request")(**kwargs)
-            else:
-                request = simulator_pb2.Empty()
-            response = getattr(self.stub, func)(request)
-            return response
-        except Exception as e:
-            print(f"调用仿真器函数失败，错误信息: {str(e)}")
-            return None
+        # 使用线程锁保护gRPC调用
+        with self._lock:
+            try:
+                if kwargs:
+                    request = getattr(simulator_pb2, func+"Request")(**kwargs)
+                else:
+                    request = simulator_pb2.Empty()
+                response = getattr(self.stub, func)(request)
+                return response
+            except Exception as e:
+                print(f"调用仿真器函数失败，错误信息: {str(e)}")
+                return None
 
     def load_task(self, task_name):
         request = simulator_pb2.LoadTaskRequest(task_name=task_name)
@@ -151,7 +156,7 @@ class SimulatorClient:
         # 注意y坐标需要翻转，因为图像坐标系原点在左上角
         ndc_x = (2.0 * pixel_x / image_width - 1.0)
         ndc_y = -(2.0 * pixel_y / image_height - 1.0)  # 翻转y轴
-        ndc_z = 2.0 * depth - 1.0  # 将深度值转换到NDC空间
+        ndc_z = 2.0 * depth - 1.0  # 将深度��转换到NDC空间
         
         # 4. 构建NDC空间中的点
         ndc_point = np.array([ndc_x, ndc_y, ndc_z, 1.0])
@@ -184,9 +189,9 @@ def main():
 
     response = client.get_obs()
     response = client.get_camera_info()
-    pos = client.pixel_to_world(40,140)
+    pos = client.pixel_to_world(0,0)
     # # print(pos)
-    pos = [0,1,1]
+    # pos = [0,1,1]
     response = client.call(func='SetTargetVisualPose', pose=[*pos, 0, 0, 0])
     response = client.call(func='SetCameraLookatPos', pos=pos)
 
@@ -224,7 +229,7 @@ def main():
     # print(response)
     # response = client.call(func='GraspObject', object_name='gym_shoe.n.01_1')
     
-    # # ��试获取图像
+    # # 试获取图像
     # rgb, depth = client.get_rgbd()
     # if rgb is not None:
     #     print(f"获取到RGB图像，形状: {rgb.shape}")

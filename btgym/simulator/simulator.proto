@@ -25,6 +25,7 @@ service SimulatorService {
   rpc GetObs(Empty) returns (GetObsResponse) {}
   rpc GetCameraInfo(Empty) returns (GetCameraInfoResponse) {}
   rpc SetCameraLookatPos(SetCameraLookatPosRequest) returns (Empty) {}
+  rpc GetObjectPos(GetObjectPosRequest) returns (GetObjectPosResponse) {}
 }
 
 message Empty {}
@@ -129,3 +130,12 @@ message GetObsResponse {
 message SetCameraLookatPosRequest {
   repeated float pos = 1;
 }
+
+message GetObjectPosRequest {
+  string object_name = 1;
+}
+
+message GetObjectPosResponse {
+  repeated float pos = 1;
+}
+

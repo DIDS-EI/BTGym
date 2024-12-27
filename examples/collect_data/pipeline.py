@@ -1,5 +1,11 @@
 from btgym.dataclass.cfg import cfg
+import os
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+from btgym.simulator.simulator_client import SimulatorClient
+
+from btgym.molmo.molmo_client import MolmoClient
+from PIL import Image, ImageDraw
 
 """
 # 1. 在其他进程中启动simulator server
@@ -52,31 +58,32 @@ bddl = generate_bddl(llm, scene_name)
 
 # 5. 在仿真器中读取任务
 
-# from btgym.simulator.simulator_client import SimulatorClient
-# simulator_client = SimulatorClient()
 
-# simulator_client.call(func='LoadCustomTask', 
-# task_name=cfg.task_name,scene_file_name=cfg.scene_file_name)
+client = SimulatorClient()
 
+response = client.call(func='LoadBehaviorTask', task_name='putting_shoes_on_rack')
 
 
 
+# 6. 导航到物体，获取图像
 
-# X. 开始执行任务
-
-# from btgym.simulator.simulator_client import SimulatorClient
-# 仿真器客户端还在调试
-
-
-
-
+object_name = 'gym_shoe.n.01_1'
+client.call(func='NavigateToObject', object_name=object_name)
+object_pos = client.call(func='GetObjectPos', object_name=object_name).pos
+print('object_pos',object_pos)
+client.call(func='SetCameraLookatPos', pos=object_pos)
 
 
-# X. molmo 标点
+response = client.get_obs()
+response = client.get_camera_info()
+
+rgb = client.obs['rgb']
+rgb_img = Image.fromarray(rgb[:,:,:3])
+
+rgb_img.save(f'{CURRENT_DIR}/camera_0_rgb.png')
 
 
-from btgym.molmo.molmo_client import MolmoClient
-from PIL import Image, ImageDraw
+# 7. molmo 在图像中标点
 
 
 def draw_points_on_image(image, points, output_path):
@@ -98,8 +105,8 @@ def draw_points_on_image(image, points, output_path):
 
 molmo_client = MolmoClient()
 
-query = f'point out the red pen.'
-image_path = f'{cfg.ROOT_PATH}/molmo/camera_0_rgb.png'
+query = f'point out the {object_name.split(".")[0]}.'
+image_path = f'{CURRENT_DIR}/camera_0_rgb.png'
 
 generated_text = molmo_client.call(func='PointQA',
                 #    query=f'Point out the important parts for doing the task. The task is "reorient the white pen and drop it upright into the black pen holder".',
@@ -109,8 +116,18 @@ generated_text = molmo_client.call(func='PointQA',
 
 image = Image.open(image_path)
 points = molmo_client.extract_points(generated_text, image)
-draw_points_on_image(image, points, f'{cfg.ROOT_PATH}/molmo/camera_0_rgb_points.png')
+print('molmo points',points)
+draw_points_on_image(image, points, f'{CURRENT_DIR}/camera_0_rgb_points.png')
 
+
+# 8. 图像上的点转换到世界坐标
+
+if len(points) > 0:
+    pos = client.pixel_to_world(points[0][0],points[0][1])
+    response = client.call(func='SetTargetVisualPose', pose=[*pos, 0, 0, 0])
+else:
+    print('molmo没有标出任何点！')
+    # response = client.call(func='SetCameraLookatPos', pos=pos)
 
 
 

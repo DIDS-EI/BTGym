@@ -74,6 +74,7 @@ class SimulatorCommandHandler:
     @RPCMethod(simulator_pb2.LoadCustomTaskRequest)
     def LoadCustomTask(self, request):
         self.simulator.load_custom_task(request.task_name,scene_file_name=request.scene_file_name)
+        return None
 
     @RPCMethod(simulator_pb2.SampleCustomTaskRequest)
     def SampleCustomTask(self, request):
@@ -83,16 +84,21 @@ class SimulatorCommandHandler:
     @RPCMethod(simulator_pb2.LoadSceneRequest)
     def LoadScene(self, request):
         self.simulator.load_scene(request.scene_name)
+        return None
 
 
     @RPCMethod(simulator_pb2.NavigateToObjectRequest)
     def NavigateToObject(self, request):
         self.simulator.navigate_to_object(request.object_name)
+        return None
+
+
 
     @RPCMethod(simulator_pb2.Empty)
     def InitActionPrimitives(self, request):
         self.simulator.init_action_primitives()
-
+        return None
+        
     @RPCMethod(simulator_pb2.SceneNameResponse)
     def GetSceneName(self, request) -> Dict:
         return {'scene_name': self.simulator.get_scene_name()}
@@ -106,10 +112,10 @@ class SimulatorCommandHandler:
         joint_positions = self.simulator.get_joint_states()
         return {'joint_states': joint_positions.tolist() if isinstance(joint_positions, np.ndarray) else joint_positions}
 
-    @RPCMethod(simulator_pb2.SetRobotJointStatesRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def SetRobotJointStates(self, request) -> Dict:
         self.simulator.set_joint_states(request.joint_states)
-
+        return None
 
     @RPCMethod(simulator_pb2.EEFPoseResponse)
     def GetRobotEEFPose(self, request) -> Dict:
@@ -129,18 +135,22 @@ class SimulatorCommandHandler:
     @RPCMethod(simulator_pb2.Empty)
     def GraspObject(self, request) -> Dict:
         self.simulator.grasp_object(request.object_name)
+        return None
 
-    @RPCMethod(simulator_pb2.ReachPoseRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def ReachPose(self, request) -> Dict:
         self.simulator.reach_pose(request.pose, request.is_local)
+        return None
 
-    @RPCMethod(simulator_pb2.SaveCameraImageRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def SaveCameraImage(self, request) -> Dict:
         self.simulator.save_camera_image(request.output_path)
+        return None
 
-    @RPCMethod(simulator_pb2.SetTargetVisualPoseRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def SetTargetVisualPose(self, request) -> Dict:
         self.simulator.set_target_visual_pose(request.pose)
+        return None
 
     @RPCMethod(simulator_pb2.GetCameraInfoResponse)
     def GetCameraInfo(self, request) -> Dict:
@@ -152,9 +162,15 @@ class SimulatorCommandHandler:
         obs = self.simulator.get_obs()
         return obs
 
-    @RPCMethod(simulator_pb2.SetCameraLookatPosRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def SetCameraLookatPos(self, request) -> Dict:
         self.simulator.set_camera_lookat_pos(request.pos)
+        return None
+
+
+    @RPCMethod(simulator_pb2.GetObjectPosResponse)
+    def GetObjectPos(self, request) -> Dict:
+        return self.simulator.get_object_pos(request.object_name)
 
 # 动态添加方法到ServicerClass
 for method_name, method_info in RPCMethod.registry.items():
