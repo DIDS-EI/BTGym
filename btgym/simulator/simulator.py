@@ -114,28 +114,13 @@ class Simulator:
 
 
 
-    def load_task(self, task_name=None,load_mode='my_task'):
-
-        if load_mode == 'sample_task':
-            self.sample_task(task_name)
-        elif load_mode == 'load_sampled_task':
-            self.load_sampled_task(task_name)
-        elif task_name in VALID_TASK_LIST:
-            self.load_behavior_task_by_name(task_name)
-        elif task_name in VALID_SCENE_LIST:
-            self.load_scene(task_name)
-        elif task_name.endswith('.json'):
-            self.load_from_config(task_name)
-        elif task_name:
-            self.load_my_task(task_name)
+    def load_task(self, task_name=None):
+        if task_name in VALID_TASK_LIST:
+            self.load_behavior_task(task_name)
         else:
             self.load_empty_scene()
 
-
-    def load_sampled_task(self, task_name):
-        self.load_from_json(f'{cfg.OUTPUTS_PATH}/sampled_tasks/{task_name}.json')
-
-    def load_my_task(self, task_name):
+    def load_custom_task(self, task_name, scene_name=None, json_path=None,is_sample=False):
         import omnigibson as og
         from bddl import config
         config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
@@ -144,15 +129,31 @@ class Simulator:
 
         config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
         cfgs = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
-        cfgs["scene"]["scene_model"] = "Rs_int"
+
+        if is_sample:
+            cfgs["scene"]["scene_model"] = scene_name
+        else:   
+            cfgs["scene"]["scene_file"] = json_path
+        
         cfgs['task'] = {
                 "type": "BehaviorTask",
                 "activity_name": task_name,
                 "activity_definition_id": 0,
                 "activity_instance_id": 0,
-                "online_object_sampling": True,
+                "online_object_sampling": is_sample,
             }
         self.load_from_config(cfgs)
+
+    def sample_custom_task(self,task_name, scene_name=None):
+        try:
+            self.load_custom_task(task_name, scene_name=scene_name, is_sample=True)
+        except Exception as e:
+            print(f"Error loading task {task_name}: {str(e)}")
+            return ''
+        os.makedirs(f'{cfg.OUTPUTS_PATH}/sampled_tasks',exist_ok=True)
+        json_path = f'{cfg.OUTPUTS_PATH}/sampled_tasks/{task_name}_{int(time.time())}.json'
+        og.sim.save(json_paths=[json_path])
+        return json_path
 
 
     def load_scene(self, scene_name):
@@ -196,15 +197,15 @@ class Simulator:
 
         self.camera = list(self.robot.sensors.values())[0]
 
-    def load_from_json(self, json_path):
-        config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
-        config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
-        config["scene"]["scene_file"] = json_path
+    # def load_from_json(self, task_name, json_path):
+    #     config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
+    #     config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
+    #     config["scene"]["scene_file"] = json_path
 
-        self.load_from_config(config)
+    #     self.load_from_config(config)
 
-    def load_from_json_task(self, json_path, task_name):
-        pass
+    # def load_from_json_task(self, json_path, task_name):
+    #     pass
         # config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
         # config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
         # config["task"] = {
@@ -216,7 +217,7 @@ class Simulator:
         # }
 
 
-    def load_behavior_task_by_name(self, task_name):
+    def load_behavior_task(self, task_name):
         self.current_task_name = task_name
         log(f"load_behavior_task: {task_name}")
 
@@ -536,12 +537,6 @@ class Simulator:
                 'fixed_objects': fixed_objects}
 
 
-    def sample_task(self,task_name):
-        self.load_my_task(task_name)
-        os.makedirs(f'{cfg.OUTPUTS_PATH}/sampled_tasks',exist_ok=True)
-        og.sim.save(json_paths=[f'{cfg.OUTPUTS_PATH}/sampled_tasks/{task_name}_{int(time.time())}.json'])
-        # __loader__
-        # save
 
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)

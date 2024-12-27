@@ -34,10 +34,25 @@ class SimulatorServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.LoadTask = channel.unary_unary(
-                '/simulator.SimulatorService/LoadTask',
-                request_serializer=simulator__pb2.LoadTaskRequest.SerializeToString,
+        self.LoadBehaviorTask = channel.unary_unary(
+                '/simulator.SimulatorService/LoadBehaviorTask',
+                request_serializer=simulator__pb2.LoadBehaviorTaskRequest.SerializeToString,
                 response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.LoadCustomTask = channel.unary_unary(
+                '/simulator.SimulatorService/LoadCustomTask',
+                request_serializer=simulator__pb2.LoadCustomTaskRequest.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.LoadScene = channel.unary_unary(
+                '/simulator.SimulatorService/LoadScene',
+                request_serializer=simulator__pb2.LoadSceneRequest.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.SampleTask = channel.unary_unary(
+                '/simulator.SimulatorService/SampleTask',
+                request_serializer=simulator__pb2.SampleTaskRequest.SerializeToString,
+                response_deserializer=simulator__pb2.SampleTaskResponse.FromString,
                 _registered_method=True)
         self.InitActionPrimitives = channel.unary_unary(
                 '/simulator.SimulatorService/InitActionPrimitives',
@@ -134,7 +149,25 @@ class SimulatorServiceStub(object):
 class SimulatorServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def LoadTask(self, request, context):
+    def LoadBehaviorTask(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def LoadCustomTask(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def LoadScene(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SampleTask(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -251,10 +284,25 @@ class SimulatorServiceServicer(object):
 
 def add_SimulatorServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'LoadTask': grpc.unary_unary_rpc_method_handler(
-                    servicer.LoadTask,
-                    request_deserializer=simulator__pb2.LoadTaskRequest.FromString,
+            'LoadBehaviorTask': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoadBehaviorTask,
+                    request_deserializer=simulator__pb2.LoadBehaviorTaskRequest.FromString,
                     response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'LoadCustomTask': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoadCustomTask,
+                    request_deserializer=simulator__pb2.LoadCustomTaskRequest.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'LoadScene': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoadScene,
+                    request_deserializer=simulator__pb2.LoadSceneRequest.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'SampleTask': grpc.unary_unary_rpc_method_handler(
+                    servicer.SampleTask,
+                    request_deserializer=simulator__pb2.SampleTaskRequest.FromString,
+                    response_serializer=simulator__pb2.SampleTaskResponse.SerializeToString,
             ),
             'InitActionPrimitives': grpc.unary_unary_rpc_method_handler(
                     servicer.InitActionPrimitives,
@@ -358,7 +406,7 @@ class SimulatorService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def LoadTask(request,
+    def LoadBehaviorTask(request,
             target,
             options=(),
             channel_credentials=None,
@@ -371,9 +419,90 @@ class SimulatorService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/simulator.SimulatorService/LoadTask',
-            simulator__pb2.LoadTaskRequest.SerializeToString,
+            '/simulator.SimulatorService/LoadBehaviorTask',
+            simulator__pb2.LoadBehaviorTaskRequest.SerializeToString,
             simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def LoadCustomTask(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/LoadCustomTask',
+            simulator__pb2.LoadCustomTaskRequest.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def LoadScene(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/LoadScene',
+            simulator__pb2.LoadSceneRequest.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SampleTask(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/SampleTask',
+            simulator__pb2.SampleTaskRequest.SerializeToString,
+            simulator__pb2.SampleTaskResponse.FromString,
             options,
             channel_credentials,
             insecure,
