@@ -18,7 +18,7 @@ class SimulatorClient:
         self.obs = None
         while True: 
             try:
-                self.channel = grpc.insecure_channel('192.168.2.78:50052')
+                self.channel = grpc.insecure_channel('localhost:51051')
                 # self.channel = grpc.insecure_channel('localhost:50052')
                 # 设置5秒超时
                 grpc.channel_ready_future(self.channel).result(timeout=5)
@@ -179,11 +179,11 @@ def main():
     client = SimulatorClient()
     
     # 测试加载任务
-    # response = client.call(func='LoadTask', task_name='putting_shoes_on_rack')
+    response = client.call(func='LoadBehaviorTask', task_name='putting_shoes_on_rack')
     # response = client.call(func='NavigateToObject', object_name='shelf.n.01_1')
 
-    client.get_obs()
-    client.get_camera_info()
+    response = client.get_obs()
+    response = client.get_camera_info()
     pos = client.pixel_to_world(40,140)
     # # print(pos)
     pos = [0,1,1]

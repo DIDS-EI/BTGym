@@ -73,5 +73,8 @@ class MolmoModel:
 if __name__ == "__main__":
     DIR = os.path.dirname(os.path.abspath(__file__))
     molmo = MolmoModel()
-    molmo.point_qa(os.path.join(DIR, "camera_0_rgb.png"),
-                   os.path.join(DIR, "outputs", "output_with_points.jpg"))
+    response = molmo.point_qa(
+                   query='Point out the important parts for doing the task. The task is "reorient the white pen and drop it upright into the black pen holder".',
+                   image_path=os.path.join(DIR, "camera_0_rgb.png"),
+                )
+    print(response)

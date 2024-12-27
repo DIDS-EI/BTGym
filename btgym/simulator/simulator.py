@@ -60,11 +60,13 @@ class Simulator:
     Demonstrates how to use the action primitives to pick and place an object in an empty scene.
     """
 
-    def __init__(self,task_name='putting_shoes_on_rack',load_mode=None):
+    def __init__(self,task_name='putting_shoes_on_rack'):
         self.og_sim = None
         self.current_task_name = None
         self.device = th.device('cuda' if th.cuda.is_available() else 'cpu')
         
+        self.robot = None
+        self.scene = None
         # self.null_control = np.zeros(self.robot.action_space.shape)
         self.control_queue = queue.Queue()
         # # Allow user to move camera more easily
@@ -73,18 +75,7 @@ class Simulator:
         -0.1485,  1.8101,  1.6337,  0.1376, -1.3249, -0.6841,  0.0450,  0.0450])
         self.action_primitives = None
 
-        self.load_task(task_name,load_mode)
-
-        from omni.isaac.core.objects import cuboid
-
-        # Make a target to follow
-        self.target_visual = cuboid.VisualCuboid(
-            "/World/visual",
-            position=np.array([0.3, 0, 0.67]),
-            orientation=np.array([0, 1, 0, 0]),
-            color=np.array([1.0, 0, 0]),
-            size=0.2,
-        )
+        self.load_task(task_name)
 
     def idle(self):
         while True:
@@ -120,7 +111,39 @@ class Simulator:
         else:
             self.load_empty_scene()
 
-    def load_custom_task(self, task_name, scene_name=None, json_path=None,is_sample=False):
+
+    def load_behavior_task(self, task_name):
+        self.current_task_name = task_name
+        log(f"load_behavior_task: {task_name}")
+
+
+        config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
+        # config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
+        # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
+        config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
+
+        # Update it to run a grocery shopping task
+        scene_name = task_scene_map[task_name][0]
+        config["scene"]["scene_model"] = scene_name
+        log(f'scene: {scene_name}')
+        config["scene"]["load_task_relevant_only"] = True
+        # config["scene"]["not_load_object_categories"] = ["ceilings"]
+        config["task"] = {
+            "type": "BehaviorTask",
+            "activity_name": task_name,
+            "activity_definition_id": 0,
+            "activity_instance_id": 0,
+            "predefined_problem": None,
+            "online_object_sampling": False,
+        }
+        # config["robot"]["grasping_mode"] = "sticky"
+        # gm.USE_GPU_DYNAMICS = True
+        # gm.ENABLE_FLATCACHE = False
+
+        self.load_from_config(config)
+
+
+    def load_custom_task(self, task_name, scene_name=None, scene_file_name=None,is_sample=False):
         import omnigibson as og
         from bddl import config
         config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
@@ -133,7 +156,7 @@ class Simulator:
         if is_sample:
             cfgs["scene"]["scene_model"] = scene_name
         else:   
-            cfgs["scene"]["scene_file"] = json_path
+            cfgs["scene"]["scene_file"] = f'{cfg.task_folder}/{task_name}/{scene_file_name}.json'
         
         cfgs['task'] = {
                 "type": "BehaviorTask",
@@ -197,6 +220,18 @@ class Simulator:
 
         self.camera = list(self.robot.sensors.values())[0]
 
+        from omni.isaac.core.objects import cuboid
+
+        # Make a target to follow
+        self.target_visual = cuboid.VisualCuboid(
+            "/World/visual",
+            position=np.array([0.3, 0, 0.67]),
+            orientation=np.array([0, 1, 0, 0]),
+            color=np.array([1.0, 0, 0]),
+            size=0.2,
+        )
+
+
     # def load_from_json(self, task_name, json_path):
     #     config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
     #     config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
@@ -216,36 +251,6 @@ class Simulator:
         #     "online_object_sampling": True,
         # }
 
-
-    def load_behavior_task(self, task_name):
-        self.current_task_name = task_name
-        log(f"load_behavior_task: {task_name}")
-
-
-        config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
-        # config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
-        # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
-        config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
-
-        # Update it to run a grocery shopping task
-        scene_name = task_scene_map[task_name][0]
-        config["scene"]["scene_model"] = scene_name
-        log(f'scene: {scene_name}')
-        config["scene"]["load_task_relevant_only"] = True
-        # config["scene"]["not_load_object_categories"] = ["ceilings"]
-        config["task"] = {
-            "type": "BehaviorTask",
-            "activity_name": task_name,
-            "activity_definition_id": 0,
-            "activity_instance_id": 0,
-            "predefined_problem": None,
-            "online_object_sampling": False,
-        }
-        # config["robot"]["grasping_mode"] = "sticky"
-        # gm.USE_GPU_DYNAMICS = True
-        # gm.ENABLE_FLATCACHE = False
-
-        self.load_from_config(config)
 
     def reset(self):
         self.og_sim.reset()
@@ -492,7 +497,7 @@ class Simulator:
 
         return {
             'intrinsics': intrinsics,
-            'extrinsics': extrinsics,
+            'extrinsics': extrinsics
         }
 
 
@@ -509,7 +514,7 @@ class Simulator:
             'depth': depth_obs,
             'seg_semantic': seg_obs,
             'seg_info': seg_info,
-            'proprio': proprio_obs,
+            'proprio': proprio_obs
         }
 
 
@@ -540,7 +545,7 @@ class Simulator:
 
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
-    simulator = Simulator(task_name='test_task', load_mode='sample_task')
+    simulator = Simulator(task_name='test_task')
     # simulator = Simulator('Rs_int')
     # simulator = Simulator('putting_shoes_on_rack')
     # simulator.load_behavior_task_by_name('putting_shoes_on_rack')

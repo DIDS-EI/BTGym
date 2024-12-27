@@ -64,7 +64,6 @@ def main():
     response = client.call(func='PointQA',
                            query='reorient the white pen and drop it upright into the black pen holder.',
                            image_path=f'{DIR}/camera_0_rgb.png',
-                           output_path=f'{DIR}/outputs/output.jpg'
                         )
     print(response)
 

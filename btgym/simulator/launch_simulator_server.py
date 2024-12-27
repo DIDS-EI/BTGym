@@ -1,8 +1,8 @@
 import grpc
 from concurrent import futures
 import multiprocessing as mp
-from queue import Empty
 from typing import Any, Dict, Type
+from multiprocessing import Pipe
 
 import btgym.simulator.simulator_pb2 as simulator_pb2
 import btgym.simulator.simulator_pb2_grpc as simulator_pb2_grpc
@@ -26,19 +26,19 @@ class RPCMethod:
         def servicer_method(servicer, request, context):
             try:
                 servicer._track_connection(context)
-                servicer.command_queue.put((method_name, request))
-                result = servicer.result_queue.get(timeout=10)
+                servicer.pipe_conn.send((method_name, request))
+                result = servicer.pipe_conn.recv()
                 return self.response_type(**result) if result else self.response_type()
-            except (Empty, Exception):
+            except Exception as e:
+                print(f"Error in RPC method {method_name}: {str(e)}")
                 return self.response_type()
 
         RPCMethod.registry[method_name]['servicer_method'] = servicer_method
         return func
 
 class SimulatorServicer(simulator_pb2_grpc.SimulatorServiceServicer):
-    def __init__(self, command_queue: mp.Queue, result_queue: mp.Queue):
-        self.command_queue = command_queue
-        self.result_queue = result_queue
+    def __init__(self, pipe_conn):
+        self.pipe_conn = pipe_conn
         self._active_connections = set()
         
     def _track_connection(self, context):
@@ -49,7 +49,7 @@ class SimulatorServicer(simulator_pb2_grpc.SimulatorServiceServicer):
     
     def _handle_disconnect(self, peer):
         self._active_connections.remove(peer)
-        self.command_queue.put(('client_disconnected', peer))
+        self.pipe_conn.send(('client_disconnected', peer))
 
 class SimulatorCommandHandler:
     def __init__(self, simulator: Simulator):
@@ -69,10 +69,11 @@ class SimulatorCommandHandler:
     @RPCMethod(simulator_pb2.LoadBehaviorTaskRequest)
     def LoadBehaviorTask(self, request):
         self.simulator.load_behavior_task(request.task_name)
+        return None
 
     @RPCMethod(simulator_pb2.LoadCustomTaskRequest)
     def LoadCustomTask(self, request):
-        self.simulator.load_custom_task(request.task_name,json_path=request.json_path)
+        self.simulator.load_custom_task(request.task_name,scene_file_name=request.scene_file_name)
 
     @RPCMethod(simulator_pb2.SampleCustomTaskRequest)
     def SampleCustomTask(self, request):
@@ -159,40 +160,45 @@ class SimulatorCommandHandler:
 for method_name, method_info in RPCMethod.registry.items():
     setattr(SimulatorServicer, method_name, method_info['servicer_method'])
 
-def main_process_loop(command_queue: mp.Queue, result_queue: mp.Queue):
+def main_process_loop(pipe_conn):
     simulator = Simulator()
     handler = SimulatorCommandHandler(simulator)
     
     while True:
         try:
-            if command_queue.empty():
+            if pipe_conn.poll():  # 检查是否有新消息
+                command, request = pipe_conn.recv()
+                if command == 'client_disconnected':
+                    print(f"客户端断开连接: {request}")
+                    continue
+                    
+                result = handler.handle_command(command, request)
+                pipe_conn.send(result)
+            else:
                 simulator.idle_step()
-                continue
-                
-            command, request = command_queue.get()
-            if command == 'client_disconnected':
-                print(f"客户端断开连接: {request}")
-                continue
-                
-            result = handler.handle_command(command, request)
-            result_queue.put(result)
         except Exception as e:
-            print(f"Error handling command {command}: {str(e)}")
+            print(f"Error in main process loop: {str(e)}")
 
 def serve():
-    command_queue = mp.Queue()
-    result_queue = mp.Queue()
+    parent_conn, child_conn = Pipe()
     
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    servicer = SimulatorServicer(command_queue, result_queue)
+    servicer = SimulatorServicer(parent_conn)
     simulator_pb2_grpc.add_SimulatorServiceServicer_to_server(servicer, server)
-    server.add_insecure_port('[::]:50052')
+    server.add_insecure_port('[::]:51051')
     server.start()
     
     try:
-        main_process_loop(command_queue, result_queue)
+        process = mp.Process(target=main_process_loop, args=(child_conn,))
+        process.start()
+        server.wait_for_termination()
     except KeyboardInterrupt:
         server.stop(0)
+        process.terminate()
+        process.join()
+    finally:
+        parent_conn.close()
+        child_conn.close()
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')

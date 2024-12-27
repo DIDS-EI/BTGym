@@ -49,10 +49,10 @@ class SimulatorServiceStub(object):
                 request_serializer=simulator__pb2.LoadSceneRequest.SerializeToString,
                 response_deserializer=simulator__pb2.Empty.FromString,
                 _registered_method=True)
-        self.SampleTask = channel.unary_unary(
-                '/simulator.SimulatorService/SampleTask',
-                request_serializer=simulator__pb2.SampleTaskRequest.SerializeToString,
-                response_deserializer=simulator__pb2.SampleTaskResponse.FromString,
+        self.SampleCustomTask = channel.unary_unary(
+                '/simulator.SimulatorService/SampleCustomTask',
+                request_serializer=simulator__pb2.SampleCustomTaskRequest.SerializeToString,
+                response_deserializer=simulator__pb2.SampleCustomTaskResponse.FromString,
                 _registered_method=True)
         self.InitActionPrimitives = channel.unary_unary(
                 '/simulator.SimulatorService/InitActionPrimitives',
@@ -167,7 +167,7 @@ class SimulatorServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SampleTask(self, request, context):
+    def SampleCustomTask(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -299,10 +299,10 @@ def add_SimulatorServiceServicer_to_server(servicer, server):
                     request_deserializer=simulator__pb2.LoadSceneRequest.FromString,
                     response_serializer=simulator__pb2.Empty.SerializeToString,
             ),
-            'SampleTask': grpc.unary_unary_rpc_method_handler(
-                    servicer.SampleTask,
-                    request_deserializer=simulator__pb2.SampleTaskRequest.FromString,
-                    response_serializer=simulator__pb2.SampleTaskResponse.SerializeToString,
+            'SampleCustomTask': grpc.unary_unary_rpc_method_handler(
+                    servicer.SampleCustomTask,
+                    request_deserializer=simulator__pb2.SampleCustomTaskRequest.FromString,
+                    response_serializer=simulator__pb2.SampleCustomTaskResponse.SerializeToString,
             ),
             'InitActionPrimitives': grpc.unary_unary_rpc_method_handler(
                     servicer.InitActionPrimitives,
@@ -487,7 +487,7 @@ class SimulatorService(object):
             _registered_method=True)
 
     @staticmethod
-    def SampleTask(request,
+    def SampleCustomTask(request,
             target,
             options=(),
             channel_credentials=None,
@@ -500,9 +500,9 @@ class SimulatorService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/simulator.SimulatorService/SampleTask',
-            simulator__pb2.SampleTaskRequest.SerializeToString,
-            simulator__pb2.SampleTaskResponse.FromString,
+            '/simulator.SimulatorService/SampleCustomTask',
+            simulator__pb2.SampleCustomTaskRequest.SerializeToString,
+            simulator__pb2.SampleCustomTaskResponse.FromString,
             options,
             channel_credentials,
             insecure,

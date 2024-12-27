@@ -22,5 +22,14 @@ class cfg:
 
     llm_embedding_model = "text-embedding-3-small"
 
+
+    task_folder = f'{ASSETS_PATH}/my_tasks'
+    task_json_folder = f'{ASSETS_PATH}/my_tasks'
+    task_name = 'test_task'
+    scene_name = 'Rs_int'
+    scene_file_name = 'scene_file_0'
+
+
+
 os.makedirs(cfg.TESTS_PATH, exist_ok=True)
 os.makedirs(cfg.OUTPUTS_PATH, exist_ok=True)

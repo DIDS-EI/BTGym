@@ -179,7 +179,7 @@ def main():
     client = SimulatorClient()
     
     # 测试加载任务
-    # response = client.call(func='LoadTask', task_name='putting_shoes_on_rack')
+    response = client.call(func='LoadTask', task_name='putting_shoes_on_rack')
     # response = client.call(func='NavigateToObject', object_name='shelf.n.01_1')
 
     client.get_obs()
