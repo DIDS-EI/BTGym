@@ -66,32 +66,31 @@ class SimulatorCommandHandler:
             print(f"Error handling command {command}: {str(e)}")
             return {}
 
-    @RPCMethod(simulator_pb2.LoadBehaviorTaskRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def LoadBehaviorTask(self, request):
         self.simulator.load_behavior_task(request.task_name)
         return None
 
-    @RPCMethod(simulator_pb2.LoadCustomTaskRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def LoadCustomTask(self, request):
         self.simulator.load_custom_task(request.task_name,scene_file_name=request.scene_file_name)
         return None
 
-    @RPCMethod(simulator_pb2.SampleCustomTaskRequest)
+    @RPCMethod(simulator_pb2.SampleCustomTaskResponse)
     def SampleCustomTask(self, request):
         json_path = self.simulator.sample_custom_task(request.task_name,scene_name=request.scene_name)
         return {'json_path': json_path}
 
-    @RPCMethod(simulator_pb2.LoadSceneRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def LoadScene(self, request):
         self.simulator.load_scene(request.scene_name)
         return None
 
 
-    @RPCMethod(simulator_pb2.NavigateToObjectRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def NavigateToObject(self, request):
         self.simulator.navigate_to_object(request.object_name)
         return None
-
 
 
     @RPCMethod(simulator_pb2.Empty)

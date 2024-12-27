@@ -156,6 +156,9 @@ class Simulator:
         else:   
             cfgs["scene"]["scene_file"] = f'{cfg.task_folder}/{task_name}/{scene_file_name}.json'
         
+        if not is_sample:
+            cfgs["scene"]["load_task_relevant_only"] = True
+
         cfgs['task'] = {
                 "type": "BehaviorTask",
                 "activity_name": task_name,
@@ -173,6 +176,9 @@ class Simulator:
             return ''
         os.makedirs(f'{cfg.OUTPUTS_PATH}/sampled_tasks',exist_ok=True)
         json_path = f'{cfg.OUTPUTS_PATH}/sampled_tasks/{task_name}_{int(time.time())}.json'
+
+        self.og_sim.task.write_task_metadata()
+        # og.sim.write_metadata('scene_file_name',scene_name)
         og.sim.save(json_paths=[json_path])
         return json_path
 
@@ -239,7 +245,7 @@ class Simulator:
             position=np.array([0.3, 0, 0.67]),
             orientation=np.array([0, 1, 0, 0]),
             color=np.array([1.0, 0, 0]),
-            size=0.2,
+            size=0.01,
         )
 
         for i in range(10):
@@ -567,9 +573,13 @@ class Simulator:
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
     simulator = Simulator(task_name=None)
-    simulator.load_behavior_task('putting_shoes_on_rack')
 
-    print(simulator.get_object_pos('shoe_1'))
+    simulator.load_custom_task('test_task',scene_file_name='scene_file_0')
+
+    
+    # simulator.load_behavior_task('putting_shoes_on_rack')
+
+    # print(simulator.get_object_pos('shoe_1'))
 
     # simulator.get_obs()
     # simulator.get_camera_info()

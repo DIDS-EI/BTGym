@@ -1,12 +1,14 @@
 from btgym.dataclass.cfg import cfg
 import os
+import shutil
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 from btgym.simulator.simulator_client import SimulatorClient
 
 from btgym.molmo.molmo_client import MolmoClient
 from PIL import Image, ImageDraw
-
+import json
 """
 # 1. 在其他进程中启动simulator server
 # ```shell
@@ -45,15 +47,21 @@ bddl = generate_bddl(llm, scene_name)
 
 
 # # 4. 在仿真器中采样任务
-# import json
-# from btgym.simulator.simulator_client import SimulatorClient
+
 # simulator_client = SimulatorClient()
 
 # json_path = ''
-# while json_path is None:
+# while json_path == '':
 #     json_path = simulator_client.call(func='SampleCustomTask',
 #                                        task_name=cfg.task_name,
-#                                        scene_name=cfg.scene_name)
+#                                        scene_name=cfg.scene_name).json_path
+# print('场景json保存在：',json_path)
+
+
+# # 复制文件并重命名为scene_file_0.json
+# target_path = os.path.join(cfg.task_folder,cfg.task_name, f'{cfg.scene_file_name}.json')
+# shutil.copy2(json_path, target_path)
+# print('已复制场景文件到:', target_path)
 
 
 # 5. 在仿真器中读取任务
@@ -61,13 +69,12 @@ bddl = generate_bddl(llm, scene_name)
 
 client = SimulatorClient()
 
-response = client.call(func='LoadBehaviorTask', task_name='putting_shoes_on_rack')
-
+response = client.call(func='LoadCustomTask', task_name=cfg.task_name, scene_file_name=cfg.scene_file_name)
 
 
 # 6. 导航到物体，获取图像
 
-object_name = 'gym_shoe.n.01_1'
+object_name = 'pen.n.01_1'
 client.call(func='NavigateToObject', object_name=object_name)
 object_pos = client.call(func='GetObjectPos', object_name=object_name).pos
 print('object_pos',object_pos)
@@ -123,7 +130,7 @@ draw_points_on_image(image, points, f'{CURRENT_DIR}/camera_0_rgb_points.png')
 # 8. 图像上的点转换到世界坐标
 
 if len(points) > 0:
-    pos = client.pixel_to_world(points[0][0],points[0][1])
+    pos = client.pixel_to_world(int(points[0][0]),int(points[0][1]))
     response = client.call(func='SetTargetVisualPose', pose=[*pos, 0, 0, 0])
 else:
     print('molmo没有标出任何点！')
