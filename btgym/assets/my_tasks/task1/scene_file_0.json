@@ -4496,9 +4496,9 @@
                     "model": "agveuv",
                     "prim_type": 0,
                     "scale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.50,
+                        0.50,
+                        0.50
                     ],
                     "in_rooms": [
                         "living_room_0"
