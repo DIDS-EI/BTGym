@@ -19,6 +19,7 @@ service SimulatorService {
   rpc GetRelativeEEFPose(Empty) returns (RelativeEEFPoseResponse) {}
   rpc GetTaskObjects(Empty) returns (TaskObjectsResponse) {}
   rpc GraspObject(GraspObjectRequest) returns (Empty) {}
+  rpc PlaceOntopObject(PlaceOntopObjectRequest) returns (Empty) {}
   rpc ReachPose(ReachPoseRequest) returns (Empty) {}
   rpc SaveCameraImage(SaveCameraImageRequest) returns (Empty) {}
   rpc SetTargetVisualPose(SetTargetVisualPoseRequest) returns (Empty) {}
@@ -97,6 +98,10 @@ message TaskObjectsResponse {
 }
 
 message GraspObjectRequest {
+  string object_name = 1;
+}
+
+message PlaceOntopObjectRequest {
   string object_name = 1;
 }
 

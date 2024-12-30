@@ -25,7 +25,8 @@ import json
 import torch as th
 import omnigibson.utils.transform_utils as T
 
-from btgym.core.curobo import CuRoboMotionGenerator
+# from btgym.core.curobo import CuRoboMotionGenerator
+from omnigibson.action_primitives.curobo import CuRoboMotionGenerator   
 import math
 from btgym.dataclass.cfg import cfg
 
@@ -48,7 +49,7 @@ gm.ENABLE_FLATCACHE = True
 
 def execute_controller(ctrl_gen, env):
     for action in ctrl_gen:
-        if action:
+        if action!=None:
             env.step(action)
         else:
             og.sim.step()
@@ -100,6 +101,8 @@ class Simulator:
             }
         }
         self.og_sim = og.Environment(configs=config)
+        # self.action_primitive = StarterSemanticActionPrimitives(self.og_sim,enable_head_tracking=False)
+
 
 
 
@@ -344,6 +347,11 @@ class Simulator:
         object = self.og_sim.task.object_scope[object_name]
         primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.GRASP, object)
         execute_controller(primitive_action, self.og_sim)
+        
+    def place_ontop_object(self, object_name):
+        object = self.og_sim.task.object_scope[object_name]
+        primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.PLACE_ON_TOP, object)
+        execute_controller(primitive_action, self.og_sim)
 
 
     def add_control(self,control):
@@ -378,7 +386,7 @@ class Simulator:
             # 执行轨迹
             joint_trajectory = self.curobo_mg.path_to_joint_trajectory(paths[0])
             # 打印轨迹
-            print(joint_trajectory)
+            # print(joint_trajectory)
             
             for time_i,joint_positions in enumerate(joint_trajectory):
                 # joint_positions = joint_trajectory[-1]
@@ -398,6 +406,117 @@ class Simulator:
 
                 print(f"time_i: {time_i}, full_action: {full_action}")
                 self.og_sim.step(full_action.to('cpu'))
+                
+    def reach_pose_try_best(self, pose, is_local=False,object_name=None):
+        robot = self.robot
+        pos = th.tensor(pose[:3],device=self.device)
+        euler = th.tensor(pose[3:],device=self.device)
+
+        # if euler is None:
+        #     quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认上往下抓
+        # else:
+        #     quat = T.euler2quat(euler)
+        grasp_orientations = [
+            T.euler2quat(th.tensor([0, math.pi/2, math.pi/2], dtype=th.float32)),      # 从上往下抓
+            # T.euler2quat(th.tensor([0, -math.pi/2, 0], dtype=th.float32)),     # 从下往上抓
+            # T.euler2quat(th.tensor([0, 0, 0], dtype=th.float32)),              # 从前往后抓
+            # T.euler2quat(th.tensor([0, math.pi, 0], dtype=th.float32)),        # 从后往前抓
+            # T.euler2quat(th.tensor([0, 0, math.pi/2], dtype=th.float32)),      # 从左往右抓
+            # T.euler2quat(th.tensor([0, 0, -math.pi/2], dtype=th.float32)),     # 从右往左抓
+            # T.euler2quat(th.tensor([0, 3*math.pi/4, 0], dtype=th.float32)) # 45度角抓取
+        ]
+            
+            
+        # 在pos周围生成更多的目标点
+        pos_list = []
+        for i in range(20):
+            # th.randn()生成的是服从标准正态分布(高斯分布)N(0,1)的随机数
+            # 随机生成0.01-0.03之间的扰动幅度
+            # scale = (0.01 + 0.02 * th.rand(1, device=self.device))   # rand生成[0,1]之间的随机数
+            # 或者直接指定不同方向的最大扰动范围
+            # scales = th.tensor([0.004, 0.003, 0.002], device=self.device)  # xyz方向的最大扰动范围不同
+            # 每个方向使用不同的scale
+            scales = 0.005 * th.rand(3, device=self.device)  # 生成3个不同的scale值
+            pos_list.append(pos + th.randn(3, device=self.device) * scales)  
+        # 组合尽可能多的 pos和  grasp_orientations 两两组合得到 pos_sequence和 quat_sequence
+        # pos_sequence和 quat_sequence 形状为 [len(grasp_orientations)*10,3] 和 [len(grasp_orientations)*10,4]
+        # pos_list 里的每个 pos 都尝试用所有的 grasp_orientations 得到 pos_sequence和 quat_sequence
+    
+        # 尝试每个位置和方向组合
+        for test_pos in pos_list:
+            for quat in grasp_orientations:
+                try:
+                    # 创建一个包含两个相同位姿的序列（起始和目标）
+                    pos_sequence = th.stack([test_pos, test_pos])  # [2, 3]
+                    quat_sequence = th.stack([quat, quat])  # [2, 4]
+
+                    # 如果机器人接近关节限制，则调整关节位置
+                    jp = robot.get_joint_positions(normalized=True)
+                    if not th.all(th.abs(jp)[:-2] < 0.97):
+                        new_jp = jp.clone()
+                        new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
+                        robot.set_joint_positions(new_jp, normalized=True)
+                    og.sim.step()
+
+                    # 计算轨迹
+                    successes, paths = self.curobo_mg.compute_trajectories(
+                        pos_sequence, 
+                        quat_sequence,
+                        is_local=is_local,
+                        max_attempts=3,  # 减少单次尝试次数
+                        timeout=1.0,     # 减少超时时间
+                        enable_graph_attempt=2,
+                        ik_fail_return=3,
+                        enable_finetune_trajopt=True,
+                        finetune_attempts=1
+                    )
+
+                    # 检查是否有可行解且paths不为None
+                    if successes[0] and paths and paths[0] is not None:
+                        joint_trajectory = self.curobo_mg.path_to_joint_trajectory(paths[0])
+                        if joint_trajectory is not None:
+                            
+                            # 把当前的 test_pos 在仿真环境中标出来
+                            from omni.isaac.core.objects import cuboid
+                            # 创建可视化目标点
+                            self.visual_cube = cuboid.VisualCuboid(
+                                "/World/visual",
+                                position=test_pos.cpu().numpy(),  # 转换为numpy数组
+                                orientation=np.array([0, 1, 0, 0]),
+                                color=np.array([1.0, 0, 0]),  # 红色
+                                size=0.01,  # 更小的尺寸，更容易看清
+                            )
+                            log(f"尝试位置: {test_pos}")  # 打印当前尝试的位置
+                            
+                            for time_i, joint_positions in enumerate(joint_trajectory):
+                                full_action = th.zeros(robot.n_joints, device=joint_positions.device)
+                                full_action[4:] = joint_positions
+                                
+                                # # 控制夹爪
+                                if time_i == len(joint_trajectory) - 1:
+                                    full_action[-2:] = 0.0  # 关闭夹爪
+                                # else:
+                                #     full_action[-2:] = 0.05  # 保持夹爪打开
+
+                                self.og_sim.step(full_action.to('cpu'))
+
+                            # 检测是否抓起了物体
+                            # 目前存在问题: curobo碰撞总是发生
+                            obj_in_hand = self.action_primitives._get_obj_in_hand()
+                            log(f"obj_in_hand: {obj_in_hand}")
+                            if obj_in_hand is not None and obj_in_hand.name == object_name:  # 如果有接触
+                                log(f"检测到物体接触 {obj_in_hand.name}")
+                                return True  # 成功找到并执行了轨迹
+                            else:
+                                log("未检测到物体接触")
+                                continue
+                except Exception as e:
+                    log(f"尝试位置 {test_pos} 和方向 {quat} 时发生\n错误: {str(e)}")
+                    continue
+        
+        log("所有组合都尝试失败")
+        return False  # 所有组合都尝试失败
+                
 
     def reset_hand(self):
         jp = self.get_joint_states()
@@ -569,12 +688,56 @@ class Simulator:
         pos = obj.get_position_orientation()[0]
         return {'pos': pos}
 
+    def close_gripper(self):
+        self.gripper_control(open=False)
+        
+    def open_gripper(self):
+        self.gripper_control(open=True)
+        
+    def gripper_control(self, open=True):
+        joint_positions = self.robot.get_joint_positions()
+        action = th.zeros(self.robot.n_joints)
+        action[4] = joint_positions[2]
+        action[5] = joint_positions[4]
+        action[6:-2] = joint_positions[6:-2]
+        gripper_target = 0.05 if open else 0.0
+        action[-2:] = gripper_target
+        for _ in range(20):
+            self.og_env.step(action.to('cpu'))
+        self.gripper_open = open
+
+        for _ in range(20):
+            self.og.sim.step()
+
 
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
+    set_logger_entry(__file__)
+    
     simulator = Simulator(task_name=None)
 
-    simulator.load_custom_task('test_task',scene_file_name='scene_file_0')
+    # simulator.load_custom_task('test_task',scene_file_name='scene_file_0')
+    from btgym.dataclass.cfg import cfg
+    cfg.task_name = "task1"
+    cfg.scene_file_name='scene_file_0'
+    simulator.load_custom_task(task_name=cfg.task_name, scene_file_name=cfg.scene_file_name)
+    
+    
+    object_name = 'apple.n.01_1'
+    simulator.navigate_to_object(object_name=object_name)
+    
+    
+    
+    grasp_pos = [ 0.7103, -3.6875,  0.8163, 0,0,0]
+    simulator.reach_pose_try_best(grasp_pos,object_name=object_name)
+    
+    
+    # simulator.grasp_object(object_name=object_name)
+    # object_name = 'coffee_table.n.01_1'
+    # simulator.navigate_to_object(object_name=object_name)
+    # simulator.place_ontop_object(object_name=object_name)
+    
+    
 
     
     # simulator.load_behavior_task('putting_shoes_on_rack')

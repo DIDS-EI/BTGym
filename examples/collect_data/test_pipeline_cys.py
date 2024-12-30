@@ -47,18 +47,18 @@ bddl = generate_bddl(llm, scene_name)
 
 
 # # 4. 在仿真器中采样任务
-
 # simulator_client = SimulatorClient()
-cfg.scene_file_name='scene_file_0'
-json_path = ''
-while json_path == '':
-    json_path = simulator_client.call(func='SampleCustomTask',
-                                       task_name=cfg.task_name,
-                                       scene_name=cfg.scene_name).json_path
-print('场景json保存在：',json_path)
+# cfg.task_name = "task2"
+# cfg.scene_file_name='scene_file_0'
+# json_path = ''
+# while json_path == '':
+#     json_path = simulator_client.call(func='SampleCustomTask',
+#                                        task_name=cfg.task_name,
+#                                        scene_name=cfg.scene_name).json_path
+# print('场景json保存在：',json_path)
 
 
-# # 复制文件并重命名为scene_file_0.json
+# # # 复制文件并重命名为scene_file_0.json
 # target_path = os.path.join(cfg.task_folder,cfg.task_name, f'{cfg.scene_file_name}.json')
 # shutil.copy2(json_path, target_path)
 # print('已复制场景文件到:', target_path)
@@ -68,7 +68,9 @@ print('场景json保存在：',json_path)
 
 # 5. 在仿真器中读取任务
 
-
+# cfg.scene_file_name='test_task_1735305183'
+cfg.task_name = "task2"
+cfg.scene_file_name='scene_file_0'
 client = SimulatorClient()
 
 # load task
@@ -139,6 +141,21 @@ if len(points) > 0:
 else:
     print('molmo没有标出任何点！')
     # response = client.call(func='SetCameraLookatPos', pos=pos)
+
+
+
+# 9. 执行任务
+# 9.1 抓取物体
+
+# response = client.call(func='GraspObject', object_name=object_name)
+
+
+response = client.call(func='ReachPose', pose=[*pos, 0, 0, 0])
+
+
+
+
+
 
 
 
