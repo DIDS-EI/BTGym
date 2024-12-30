@@ -339,6 +339,7 @@ class Simulator:
 
     def navigate_to_object(self, object_name):
         # object = self.scene.object_registry("name", object_name)
+        self.reset_hand()
         object = self.og_sim.task.object_scope[object_name]
         primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.NAVIGATE_TO, object)
         execute_controller(primitive_action, self.og_sim)
