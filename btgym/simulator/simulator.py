@@ -510,6 +510,7 @@ class Simulator:
 
                             self.close_gripper()
 
+                            object_name = self.og_sim.task.load_task_metadata()['inst_to_name'][object_name]
                             # 检测是否抓起了物体
                             # 目前存在问题: curobo碰撞总是发生
                             obj_in_hand = self.action_primitives._get_obj_in_hand()
