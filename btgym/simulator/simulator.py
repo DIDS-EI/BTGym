@@ -733,7 +733,11 @@ if __name__ == "__main__":
     
     
     
-    grasp_pos = [ 0.7103, -3.6875,  0.8163, 0,0,0]
+    # grasp_pos = [ 0.7103, -3.6875,  0.8163, 0,0,0]
+    # 获取物体中心点
+    grasp_pos = simulator.get_object_pos(object_name)
+    # grasp_pos转为list
+    grasp_pos = grasp_pos['pos'].tolist()
     simulator.reach_pose_try_best(grasp_pos,object_name=object_name)
     
     
