@@ -345,7 +345,6 @@ class Simulator:
         primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.NAVIGATE_TO, object)
         execute_controller(primitive_action, self.og_sim)
         self.reset_hand()
-        self.idle_step(10)
         
 
 
@@ -547,6 +546,7 @@ class Simulator:
                 jp[-2],
                 jp[-1],  # gripper
             ])
+        self.idle_step(10)
         
     def save_camera_image(self, output_path):
         """
