@@ -238,6 +238,7 @@ class Simulator:
         self.curobo_mg = CuRoboMotionGenerator(self.robot,
             robot_cfg_path=f"{ROOT_PATH}/assets/fetch_description_curobo.yaml",
             debug=False)
+        self.kinematics_config = self.curobo_mg.mg.robot_cfg.kinematics.kinematics_config
 
         log("load task: success!")
 
@@ -441,7 +442,7 @@ class Simulator:
             # 或者直接指定不同方向的最大扰动范围
             # scales = th.tensor([0.004, 0.003, 0.002], device=self.device)  # xyz方向的最大扰动范围不同
             # 每个方向使用不同的scale
-            scales = 0.005 * th.rand(3, device=self.device)  # 生成3个不同的scale值
+            scales = 0. * th.rand(3, device=self.device)  # 生成3个不同的scale值
             pos_list.append(pos + th.randn(3, device=self.device) * scales)  
         # 组合尽可能多的 pos和  grasp_orientations 两两组合得到 pos_sequence和 quat_sequence
         # pos_sequence和 quat_sequence 形状为 [len(grasp_orientations)*10,3] 和 [len(grasp_orientations)*10,4]
@@ -451,6 +452,8 @@ class Simulator:
         for test_pos in pos_list:
             for quat in grasp_orientations:
                 try:
+                    self.open_gripper()
+
                     # 创建一个包含两个相同位姿的序列（起始和目标）
                     pos_sequence = th.stack([test_pos, test_pos])  # [2, 3]
                     quat_sequence = th.stack([quat, quat])  # [2, 4]
@@ -500,10 +503,12 @@ class Simulator:
                                 # # 控制夹爪
                                 if time_i == len(joint_trajectory) - 1:
                                     full_action[-2:] = 0.0  # 关闭夹爪
-                                # else:
-                                #     full_action[-2:] = 0.05  # 保持夹爪打开
+                                else:
+                                    full_action[-2:] = 0.05  # 保持夹爪打开
 
                                 self.og_sim.step(full_action.to('cpu'))
+
+                            self.close_gripper()
 
                             # 检测是否抓起了物体
                             # 目前存在问题: curobo碰撞总是发生
@@ -695,10 +700,12 @@ class Simulator:
 
     def close_gripper(self):
         self.gripper_control(open=False)
-        
+        self.kinematics_config.lock_jointstate.position = th.tensor([0., 0.],device=self.kinematics_config.lock_jointstate.position.device)
+
     def open_gripper(self):
         self.gripper_control(open=True)
-        
+        self.kinematics_config.lock_jointstate.position = th.tensor([0.05, 0.05],device=self.kinematics_config.lock_jointstate.position.device)
+
     def gripper_control(self, open=True):
         joint_positions = self.robot.get_joint_positions()
         action = th.zeros(self.robot.n_joints)
@@ -708,11 +715,10 @@ class Simulator:
         gripper_target = 0.05 if open else 0.0
         action[-2:] = gripper_target
         for _ in range(20):
-            self.og_env.step(action.to('cpu'))
+            self.og_sim.step(action.to('cpu'))
         self.gripper_open = open
 
-        for _ in range(20):
-            self.og.sim.step()
+        self.idle_step(20)
 
 
 if __name__ == "__main__":
@@ -723,12 +729,12 @@ if __name__ == "__main__":
 
     # simulator.load_custom_task('test_task',scene_file_name='scene_file_0')
     from btgym.dataclass.cfg import cfg
-    cfg.task_name = "task2"
+    cfg.task_name = "task1"
     cfg.scene_file_name='scene_file_0'
     simulator.load_custom_task(task_name=cfg.task_name, scene_file_name=cfg.scene_file_name)
     
     
-    object_name = 'table_knife.n.01_1'
+    object_name = 'apple.n.01_1'
     simulator.navigate_to_object(object_name=object_name)
     
     
