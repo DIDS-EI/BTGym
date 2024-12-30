@@ -723,12 +723,12 @@ if __name__ == "__main__":
 
     # simulator.load_custom_task('test_task',scene_file_name='scene_file_0')
     from btgym.dataclass.cfg import cfg
-    cfg.task_name = "task1"
+    cfg.task_name = "task2"
     cfg.scene_file_name='scene_file_0'
     simulator.load_custom_task(task_name=cfg.task_name, scene_file_name=cfg.scene_file_name)
     
     
-    object_name = 'apple.n.01_1'
+    object_name = 'table_knife.n.01_1'
     simulator.navigate_to_object(object_name=object_name)
     
     
