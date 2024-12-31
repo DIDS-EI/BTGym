@@ -36,7 +36,7 @@ def get_grasp_poses_for_object_sticky(target_obj):
         visual=False
     )
 
-    grasp_center_pos = bbox_center_in_world + th.tensor([0, 0, th.max(bbox_extent_in_base_frame) + 0.05])
+    grasp_center_pos = bbox_center_in_world
     towards_object_in_world_frame = bbox_center_in_world - grasp_center_pos
     towards_object_in_world_frame /= th.norm(towards_object_in_world_frame)
 
@@ -125,10 +125,10 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
 
         # Allow grasping from suboptimal extents if we've tried enough times.
         grasp_poses = get_grasp_poses_for_object_sticky(obj)
-        grasp_pose, object_direction = random.choice(grasp_poses)
+        grasp_pose, object_direction = grasp_poses[0]
 
         # Prepare data for the approach later.
-        approach_pos = grasp_pose[0] + object_direction * m.GRASP_APPROACH_DISTANCE
+        approach_pos = grasp_pose[0]
         approach_pose = (approach_pos, grasp_pose[1])
 
         pose = self._sample_pose_near_object(obj, pose_on_obj=approach_pose, **kwargs)
@@ -144,8 +144,8 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
         # self.simulator.set_camera_lookat(obj_pos)
 
         self.simulator.set_camera_lookat_robot()
-
-        yield self._empty_action()
+        # self.simulator.idle_step(1)
+        self.simulator.set_camera_lookat_pos(approach_pos)
 
 
 

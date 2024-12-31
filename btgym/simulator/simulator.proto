@@ -27,6 +27,9 @@ service SimulatorService {
   rpc GetCameraInfo(Empty) returns (GetCameraInfoResponse) {}
   rpc SetCameraLookatPos(SetCameraLookatPosRequest) returns (Empty) {}
   rpc GetObjectPos(GetObjectPosRequest) returns (GetObjectPosResponse) {}
+  rpc GraspObjectByPos(GraspObjectByPosRequest) returns (GraspObjectByPosResponse) {}
+  rpc Close(Empty) returns (Empty) {}
+  rpc PoseToLocal(PoseToLocalRequest) returns (PoseToLocalResponse) {}
 }
 
 message Empty {}
@@ -144,3 +147,19 @@ message GetObjectPosResponse {
   repeated float pos = 1;
 }
 
+message GraspObjectByPosRequest {
+  repeated float pos = 1;
+  string object_name = 2;
+}
+
+message GraspObjectByPosResponse {
+  bool success = 1;
+}
+
+message PoseToLocalRequest {
+  repeated float pose = 1;
+}
+
+message PoseToLocalResponse {
+  repeated float pose = 1;
+}

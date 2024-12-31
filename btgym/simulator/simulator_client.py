@@ -19,6 +19,7 @@ class SimulatorClient:
         
         self.camera_info = None
         self.obs = None
+        self.eef_pose = None
         while True: 
             try:
                 self.channel = grpc.insecure_channel('localhost:51051')
@@ -105,7 +106,7 @@ class SimulatorClient:
         raw_obs= self.call(func='GetObs')
 
         rgb = np.frombuffer(raw_obs.rgb, dtype=np.uint8)
-        rgb = rgb.reshape((480, 480, 4))
+        rgb = rgb.reshape((480, 480, 3))
 
         depth = np.frombuffer(raw_obs.depth, dtype=np.float32)
         depth = depth.reshape((480, 480))

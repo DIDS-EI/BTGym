@@ -8,13 +8,13 @@ import numpy as np
 import yaml
 
 import omnigibson as og
+from omnigibson.simulator import _launch_app
 from omnigibson.action_primitives.starter_semantic_action_primitives import (
-    StarterSemanticActionPrimitives,
     StarterSemanticActionPrimitiveSet,
 )
 
 from btgym.core.action_starter import action_starter_map as action_map
-from btgym.core.action_starter import ActionPrimitives
+from btgym.core.action_starter import ActionPrimitives, get_grasp_poses_for_object_sticky
 
 
 from omnigibson.macros import gm
@@ -29,7 +29,7 @@ import omnigibson.utils.transform_utils as T
 from omnigibson.action_primitives.curobo import CuRoboMotionGenerator   
 import math
 from btgym.dataclass.cfg import cfg
-
+from btgym.dataclass.state import state
 import os
 import btgym.utils.og_utils as og_utils
 from bddl.object_taxonomy import ObjectTaxonomy
@@ -48,11 +48,14 @@ gm.USE_GPU_DYNAMICS = False
 gm.ENABLE_FLATCACHE = True
 
 def execute_controller(ctrl_gen, env):
-    for action in ctrl_gen:
-        if action!=None:
-            env.step(action)
+    try:
+        for action in ctrl_gen:
+            if action!=None:
+                env.step(action)
         else:
             og.sim.step()
+    except Exception as e:
+        log(f"执行控制器时发生错误: {str(e)}")
 
 task_scene_map = json.load(open(f'{ROOT_PATH}/assets/task_to_scenes.json', 'r'))
 
@@ -61,7 +64,7 @@ class Simulator:
     Demonstrates how to use the action primitives to pick and place an object in an empty scene.
     """
 
-    def __init__(self,task_name=None):
+    def __init__(self):
         self.og_sim = None
         self.current_task_name = None
         self.device = th.device('cuda' if th.cuda.is_available() else 'cpu')
@@ -72,8 +75,24 @@ class Simulator:
         self.curobo_mg = None
         self.camera = None
         self.target_visual = None
-        
-        self.load_task(task_name)
+        self.reload_count = 0
+        self.reload_count_max = 1
+        self.batch_size = 32
+
+        # self.action = []
+        self.default_move_action = th.tensor([0,0])
+        self.default_camera_action = th.tensor([0,0])
+        self.default_trunk_action = th.tensor([1])
+        self.default_arm_action = th.tensor([-1.5,-0.8,1.7,2.0,-1.0,1.37,1.91])
+        self.default_gripper_action = th.tensor([0,0])
+        self.move_action = self.default_move_action.clone()
+        self.camera_action = self.default_camera_action.clone()
+        self.trunk_action = self.default_trunk_action.clone()
+        self.arm_action = self.default_arm_action.clone()
+        self.gripper_action = self.default_gripper_action.clone()
+        if not og.app:
+            og.app = _launch_app()
+        # self.load_task(task_name)
 
 
     def idle(self):
@@ -85,23 +104,27 @@ class Simulator:
             if og.sim:
                 og.sim.step()
 
+    # def step(self):
+    #     if self.og_sim is not None:
+    #         action = th.cat([self.move_action,self.camera_action,self.trunk_action,self.arm_action,self.gripper_action])
+    #         self.og_sim.step(action)
+            # self.og_sim.step(self.action)
 
-
-    def load_empty_scene(self):
-        config = {
-            "env": {
-            },
-            "scene": {
-                "type": "Scene",
-                "trav_map_with_objects": False,  # 不生成导航地图
-            },
-            "robots": [],
-            "objects": [],
-            "task": {
-                "type": "DummyTask"
-            }
-        }
-        self.og_sim = og.Environment(configs=config)
+    # def load_empty_scene(self):
+    #     config = {
+    #         "env": {
+    #         },
+    #         "scene": {
+    #             "type": "Scene",
+    #             "trav_map_with_objects": False,  # 不生成导航地图
+    #         },
+    #         "robots": [],
+    #         "objects": [],
+    #         "task": {
+    #             "type": "DummyTask"
+    #         }
+    #     }
+    #     self.og_sim = og.Environment(configs=config)
         # self.action_primitive = StarterSemanticActionPrimitives(self.og_sim,enable_head_tracking=False)
 
 
@@ -110,8 +133,6 @@ class Simulator:
     def load_task(self, task_name=None):
         if task_name in VALID_TASK_LIST:
             self.load_behavior_task(task_name)
-        else:
-            self.load_empty_scene()
 
 
     def load_behavior_task(self, task_name):
@@ -146,11 +167,11 @@ class Simulator:
 
 
     def load_custom_task(self, task_name, scene_name=None, scene_file_name=None,is_sample=False):
-        import omnigibson as og
         from bddl import config
         config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
         from omnigibson.utils import bddl_utils 
-        bddl_utils.BEHAVIOR_ACTIVITIES.append(task_name)
+        if task_name not in bddl_utils.BEHAVIOR_ACTIVITIES:
+            bddl_utils.BEHAVIOR_ACTIVITIES.append(task_name)
 
         config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
         cfgs = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
@@ -196,26 +217,20 @@ class Simulator:
         self.load_from_config(config)
 
     def load_from_config(self, config):
-        # Load the environment
-        if self.og_sim is None: 
-            self.og_sim = og.Environment(configs=config)
-        else:
-            og.sim.stop()
+        if self.og_sim is not None: 
             og.clear()
-            
-            # 确保在重新加载前清理所有相机相关资源
-            if self.action_primitives is not None:
-                del self.action_primitives
-            if self.curobo_mg is not None:
-                del self.curobo_mg
-            if self.target_visual is not None:
-                del self.target_visual
-            if self.camera is not None:
-                del self.camera
-            
-            self.og_sim.reload(configs=config)
-            og.sim.play()
-            self.og_sim.post_play_load()
+            del self.og_sim
+            del self.target_visual
+            del self.action_primitives
+            del self.curobo_mg
+            # self.reload_count += 1
+            # if self.reload_count >= self.reload_count_max:
+            #     try:
+                    
+            #     except:
+            #         pass
+
+        self.og_sim = og.Environment(configs=config)
 
         # 等待几帧确保相机初始化完成
         for _ in range(10):
@@ -237,21 +252,22 @@ class Simulator:
 
         self.curobo_mg = CuRoboMotionGenerator(self.robot,
             robot_cfg_path=f"{ROOT_PATH}/assets/fetch_description_curobo.yaml",
-            debug=False)
+            debug=False,
+            batch_size=self.batch_size)
         self.kinematics_config = self.curobo_mg.mg.robot_cfg.kinematics.kinematics_config
 
         log("load task: success!")
 
-        from omni.isaac.core.objects import cuboid
+        # from omni.isaac.core.objects import cuboid
 
-        # Make a target to follow
-        self.target_visual = cuboid.VisualCuboid(
-            "/World/visual",
-            position=np.array([0.3, 0, 0.67]),
-            orientation=np.array([0, 1, 0, 0]),
-            color=np.array([1.0, 0, 0]),
-            size=0.01,
-        )
+        # # Make a target to follow
+        # self.target_visual = cuboid.VisualCuboid(
+        #     "/World/visual",
+        #     position=np.array([0.3, 0, 0.67]),
+        #     orientation=np.array([0, 1, 0, 0]),
+        #     color=np.array([1.0, 0, 0]),
+        #     size=0.05,
+        # )
 
         for i in range(10):
             self.idle_step()
@@ -280,18 +296,18 @@ class Simulator:
     def reset(self):
         self.og_sim.reset()
 
-    def step(self):
-        if self.control_queue.empty():
-            pass
-            # self.og_sim.step(self.action_primitives._empty_action())
-            # log('robot idle !!!')
-        else:
-            action = self.control_queue.get()
-            if action is not None:
-                self.og_sim.step(action)
-            else:
-                self.og_sim.step(self.action_primitives._empty_action())
-                # log('robot step !!!')
+    # def step(self):
+    #     if self.control_queue.empty():
+    #         pass
+    #         # self.og_sim.step(self.action_primitives._empty_action())
+    #         # log('robot idle !!!')
+    #     else:
+    #         action = self.control_queue.get()
+    #         if action is not None:
+    #             self.og_sim.step(action)
+    #         else:
+    #             self.og_sim.step(self.action_primitives._empty_action())
+    #             # log('robot step !!!')
 
     def set_viewer_camera_pose(self, position, orientation):
         og.sim.viewer_camera.set_position_orientation(position=position, orientation=orientation)
@@ -341,11 +357,15 @@ class Simulator:
 
     def navigate_to_object(self, object_name):
         # object = self.scene.object_registry("name", object_name)
-        object = self.og_sim.task.object_scope[object_name]
-        primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.NAVIGATE_TO, object)
-        execute_controller(primitive_action, self.og_sim)
         self.reset_hand()
-        
+        obj = self.og_sim.task.object_scope[object_name]
+        self.action_primitives._navigate_to_obj(obj)
+        self.idle_step(10)
+
+        # primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.NAVIGATE_TO, object)
+        # execute_controller(primitive_action, self.og_sim)
+
+
 
 
     def grasp_object(self, object_name):
@@ -363,19 +383,106 @@ class Simulator:
         self.control_queue.put(control)
 
 
-    def reach_pose(self, pose, is_local=False):
-        robot = self.robot
-        pos = th.tensor(pose[:3],device=self.device)
-        euler = th.tensor(pose[3:],device=self.device)
+    def pose_to_local(self,pose):
+        target_pos = th.tensor(pose[:3],device=self.device)
+        target_euler = th.tensor(pose[3:],device=self.device)
+        target_quat = T.euler2quat(target_euler)
 
-        if euler is None:
-            quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认上往下抓
-        else:
-            quat = T.euler2quat(euler)
+        robot_pos, robot_quat = self.robot.get_position_orientation()
+        target_pose = th.zeros((4, 4))
+        target_pose[3, 3] = 1.0
+        target_pose[:3, :3] = T.quat2mat(target_quat)
+        target_pose[:3, 3] = target_pos
+        inv_robot_pose = th.eye(4)
+        inv_robot_ori = T.quat2mat(robot_quat).T
+        inv_robot_pose[:3, :3] = inv_robot_ori
+        inv_robot_pose[:3, 3] = -inv_robot_ori @ robot_pos
+        target_pose = inv_robot_pose @ target_pose
+        target_pos = target_pose[:3, 3]
+        target_quat = T.mat2quat(target_pose[:3, :3])
+        target_euler = T.quat2euler(target_quat)
+        target_pose = th.cat([target_pos, target_euler], dim=0).cpu().numpy()
+        return target_pose
+
+    # def reach_pose(self, pose, is_local=False):
+    #     robot = self.robot
+    #     pos = th.tensor(pose[:3],device=self.device)
+    #     euler = th.tensor(pose[3:],device=self.device)
+
+    #     if euler is None:
+    #         quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认上往下抓
+    #     else:
+    #         quat = T.euler2quat(euler)
         
-        # 将当前位置和目标位置拼接在一起
-        pos_sequence = th.stack([pos, pos])  # 形状变为 [2, 3]
-        quat_sequence = th.stack([quat, quat])  # 形状变为 [2, 4]
+    #     # 将当前位置和目标位置拼接在一起
+    #     pos_sequence = th.stack([pos, pos])  # 形状变为 [2, 3]
+    #     quat_sequence = th.stack([quat, quat])  # 形状变为 [2, 4]
+
+    #     # 如果机器人接近关节限制，则调整关节位置
+    #     jp = robot.get_joint_positions(normalized=True)
+    #     if not th.all(th.abs(jp)[:-2] < 0.97):
+    #         new_jp = jp.clone()
+    #         new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
+    #         robot.set_joint_positions(new_jp, normalized=True)
+    #     og.sim.step()
+
+    #     successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence,is_local=is_local)
+
+    #     if successes[0]:
+    #         # 执行轨迹
+    #         joint_trajectory = self.curobo_mg.path_to_joint_trajectory(paths[0])
+    #         # 打印轨迹
+    #         # print(joint_trajectory)
+            
+    #         for time_i,joint_positions in enumerate(joint_trajectory):
+    #             # joint_positions = joint_trajectory[-1]
+    #             full_action = th.zeros(robot.n_joints, device=joint_positions.device)
+
+    #             # full_action[2] = joint_positions[0]
+    #             full_action[4:] = joint_positions
+                
+    #             # robot.set_joint_positions(full_action)
+                
+    #             if time_i == len(joint_trajectory) - 1:
+    #                 full_action[-1] = 0.0
+    #                 full_action[-2] = 0.0
+    #             else:
+    #                 full_action[-1] = 0.05
+    #                 full_action[-2] = 0.05  
+
+    #             print(f"time_i: {time_i}, full_action: {full_action}")
+    #             self.og_sim.step(full_action.to('cpu'))
+    
+
+    def grasp_object_by_pose(self, pose, object_name, is_local=True):
+        robot = self.robot
+        # object_pos = th.tensor(pos,device=self.device)
+        # euler = th.tensor(pose[3:],device=self.device)
+        target_pos = th.tensor(pose[:3],device=self.device)
+        offset = th.tensor([0.0,0.0,0.02],device=self.device)
+        target_pos = target_pos + offset
+        target_euler = th.tensor(pose[3:],device=self.device)
+        target_quat = T.euler2quat(target_euler)
+        # grasp_orientations = [
+        #     T.euler2quat(th.tensor([0, math.pi/2, math.pi/2], dtype=th.float32)),      # 从上往下抓
+        #     # T.euler2quat(th.tensor([0, -math.pi/2, 0], dtype=th.float32)),     # 从下往上抓
+        #     # T.euler2quat(th.tensor([0, 0, 0], dtype=th.float32)),              # 从前往后抓
+        #     # T.euler2quat(th.tensor([0, math.pi, 0], dtype=th.float32)),        # 从后往前抓
+        #     # T.euler2quat(th.tensor([0, 0, math.pi/2], dtype=th.float32)),      # 从左往右抓
+        #     # T.euler2quat(th.tensor([0, 0, -math.pi/2], dtype=th.float32)),     # 从右往左抓
+        #     # T.euler2quat(th.tensor([0, 3*math.pi/4, 0], dtype=th.float32)) # 45度角抓取
+        # ]
+
+        # 在pos周围生成更多的目标点
+        pos_list = []
+
+        scales = th.tensor([[0.000, 0.000, 0.000]], device=self.device).expand(self.batch_size-1, -1)  # [batch_size, 3]
+        offsets = th.randn(self.batch_size-1, 3, device=self.device) * scales  # [batch_size, 3]
+        pos_tensor = target_pos.unsqueeze(0).expand(self.batch_size-1, -1) + offsets  # [batch_size, 3]
+        pos_tensor = th.cat([pos_tensor, target_pos.unsqueeze(0)], dim=0)
+        quat_tensor = target_quat.unsqueeze(0).expand(self.batch_size, -1)
+
+        self.open_gripper()
 
         # 如果机器人接近关节限制，则调整关节位置
         jp = robot.get_joint_positions(normalized=True)
@@ -383,150 +490,61 @@ class Simulator:
             new_jp = jp.clone()
             new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
             robot.set_joint_positions(new_jp, normalized=True)
-        og.sim.step()
+        self.idle_step(10)
 
-        successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence,is_local=is_local)
+        try:  
+            successes, paths = self.curobo_mg.compute_trajectories(pos_tensor, quat_tensor, is_local=is_local)
+        except Exception as e:
+            log(f'error: {str(e)}')
+            log(f"IK求解失败!")
+            return False
 
-        if successes[0]:
-            # 执行轨迹
-            joint_trajectory = self.curobo_mg.path_to_joint_trajectory(paths[0])
-            # 打印轨迹
-            # print(joint_trajectory)
-            
-            for time_i,joint_positions in enumerate(joint_trajectory):
-                # joint_positions = joint_trajectory[-1]
-                full_action = th.zeros(robot.n_joints, device=joint_positions.device)
+        # 找出所有成功的位置和路径
+        success_indices = th.where(successes)[0]
+        valid_pos_tensor = pos_tensor[success_indices]
 
-                # full_action[2] = joint_positions[0]
-                full_action[4:] = joint_positions
-                
-                # robot.set_joint_positions(full_action)
-                
-                if time_i == len(joint_trajectory) - 1:
-                    full_action[-1] = 0.0
-                    full_action[-2] = 0.0
-                else:
-                    full_action[-1] = 0.05
-                    full_action[-2] = 0.05  
+        # 得到每个pos的cost
+        dist_cost = th.norm(valid_pos_tensor - target_pos, dim=1)
+        min_cost_index = th.argmin(dist_cost)
+        success_idx = success_indices[min_cost_index]
+        success_path = paths[success_idx]
+        target_pos = valid_pos_tensor[min_cost_index]
 
-                print(f"time_i: {time_i}, full_action: {full_action}")
-                self.og_sim.step(full_action.to('cpu'))
-                
-    def reach_pose_try_best(self, pose, is_local=False,object_name=None):
-        robot = self.robot
-        pos = th.tensor(pose[:3],device=self.device)
-        euler = th.tensor(pose[3:],device=self.device)
+        # 执行轨迹
+        joint_trajectory = self.curobo_mg.path_to_joint_trajectory(success_path)
+        joint_positions = self.robot.get_joint_positions()
+        # target_jp = joint_trajectory[-1]
 
-        # if euler is None:
-        #     quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认上往下抓
-        # else:
-        #     quat = T.euler2quat(euler)
-        grasp_orientations = [
-            T.euler2quat(th.tensor([0, math.pi/2, math.pi/2], dtype=th.float32)),      # 从上往下抓
-            # T.euler2quat(th.tensor([0, -math.pi/2, 0], dtype=th.float32)),     # 从下往上抓
-            # T.euler2quat(th.tensor([0, 0, 0], dtype=th.float32)),              # 从前往后抓
-            # T.euler2quat(th.tensor([0, math.pi, 0], dtype=th.float32)),        # 从后往前抓
-            # T.euler2quat(th.tensor([0, 0, math.pi/2], dtype=th.float32)),      # 从左往右抓
-            # T.euler2quat(th.tensor([0, 0, -math.pi/2], dtype=th.float32)),     # 从右往左抓
-            # T.euler2quat(th.tensor([0, 3*math.pi/4, 0], dtype=th.float32)) # 45度角抓取
-        ]
-            
-            
-        # 在pos周围生成更多的目标点
-        pos_list = []
-        for i in range(20):
-            # th.randn()生成的是服从标准正态分布(高斯分布)N(0,1)的随机数
-            # 随机生成0.01-0.03之间的扰动幅度
-            # scale = (0.01 + 0.02 * th.rand(1, device=self.device))   # rand生成[0,1]之间的随机数
-            # 或者直接指定不同方向的最大扰动范围
-            # scales = th.tensor([0.004, 0.003, 0.002], device=self.device)  # xyz方向的最大扰动范围不同
-            # 每个方向使用不同的scale
-            scales = 0. * th.rand(3, device=self.device)  # 生成3个不同的scale值
-            pos_list.append(pos + th.randn(3, device=self.device) * scales)  
-        # 组合尽可能多的 pos和  grasp_orientations 两两组合得到 pos_sequence和 quat_sequence
-        # pos_sequence和 quat_sequence 形状为 [len(grasp_orientations)*10,3] 和 [len(grasp_orientations)*10,4]
-        # pos_list 里的每个 pos 都尝试用所有的 grasp_orientations 得到 pos_sequence和 quat_sequence
+        # joint_positions[2] = target_jp[0]
+        # joint_positions[4] = target_jp[1]
+        # joint_positions[6:] = target_jp[2:]
+        # self.set_joint_states(joint_positions)
+
+        action = th.zeros(self.robot.n_joints)
+        for time_i,jp in enumerate(joint_trajectory):
+            action[2:4] = self.camera_action
+            # action[2] = joint_positions[3]
+            # action[3] = joint_positions[5]
+            action[4:] = jp
+            self.og_sim.step(action.to('cpu'))
     
-        # 尝试每个位置和方向组合
-        for test_pos in pos_list:
-            for quat in grasp_orientations:
-                try:
-                    self.open_gripper()
 
-                    # 创建一个包含两个相同位姿的序列（起始和目标）
-                    pos_sequence = th.stack([test_pos, test_pos])  # [2, 3]
-                    quat_sequence = th.stack([quat, quat])  # [2, 4]
-
-                    # 如果机器人接近关节限制，则调整关节位置
-                    jp = robot.get_joint_positions(normalized=True)
-                    if not th.all(th.abs(jp)[:-2] < 0.97):
-                        new_jp = jp.clone()
-                        new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
-                        robot.set_joint_positions(new_jp, normalized=True)
-                    og.sim.step()
-
-                    # 计算轨迹
-                    successes, paths = self.curobo_mg.compute_trajectories(
-                        pos_sequence, 
-                        quat_sequence,
-                        is_local=is_local,
-                        max_attempts=3,  # 减少单次尝试次数
-                        timeout=1.0,     # 减少超时时间
-                        enable_graph_attempt=2,
-                        ik_fail_return=3,
-                        enable_finetune_trajopt=True,
-                        finetune_attempts=1
-                    )
-
-                    # 检查是否有可行解且paths不为None
-                    if successes[0] and paths and paths[0] is not None:
-                        joint_trajectory = self.curobo_mg.path_to_joint_trajectory(paths[0])
-                        if joint_trajectory is not None:
-                            
-                            # 把当前的 test_pos 在仿真环境中标出来
-                            from omni.isaac.core.objects import cuboid
-                            # 创建可视化目标点
-                            self.visual_cube = cuboid.VisualCuboid(
-                                "/World/visual",
-                                position=test_pos.cpu().numpy(),  # 转换为numpy数组
-                                orientation=np.array([0, 1, 0, 0]),
-                                color=np.array([1.0, 0, 0]),  # 红色
-                                size=0.01,  # 更小的尺寸，更容易看清
-                            )
-                            log(f"尝试位置: {test_pos}")  # 打印当前尝试的位置
-                            
-                            for time_i, joint_positions in enumerate(joint_trajectory):
-                                full_action = th.zeros(robot.n_joints, device=joint_positions.device)
-                                full_action[4:] = joint_positions
-                                
-                                # # 控制夹爪
-                                if time_i == len(joint_trajectory) - 1:
-                                    full_action[-2:] = 0.0  # 关闭夹爪
-                                else:
-                                    full_action[-2:] = 0.05  # 保持夹爪打开
-
-                                self.og_sim.step(full_action.to('cpu'))
-
-                            self.close_gripper()
-
-                            object_name = self.og_sim.task.load_task_metadata()['inst_to_name'][object_name]
-                            # 检测是否抓起了物体
-                            # 目前存在问题: curobo碰撞总是发生
-                            obj_in_hand = self.action_primitives._get_obj_in_hand()
-                            log(f"obj_in_hand: {obj_in_hand}")
-                            if obj_in_hand is not None and obj_in_hand.name == object_name:  # 如果有接触
-                                log(f"检测到物体接触 {obj_in_hand.name}")
-                                return True  # 成功找到并执行了轨迹
-                            else:
-                                log("未检测到物体接触")
-                                continue
-                except Exception as e:
-                    log(f"尝试位置 {test_pos} 和方向 {quat} 时发生\n错误: {str(e)}")
-                    continue
-        
-        log("所有组合都尝试失败")
-        return False  # 所有组合都尝试失败
+        log(f"尝试位置: {target_pos.tolist()}")  # 打印当前尝试的位置
                 
+        self.close_gripper()
+
+        object_name = self.og_sim.task.load_task_metadata()['inst_to_name'][object_name]
+        # 检测是否抓起了物体
+        # 目前存在问题: curobo碰撞总是发生
+        obj_in_hand = self.action_primitives._get_obj_in_hand()
+        # log(f"obj_in_hand: {obj_in_hand}")
+        if obj_in_hand is not None and obj_in_hand.name == object_name:  # 如果有接触
+            log(f"检测到物体接触 {obj_in_hand.name}")
+            return True  # 成功找到并执行了轨迹
+        else:
+            log("未检测到物体接触")
+            return False
+
 
     def reset_hand(self):
         jp = self.get_joint_states()
@@ -534,9 +552,9 @@ class Simulator:
                 0.0,
                 0.0,  # wheels
                 1.0,  # trunk
-                0.0,
+                jp[3],
                 -1.5,
-                0.0,  # head
+                jp[5],  # head
                 -0.8,
                 1.7,
                 2.0,
@@ -546,7 +564,9 @@ class Simulator:
                 jp[-2],
                 jp[-1],  # gripper
             ])
-        self.idle_step(10)
+        self.robot.set_joint_velocities(th.zeros(self.robot.n_joints))
+        self.idle_step(1)
+        # self.idle_step(20)
         
     def save_camera_image(self, output_path):
         """
@@ -564,7 +584,7 @@ class Simulator:
     def set_target_visual_pose(self, pose):
         pos = th.tensor(pose[:3],device=self.device)
         euler = th.tensor(pose[3:],device=self.device)
-        if euler is None:
+        if euler is None or len(euler) == 0:
             quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32))
         else:
             quat = T.euler2quat(euler)
@@ -602,13 +622,22 @@ class Simulator:
         joint_state = self.get_joint_states()
         joint_state[3] = target_z_angle
         joint_state[5] = target_y_angle
-        print(f"target_z_angle: {target_z_angle}, target_y_angle: {target_y_angle}")
         self.robot.set_joint_positions(joint_state)
+        self.robot.set_joint_velocities(th.zeros(self.robot.n_joints))
+        print(f"target_z_angle: {target_z_angle}, target_y_angle: {target_y_angle}")
+        self.camera_action = th.tensor([target_z_angle, target_y_angle])
 
-        for i in range(10):
-            self.idle_step()
+        # action = th.zeros(self.robot.n_joints)
+        # joint_positions = self.robot.get_joint_positions()
+        # self.camera_action = th.tensor([target_z_angle, target_y_angle])
+        # action[2:4] = self.camera_action
+        # action[4] = joint_positions[2]
+        # action[5] = joint_positions[4]
+        # action[6:] = joint_positions[6:]
+
+        # for i in range(20):
+        #     self.og_sim.step(action.to('cpu'))
         # self.set_camear_lookat_pos_ori(pos)
-
 
     #TODO 目前无法使物体在相机的正中心，有待修正
     def set_camear_lookat_pos_ori(self,pos):
@@ -654,11 +683,27 @@ class Simulator:
         }
 
 
-    def get_obs(self):
+    def get_obs_bytes(self):
         sensor_obs = list(self.robot.sensors.values())[0].get_obs()
-        rgb_obs = sensor_obs[0]['rgb'].cpu().numpy().tobytes()
+        rgb_obs = sensor_obs[0]['rgb'][:,:,:3].cpu().numpy().tobytes()
         depth_obs = sensor_obs[0]['depth_linear'].cpu().numpy().tobytes()
         seg_obs = sensor_obs[0]['seg_semantic'].cpu().numpy().tobytes()
+        seg_info = json.dumps(sensor_obs[1]['seg_semantic'])
+        proprio_obs = self.robot.get_proprioception()[0].cpu().numpy()
+
+        return {
+            'rgb': rgb_obs,
+            'depth': depth_obs,
+            'seg_semantic': seg_obs,
+            'seg_info': seg_info,
+            'proprio': proprio_obs
+        }
+
+    def get_obs(self):
+        sensor_obs = list(self.robot.sensors.values())[0].get_obs()
+        rgb_obs = sensor_obs[0]['rgb'][:,:,:3].cpu().numpy()
+        depth_obs = sensor_obs[0]['depth_linear'].cpu().numpy()
+        seg_obs = sensor_obs[0]['seg_semantic'].cpu().numpy()
         seg_info = json.dumps(sensor_obs[1]['seg_semantic'])
         proprio_obs = self.robot.get_proprioception()[0].cpu().numpy()
 
@@ -696,8 +741,16 @@ class Simulator:
 
     def get_object_pos(self,object_name):
         obj = self.og_sim.task.object_scope[object_name]
-        pos = obj.get_position_orientation()[0]
-        return {'pos': pos}
+        grasp_poses = get_grasp_poses_for_object_sticky(obj)
+        object_pos = grasp_poses[0][0][0]
+        return {'pos': object_pos}
+
+    def get_object_pos_by_pose(self,object_name):
+        obj = self.og_sim.task.object_scope[object_name]
+        pose = obj.get_position_orientation()
+        object_pos = pose[0]
+        return {'pos': object_pos}
+
 
     def close_gripper(self):
         self.gripper_control(open=False)
@@ -710,6 +763,9 @@ class Simulator:
     def gripper_control(self, open=True):
         joint_positions = self.robot.get_joint_positions()
         action = th.zeros(self.robot.n_joints)
+        action[2:4] = self.camera_action
+        # action[2] = joint_positions[3]
+        # action[3] = joint_positions[5]
         action[4] = joint_positions[2]
         action[5] = joint_positions[4]
         action[6:-2] = joint_positions[6:-2]
@@ -721,40 +777,45 @@ class Simulator:
 
         self.idle_step(20)
 
+    def close(self):
+        og.shutdown()
 
 if __name__ == "__main__":
-    # print(gm.REMOTE_STREAMING)
     set_logger_entry(__file__)
     
-    simulator = Simulator(task_name=None)
-
+    simulator = Simulator()
     # simulator.load_custom_task('test_task',scene_file_name='scene_file_0')
     from btgym.dataclass.cfg import cfg
     cfg.task_name = "task1"
     cfg.scene_file_name='scene_file_0'
+
     simulator.load_custom_task(task_name=cfg.task_name, scene_file_name=cfg.scene_file_name)
-    
-    
+
     object_name = 'apple.n.01_1'
-    simulator.navigate_to_object(object_name=object_name)
     
-    
-    
+    for i in range(10):
+        simulator.navigate_to_object(object_name=object_name)
+        grasp_pos = simulator.get_object_pos(object_name)['pos'].tolist()
+        simulator.set_target_visual_pose([*grasp_pos,0,0,0])
+        # simulator.set_camera_lookat_pos(grasp_pos)
+        state.target_local_pose = simulator.pose_to_local(grasp_pos+state.target_euler)
+        print(f"local pose: {state.target_local_pose}")
+        success = simulator.grasp_object_by_pose(state.target_local_pose,object_name=object_name)
+        if success:
+            print(f"第{i}次尝试成功")
+            break
+
+        print(f"第{i}次尝试失败")
+
     # grasp_pos = [ 0.7103, -3.6875,  0.8163, 0,0,0]
     # 获取物体中心点
-    grasp_pos = simulator.get_object_pos(object_name)
     # grasp_pos转为list
-    grasp_pos = grasp_pos['pos'].tolist()
-    simulator.reach_pose_try_best(grasp_pos,object_name=object_name)
-    
+
     
     # simulator.grasp_object(object_name=object_name)
     # object_name = 'coffee_table.n.01_1'
     # simulator.navigate_to_object(object_name=object_name)
     # simulator.place_ontop_object(object_name=object_name)
-    
-    
-
     
     # simulator.load_behavior_task('putting_shoes_on_rack')
 

@@ -17,12 +17,12 @@ class MolmoClient:
                 # 设置5秒超时
                 grpc.channel_ready_future(self.channel).result(timeout=5)
                 self.stub = molmo_pb2_grpc.MolmoServiceStub(self.channel)
-                print(f"连接仿真器成功！")
+                print(f"连接Molmo成功！")
                 break
             except grpc.FutureTimeoutError:
-                print(f"连接仿真器超时，重试第{i}次")
+                print(f"连接Molmo超时，重试第{i}次")
             except Exception as e:
-                print(f"连接仿真器错误，错误信息: {str(e)}，重试第{i}次")
+                print(f"连接Molmo错误，错误信息: {str(e)}，重试第{i}次")
             i += 1
 
     def call(self, func,**kwargs):
@@ -34,7 +34,7 @@ class MolmoClient:
             response = getattr(self.stub, func)(request)
             return response
         except Exception as e:
-            print(f"调用仿真器函数失败，错误信息: {str(e)}")
+            print(f"调用Molmo函数失败，错误信息: {str(e)}")
             return None
 
     def extract_points(self, molmo_output, image):

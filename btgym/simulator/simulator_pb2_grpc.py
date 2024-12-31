@@ -114,6 +114,11 @@ class SimulatorServiceStub(object):
                 request_serializer=simulator__pb2.GraspObjectRequest.SerializeToString,
                 response_deserializer=simulator__pb2.Empty.FromString,
                 _registered_method=True)
+        self.PlaceOntopObject = channel.unary_unary(
+                '/simulator.SimulatorService/PlaceOntopObject',
+                request_serializer=simulator__pb2.PlaceOntopObjectRequest.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
         self.ReachPose = channel.unary_unary(
                 '/simulator.SimulatorService/ReachPose',
                 request_serializer=simulator__pb2.ReachPoseRequest.SerializeToString,
@@ -148,6 +153,21 @@ class SimulatorServiceStub(object):
                 '/simulator.SimulatorService/GetObjectPos',
                 request_serializer=simulator__pb2.GetObjectPosRequest.SerializeToString,
                 response_deserializer=simulator__pb2.GetObjectPosResponse.FromString,
+                _registered_method=True)
+        self.GraspObjectByPos = channel.unary_unary(
+                '/simulator.SimulatorService/GraspObjectByPos',
+                request_serializer=simulator__pb2.GraspObjectByPosRequest.SerializeToString,
+                response_deserializer=simulator__pb2.GraspObjectByPosResponse.FromString,
+                _registered_method=True)
+        self.Close = channel.unary_unary(
+                '/simulator.SimulatorService/Close',
+                request_serializer=simulator__pb2.Empty.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.PoseToLocal = channel.unary_unary(
+                '/simulator.SimulatorService/PoseToLocal',
+                request_serializer=simulator__pb2.PoseToLocalRequest.SerializeToString,
+                response_deserializer=simulator__pb2.PoseToLocalResponse.FromString,
                 _registered_method=True)
 
 
@@ -250,6 +270,12 @@ class SimulatorServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PlaceOntopObject(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ReachPose(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -287,6 +313,24 @@ class SimulatorServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetObjectPos(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GraspObjectByPos(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Close(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PoseToLocal(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -375,6 +419,11 @@ def add_SimulatorServiceServicer_to_server(servicer, server):
                     request_deserializer=simulator__pb2.GraspObjectRequest.FromString,
                     response_serializer=simulator__pb2.Empty.SerializeToString,
             ),
+            'PlaceOntopObject': grpc.unary_unary_rpc_method_handler(
+                    servicer.PlaceOntopObject,
+                    request_deserializer=simulator__pb2.PlaceOntopObjectRequest.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
             'ReachPose': grpc.unary_unary_rpc_method_handler(
                     servicer.ReachPose,
                     request_deserializer=simulator__pb2.ReachPoseRequest.FromString,
@@ -409,6 +458,21 @@ def add_SimulatorServiceServicer_to_server(servicer, server):
                     servicer.GetObjectPos,
                     request_deserializer=simulator__pb2.GetObjectPosRequest.FromString,
                     response_serializer=simulator__pb2.GetObjectPosResponse.SerializeToString,
+            ),
+            'GraspObjectByPos': grpc.unary_unary_rpc_method_handler(
+                    servicer.GraspObjectByPos,
+                    request_deserializer=simulator__pb2.GraspObjectByPosRequest.FromString,
+                    response_serializer=simulator__pb2.GraspObjectByPosResponse.SerializeToString,
+            ),
+            'Close': grpc.unary_unary_rpc_method_handler(
+                    servicer.Close,
+                    request_deserializer=simulator__pb2.Empty.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'PoseToLocal': grpc.unary_unary_rpc_method_handler(
+                    servicer.PoseToLocal,
+                    request_deserializer=simulator__pb2.PoseToLocalRequest.FromString,
+                    response_serializer=simulator__pb2.PoseToLocalResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -854,6 +918,33 @@ class SimulatorService(object):
             _registered_method=True)
 
     @staticmethod
+    def PlaceOntopObject(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/PlaceOntopObject',
+            simulator__pb2.PlaceOntopObjectRequest.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def ReachPose(request,
             target,
             options=(),
@@ -1032,6 +1123,87 @@ class SimulatorService(object):
             '/simulator.SimulatorService/GetObjectPos',
             simulator__pb2.GetObjectPosRequest.SerializeToString,
             simulator__pb2.GetObjectPosResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GraspObjectByPos(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/GraspObjectByPos',
+            simulator__pb2.GraspObjectByPosRequest.SerializeToString,
+            simulator__pb2.GraspObjectByPosResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Close(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/Close',
+            simulator__pb2.Empty.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PoseToLocal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/PoseToLocal',
+            simulator__pb2.PoseToLocalRequest.SerializeToString,
+            simulator__pb2.PoseToLocalResponse.FromString,
             options,
             channel_credentials,
             insecure,

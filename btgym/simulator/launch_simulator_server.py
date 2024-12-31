@@ -158,7 +158,7 @@ class SimulatorCommandHandler:
 
     @RPCMethod(simulator_pb2.GetObsResponse)
     def GetObs(self, request) -> Dict:
-        obs = self.simulator.get_obs()
+        obs = self.simulator.get_obs_bytes()
         return obs
 
     @RPCMethod(simulator_pb2.Empty)

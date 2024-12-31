@@ -158,18 +158,33 @@ class SimulatorCommandHandler:
 
     @RPCMethod(simulator_pb2.GetObsResponse)
     def GetObs(self, request) -> Dict:
-        obs = self.simulator.get_obs()
+        obs = self.simulator.get_obs_bytes()
         return obs
 
     @RPCMethod(simulator_pb2.Empty)
     def SetCameraLookatPos(self, request) -> Dict:
         self.simulator.set_camera_lookat_pos(request.pos)
-        return None
 
+    @RPCMethod(simulator_pb2.Empty)
+    def Close(self, request) -> Dict:
+        self.simulator.close()
 
     @RPCMethod(simulator_pb2.GetObjectPosResponse)
     def GetObjectPos(self, request) -> Dict:
         return self.simulator.get_object_pos(request.object_name)
+
+    @RPCMethod(simulator_pb2.GraspObjectByPosResponse)
+    def GraspObjectByPos(self, request) -> Dict:
+        if hasattr(request,'is_local'):
+            success = self.simulator.grasp_object_by_pose(request.pos,request.object_name,request.is_local)
+        else:
+            success = self.simulator.grasp_object_by_pose(request.pos,request.object_name)
+        return {'success': success}
+
+    @RPCMethod(simulator_pb2.PoseToLocalResponse)
+    def PoseToLocal(self, request) -> Dict:
+        pose = self.simulator.pose_to_local(request.pose)
+        return {'pose': pose}
 
 # 动态添加方法到ServicerClass
 for method_name, method_info in RPCMethod.registry.items():
@@ -177,6 +192,7 @@ for method_name, method_info in RPCMethod.registry.items():
 
 def main_process_loop(pipe_conn):
     simulator = Simulator()
+    print("仿真器进程已启动，等待客户端链接")
     handler = SimulatorCommandHandler(simulator)
     
     while True:
@@ -195,6 +211,7 @@ def main_process_loop(pipe_conn):
             print(f"Error in main process loop: {str(e)}")
 
 def serve():
+    import time
     parent_conn, child_conn = Pipe()
     
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -204,9 +221,14 @@ def serve():
     server.start()
     
     try:
+        # while True:
         process = mp.Process(target=main_process_loop, args=(child_conn,))
         process.start()
+        print("仿真器进程正在启动")
+        # while process.is_alive():
+        #     time.sleep(0.1)
         server.wait_for_termination()
+        print("仿真器进程已关闭")
     except KeyboardInterrupt:
         server.stop(0)
         process.terminate()

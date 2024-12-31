@@ -28,7 +28,8 @@ class cfg:
     task_name = 'test_task'
     scene_name = 'Rs_int'
     scene_file_name = 'scene_file_0'
-
+    target_object_name = 'apple.n.01_1'
+    hdf5_path = None
 
 
 os.makedirs(cfg.TESTS_PATH, exist_ok=True)

@@ -1,7 +1,17 @@
 
 from dataclasses import dataclass
-from btgym.dataclass.cfg import cfg
+import math
 
 @dataclass
 class state:
-    pass
+    target_pos = [0,0,0]
+    target_euler = [0, math.pi/2, math.pi/2]
+    target_local_pose = [0,0,0, 0, math.pi/2, math.pi/2]
+
+    # obs
+    rgb = None
+    depth = None
+    seg_semantic = None
+    proprio = None
+    gripper_open = None
+    eef_pose = None
