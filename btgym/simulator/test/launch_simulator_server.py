@@ -8,6 +8,7 @@ import btgym.simulator.simulator_pb2 as simulator_pb2
 import btgym.simulator.simulator_pb2_grpc as simulator_pb2_grpc
 from btgym.simulator.simulator import Simulator
 import numpy as np
+import time
 
 class RPCMethod:
     """RPC方法注册器"""
@@ -211,7 +212,6 @@ def main_process_loop(pipe_conn):
             print(f"Error in main process loop: {str(e)}")
 
 def serve():
-    import time
     parent_conn, child_conn = Pipe()
     
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

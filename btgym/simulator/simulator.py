@@ -478,6 +478,9 @@ class Simulator:
 
         scales = th.tensor([[0.000, 0.000, 0.000]], device=self.device).expand(self.batch_size-1, -1)  # [batch_size, 3]
         offsets = th.randn(self.batch_size-1, 3, device=self.device) * scales  # [batch_size, 3]
+
+
+        
         pos_tensor = target_pos.unsqueeze(0).expand(self.batch_size-1, -1) + offsets  # [batch_size, 3]
         pos_tensor = th.cat([pos_tensor, target_pos.unsqueeze(0)], dim=0)
         quat_tensor = target_quat.unsqueeze(0).expand(self.batch_size, -1)
@@ -527,7 +530,7 @@ class Simulator:
             # action[3] = joint_positions[5]
             action[4:] = jp
             self.og_sim.step(action.to('cpu'))
-    
+        self.idle_step(20)
 
         log(f"尝试位置: {target_pos.tolist()}")  # 打印当前尝试的位置
                 
@@ -582,6 +585,8 @@ class Simulator:
         img.save(output_path, format='PNG')
     
     def set_target_visual_pose(self, pose):
+        if self.target_visual is None: return
+
         pos = th.tensor(pose[:3],device=self.device)
         euler = th.tensor(pose[3:],device=self.device)
         if euler is None or len(euler) == 0:

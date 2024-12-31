@@ -56,7 +56,7 @@ class Env:
         # 加载配置文件
         config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
         self.config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
-        self.config["scene"]["scene_file"] = os.path.join(ROOT_PATH, "assets/og_scene_file_red_pen.json")
+        self.config["scene"]["scene_file"] = os.path.join(ROOT_PATH, "assets/task_jsons/og_scene_file_red_pen.json")
         self.output_dir = os.path.join(cfg.OUTPUTS_PATH, "grasp_pen")
         os.makedirs(self.output_dir, exist_ok=True)
 
