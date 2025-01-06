@@ -1,8 +1,8 @@
 import grpc
 from concurrent import futures
 import multiprocessing as mp
-from queue import Empty
 from typing import Any, Dict, Type
+from multiprocessing import Pipe
 
 import btgym.simulator.simulator_pb2 as simulator_pb2
 import btgym.simulator.simulator_pb2_grpc as simulator_pb2_grpc
@@ -26,19 +26,19 @@ class RPCMethod:
         def servicer_method(servicer, request, context):
             try:
                 servicer._track_connection(context)
-                servicer.command_queue.put((method_name, request))
-                result = servicer.result_queue.get(timeout=10)
+                servicer.pipe_conn.send((method_name, request))
+                result = servicer.pipe_conn.recv()
                 return self.response_type(**result) if result else self.response_type()
-            except (Empty, Exception):
+            except Exception as e:
+                print(f"Error in RPC method {method_name}: {str(e)}")
                 return self.response_type()
 
         RPCMethod.registry[method_name]['servicer_method'] = servicer_method
         return func
 
 class SimulatorServicer(simulator_pb2_grpc.SimulatorServiceServicer):
-    def __init__(self, command_queue: mp.Queue, result_queue: mp.Queue):
-        self.command_queue = command_queue
-        self.result_queue = result_queue
+    def __init__(self, pipe_conn):
+        self.pipe_conn = pipe_conn
         self._active_connections = set()
         
     def _track_connection(self, context):
@@ -49,7 +49,7 @@ class SimulatorServicer(simulator_pb2_grpc.SimulatorServiceServicer):
     
     def _handle_disconnect(self, peer):
         self._active_connections.remove(peer)
-        self.command_queue.put(('client_disconnected', peer))
+        self.pipe_conn.send(('client_disconnected', peer))
 
 class SimulatorCommandHandler:
     def __init__(self, simulator: Simulator):
@@ -67,17 +67,37 @@ class SimulatorCommandHandler:
             return {}
 
     @RPCMethod(simulator_pb2.Empty)
-    def LoadTask(self, request):
-        self.simulator.load_task(request.task_name)
+    def LoadBehaviorTask(self, request):
+        self.simulator.load_behavior_task(request.task_name)
+        return None
 
-    @RPCMethod(simulator_pb2.NavigateToObjectRequest)
+    @RPCMethod(simulator_pb2.Empty)
+    def LoadCustomTask(self, request):
+        self.simulator.load_custom_task(request.task_name,scene_file_name=request.scene_file_name)
+        return None
+
+    @RPCMethod(simulator_pb2.SampleCustomTaskResponse)
+    def SampleCustomTask(self, request):
+        json_path = self.simulator.sample_custom_task(request.task_name,scene_name=request.scene_name)
+        return {'json_path': json_path}
+
+    @RPCMethod(simulator_pb2.Empty)
+    def LoadScene(self, request):
+        self.simulator.load_scene(request.scene_name)
+        return None
+
+
+    @RPCMethod(simulator_pb2.Empty)
     def NavigateToObject(self, request):
         self.simulator.navigate_to_object(request.object_name)
+        return None
+
 
     @RPCMethod(simulator_pb2.Empty)
     def InitActionPrimitives(self, request):
         self.simulator.init_action_primitives()
-
+        return None
+        
     @RPCMethod(simulator_pb2.SceneNameResponse)
     def GetSceneName(self, request) -> Dict:
         return {'scene_name': self.simulator.get_scene_name()}
@@ -91,10 +111,10 @@ class SimulatorCommandHandler:
         joint_positions = self.simulator.get_joint_states()
         return {'joint_states': joint_positions.tolist() if isinstance(joint_positions, np.ndarray) else joint_positions}
 
-    @RPCMethod(simulator_pb2.SetRobotJointStatesRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def SetRobotJointStates(self, request) -> Dict:
         self.simulator.set_joint_states(request.joint_states)
-
+        return None
 
     @RPCMethod(simulator_pb2.EEFPoseResponse)
     def GetRobotEEFPose(self, request) -> Dict:
@@ -114,64 +134,86 @@ class SimulatorCommandHandler:
     @RPCMethod(simulator_pb2.Empty)
     def GraspObject(self, request) -> Dict:
         self.simulator.grasp_object(request.object_name)
+        return None
 
-    @RPCMethod(simulator_pb2.ReachPoseRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def ReachPose(self, request) -> Dict:
         self.simulator.reach_pose(request.pose, request.is_local)
+        return None
 
-    @RPCMethod(simulator_pb2.SaveCameraImageRequest)
+    @RPCMethod(simulator_pb2.Empty)
     def SaveCameraImage(self, request) -> Dict:
         self.simulator.save_camera_image(request.output_path)
+        return None
 
-    @RPCMethod(simulator_pb2.ImageResponse)
-    def GetRGBD(self, request) -> Dict:
-        rgb, depth = self.simulator.get_camera_images()
-        return {
-            'rgb': rgb.tobytes(),
-            'depth': depth.tobytes(),
-            'height': rgb.shape[0],
-            'width': rgb.shape[1],
-            'channels': rgb.shape[2] if len(rgb.shape) > 2 else 1
-        }
+    @RPCMethod(simulator_pb2.Empty)
+    def SetTargetVisualPose(self, request) -> Dict:
+        self.simulator.set_target_visual_pose(request.pose)
+        return None
+
+    @RPCMethod(simulator_pb2.GetCameraInfoResponse)
+    def GetCameraInfo(self, request) -> Dict:
+        camera_info = self.simulator.get_camera_info()
+        return camera_info
+
+    @RPCMethod(simulator_pb2.GetObsResponse)
+    def GetObs(self, request) -> Dict:
+        obs = self.simulator.get_obs_bytes()
+        return obs
+
+    @RPCMethod(simulator_pb2.Empty)
+    def SetCameraLookatPos(self, request) -> Dict:
+        self.simulator.set_camera_lookat_pos(request.pos)
+        return None
+
+
+    @RPCMethod(simulator_pb2.GetObjectPosResponse)
+    def GetObjectPos(self, request) -> Dict:
+        return self.simulator.get_object_pos(request.object_name)
 
 # 动态添加方法到ServicerClass
 for method_name, method_info in RPCMethod.registry.items():
     setattr(SimulatorServicer, method_name, method_info['servicer_method'])
 
-def main_process_loop(command_queue: mp.Queue, result_queue: mp.Queue):
+def main_process_loop(pipe_conn):
     simulator = Simulator()
     handler = SimulatorCommandHandler(simulator)
     
     while True:
         try:
-            if command_queue.empty():
+            if pipe_conn.poll():  # 检查是否有新消息
+                command, request = pipe_conn.recv()
+                if command == 'client_disconnected':
+                    print(f"客户端断开连接: {request}")
+                    continue
+                    
+                result = handler.handle_command(command, request)
+                pipe_conn.send(result)
+            else:
                 simulator.idle_step()
-                continue
-                
-            command, request = command_queue.get()
-            if command == 'client_disconnected':
-                print(f"客户端断开连接: {request}")
-                continue
-                
-            result = handler.handle_command(command, request)
-            result_queue.put(result)
         except Exception as e:
-            print(f"Error handling command {command}: {str(e)}")
+            print(f"Error in main process loop: {str(e)}")
 
 def serve():
-    command_queue = mp.Queue()
-    result_queue = mp.Queue()
+    parent_conn, child_conn = Pipe()
     
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    servicer = SimulatorServicer(command_queue, result_queue)
+    servicer = SimulatorServicer(parent_conn)
     simulator_pb2_grpc.add_SimulatorServiceServicer_to_server(servicer, server)
-    server.add_insecure_port('[::]:50052')
+    server.add_insecure_port('[::]:51051')
     server.start()
     
     try:
-        main_process_loop(command_queue, result_queue)
+        process = mp.Process(target=main_process_loop, args=(child_conn,))
+        process.start()
+        server.wait_for_termination()
     except KeyboardInterrupt:
         server.stop(0)
+        process.terminate()
+        process.join()
+    finally:
+        parent_conn.close()
+        child_conn.close()
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')

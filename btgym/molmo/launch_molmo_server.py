@@ -76,6 +76,11 @@ for method_name, method_info in RPCMethod.registry.items():
     setattr(MolmoServicer, method_name, method_info['servicer_method'])
 
 def main_process_loop(command_queue: mp.Queue, result_queue: mp.Queue):
+    # 添加这些行来处理SSL问题
+    import os
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
+    
     molmo = MolmoModel()
     handler = MolmoCommandHandler(molmo)
     

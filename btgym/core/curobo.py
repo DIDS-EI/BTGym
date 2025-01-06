@@ -178,24 +178,26 @@ class CuRoboMotionGenerator:
         motion_kwargs = dict(
             trajopt_tsteps=32,
             collision_checker_type=lazy.curobo.geom.sdf.world.CollisionCheckerType.MESH,
+            # 可以尝试使用PRIMITIVE或SPHERE来提高性能
+            # collision_checker_type=lazy.curobo.geom.sdf.world.CollisionCheckerType.PRIMITIVE, 
             use_cuda_graph=True,
-            num_ik_seeds=12,
-            num_batch_ik_seeds=12,
-            num_batch_trajopt_seeds=1,
+            num_ik_seeds=12,   # 从12增加到20
+            num_batch_ik_seeds=12,  # 从12增加到20
+            num_batch_trajopt_seeds=1,  # 从1增加到2
             ik_opt_iters=100,  # 增加IK优化迭代次数 #60,
             optimize_dt=True,
             num_trajopt_seeds=4,
             num_graph_seeds=4,
             interpolation_dt=0.03,
-            collision_cache={"obb": 10, "mesh": 1024},
+            collision_cache={"obb": 10, "mesh": 1024}, #collision_cache={"obb": 10, "mesh": 1024},  # 增加碰撞缓存大小
             collision_max_outside_distance=0.05, #0.05, 检测20cm范围内的所有潜在碰撞
             collision_activation_distance=0.025, #0.025, 机器人距离障碍物10cm时就开始规避
-            acceleration_scale=1.0,
+            acceleration_scale=1.0, # 从1.0降为0.5 降低速度和加速度限制,让运动更平滑
             self_collision_check=True,
             maximum_trajectory_dt=None,
             fixed_iters_trajopt=True,
-            finetune_trajopt_iters=200,  # 增加轨迹优化迭代次数 #100,
-            finetune_dt_scale=1.05,
+            finetune_trajopt_iters=500,  # 增加轨迹优化迭代次数 #100,
+            finetune_dt_scale=1.05, ## 从1.05增加到1.2,给规划更多时间
             velocity_scale=[1.0] * robot.n_joints,
         )
         if motion_cfg_kwargs is not None:
@@ -265,14 +267,7 @@ class CuRoboMotionGenerator:
             ],
         ).get_collision_check_world()
         
-        # from pxr import PhysxSchema, Sdf
-        # # 获取当前场景
-        # stage = og.sim.stage
-        # # 启用物理调试可视化
-        # physx_scene_api = PhysxSchema.PhysxSceneAPI.Get(stage, Sdf.Path('/'))
-        # if physx_scene_api:
-        #     physx_scene_api.CreateEnableDebugVizAttr().Set(True)
-        
+
         # log("\n=== Detected Obstacles ===")
         # log(obstacles)
     
@@ -282,7 +277,7 @@ class CuRoboMotionGenerator:
     def check_collisions(
         self,
         q,
-        activation_distance=0.01,
+        activation_distance=0.01, #增大安全距离 0.01
         weight=50000.0,
     ):
         """
@@ -290,26 +285,31 @@ class CuRoboMotionGenerator:
 
         Args:
             q (th.tensor): (N, D)-shaped tensor, representing N-total different joint configurations to check
-                collisions against the world
+                collisions against the world 形状的张量,表示N个不同的关节构型
             activation_distance (float): Safety buffer around robot mesh representation which will trigger a
-                collision check
-            weight (float): Loss weighting to apply during collision check optimization
+                collision check 机器人网格表示周围的安全缓冲区
+            weight (float): Loss weighting to apply during collision check optimization 碰撞检查优化时的损失权重
 
         Returns:
             th.tensor: (N,)-shaped tensor, where each value is True if in collision, else False
         """
-        # Update obstacles
+        # Update obstacles 更新障碍物
         self.update_obstacles()
 
-        # Compute kinematics to get corresponding sphere representation
+        # Compute kinematics to get corresponding sphere representation 计算运动学以获取相应的球体表示
+        # 将关节角度转换为CuRobo的JointState类型
         cu_js = lazy.curobo.types.state.JointState(position=self.tensor_args.to_device(q))
+        # 使用正向运动学计算机器人的球体表示
+        # 增加一个维度，将形状从(N_samples, n_spheres, 4)变为(N_samples, 1, n_spheres, 4)
+        # 其中4代表(x,y,z,radius) - 球体的位置和半径
         robot_spheres = self.mg.compute_kinematics(cu_js).robot_spheres
-        # (N_samples, n_obs_spheres, 4) --> (N_samples, 1, n_spheres, 4)
+        # (N_samples, n_obs_spheres, 4) --> (N_samples, 1, n_spheres, 4) 将形状从(N_samples, n_obs_spheres, 4)转换为(N_samples, 1, n_spheres, 4)
         robot_spheres = robot_spheres.unsqueeze(dim=1)
 
-        # Run direct collision check
+        # Run direct collision check 运行直接碰撞检查
         with th.no_grad():
-            # Run the overlap check
+            # Run the overlap check 运行重叠检查
+            # 创建并更新碰撞查询缓冲区
             # Sphere shape should be (N_queries, 1, n_obs_spheres, 4), where 4 --> (x,y,z,radius)
             coll_query_buffer = lazy.curobo.geom.sdf.world.CollisionQueryBuffer()
             coll_query_buffer.update_buffer_shape(
@@ -317,20 +317,22 @@ class CuRoboMotionGenerator:
                 tensor_args=self.tensor_args,
                 collision_types=self.mg.world_coll_checker.collision_types,
             )
-
+            # 获取球体碰撞距离
             dist = self.mg.world_coll_checker.get_sphere_collision(
-                robot_spheres,
-                coll_query_buffer,
+                robot_spheres,  # 机器人的球体表示
+                coll_query_buffer, # 碰撞查询缓冲区
                 weight=th.tensor([weight], device=self.tensor_args.device),
                 activation_distance=th.tensor([activation_distance], device=self.tensor_args.device),
                 env_query_idx=None,
                 return_loss=False,
             ).squeeze(
                 dim=1
-            )  # shape (N_samples, n_spheres)
+            )  # shape (N_samples, n_spheres) # 输出形状为(N_samples, n_spheres)
 
             # Positive distances correspond to a collision detection (or close to a collision, within activation_distance
             # So valid collision-free samples are those where max(n_obs_spheres) == 0 for a given sample
+            # dist > 0 表示发生碰撞或接近碰撞(在activation_distance范围内)
+            # 对每个样本取最大值，如果最大值不为0，则表示该样本存在碰撞
             collision_results = dist.max(dim=-1).values != 0
 
         # Return results
@@ -388,11 +390,13 @@ class CuRoboMotionGenerator:
         """
         # Previously, this would silently fail so we explicitly check for out-of-range joint limits here
         # This may be fixed in a recent version of CuRobo? See https://github.com/NVlabs/curobo/discussions/288
+        # 检查关节是否接近限位
         if not th.all(th.abs(self.robot.get_joint_positions(normalized=True))[:-2] < 0.99):
             print("Robot is near joint limits! No trajectory will be computed")
             return None
 
         # Make sure a valid (>1) number of entries were submitted
+        # 确保输入的目标位置和姿态格式正确
         for tensor in (target_pos, target_quat):
             assert (
                 len(tensor.shape) == 2 and tensor.shape[0] > 1
@@ -400,13 +404,13 @@ class CuRoboMotionGenerator:
 
         # Define the plan config
         plan_cfg = lazy.curobo.wrap.reacher.motion_gen.MotionGenPlanConfig(
-            enable_graph=False,
-            max_attempts=max_attempts,
-            timeout=timeout,
-            enable_graph_attempt=enable_graph_attempt,
-            ik_fail_return=ik_fail_return,
-            enable_finetune_trajopt=enable_finetune_trajopt,
-            finetune_attempts=finetune_attempts,
+            enable_graph=False,     # 是否启用图规划
+            max_attempts=max_attempts, # 最大尝试次数
+            timeout=timeout, # 超时时间 
+            enable_graph_attempt=enable_graph_attempt,  # 启用图规划的尝试次数
+            ik_fail_return=ik_fail_return, # IK失败返回次数
+            enable_finetune_trajopt=enable_finetune_trajopt, # 启用轨迹优化
+            finetune_attempts=finetune_attempts,# 优化尝试次数
             success_ratio=1.0 / self.batch_size if success_ratio is None else success_ratio,
         )
 
@@ -414,32 +418,37 @@ class CuRoboMotionGenerator:
         self.update_obstacles()
 
         # Make sure the specified target pose is in the robot frame
+        # 如果目标位置是在世界坐标系中，转换到机器人局部坐标系
         robot_pos, robot_quat = self.robot.get_position_orientation()
         if not is_local:
+            # 构建目标位姿变换矩阵
             target_pose = th.zeros((self.batch_size, 4, 4))
             target_pose[:, 3, 3] = 1.0
             target_pose[:, :3, :3] = T.quat2mat(target_quat)
             target_pose[:, :3, 3] = target_pos
+            # 构建机器人局部坐标系到世界坐标系的变换矩阵
             inv_robot_pose = th.eye(4)
             inv_robot_ori = T.quat2mat(robot_quat).T
             inv_robot_pose[:3, :3] = inv_robot_ori
             inv_robot_pose[:3, 3] = -inv_robot_ori @ robot_pos
+            # 将目标位姿变换矩阵从世界坐标系转换到机器人局部坐标系
             target_pose = inv_robot_pose.view(1, 4, 4) @ target_pose
             target_pos = target_pose[:, :3, 3]
             target_quat = T.mat2quat(target_pose[:, :3, :3])
 
-        # Map xyzw -> wxyz quat
+        # Map xyzw -> wxyz quat 将四元数格式从xyzw转换为wxyz
         target_quat = target_quat[:, [3, 0, 1, 2]]
 
-        # Make sure tensors are on device and contiguous
+        # Make sure tensors are on device and contiguous  
         target_pos = self._tensor_args.to_device(target_pos).contiguous()
         target_quat = self._tensor_args.to_device(target_quat).contiguous()
 
-        # Construct initial state
+        # Construct initial state  创建批处理大小的关节状态
         q_pos = th.stack([self.robot.get_joint_positions()] * self.batch_size, axis=0)
         q_vel = th.stack([self.robot.get_joint_velocities()] * self.batch_size, axis=0)
         q_eff = th.stack([self.robot.get_joint_efforts()] * self.batch_size, axis=0)
         sim_js_names = list(self.robot.joints.keys())
+        # 创建CuRobo的关节状态对象
         cu_js_batch = lazy.curobo.types.state.JointState(
             position=self._tensor_args.to_device(q_pos),
             # TODO: Ideally these should be nonzero, but curobo fails to compute a solution if so
@@ -460,17 +469,18 @@ class CuRoboMotionGenerator:
                 object_names=obj_paths,
             )
 
-        # Determine how many internal batches we need to run based on submitted size
+        # Determine how many internal batches we need to run based on submitted size  计算需要的批次数
         remainder = target_pos.shape[0] % self.batch_size
         n_batches = int(th.ceil(th.tensor(target_pos.shape[0] / self.batch_size)).item())
 
-        # Run internal batched calls
+        # Run internal batched calls 对每个批次进行规划
         results, successes, paths = [], self._tensor_args.to_device(th.tensor([], dtype=th.bool)), []
         for i in range(n_batches):
             # We're using a remainder if we're on the final batch and our remainder is nonzero
             using_remainder = (i == n_batches - 1) and remainder > 0
             offset_idx = self.batch_size * i
             end_idx = remainder if using_remainder else self.batch_size
+            # 处理批次数据
             batch_target_pos = target_pos[offset_idx : offset_idx + end_idx]
             batch_target_quat = target_quat[offset_idx : offset_idx + end_idx]
 
@@ -485,7 +495,7 @@ class CuRoboMotionGenerator:
                 new_batch_target_quat[end_idx:] = batch_target_quat[-1]
                 batch_target_quat = new_batch_target_quat
 
-            # Create IK goal
+            # Create IK goal 创建IK目标
             ik_goal_batch = lazy.curobo.types.math.Pose(
                 position=batch_target_pos,
                 quaternion=batch_target_quat,
@@ -494,7 +504,7 @@ class CuRoboMotionGenerator:
             # Run batched planning
             if self.debug:
                 self.mg.store_debug_in_result = True
-
+            # 执行批量规划
             result = self.mg.plan_batch(cu_js_batch, ik_goal_batch, plan_cfg)
 
             if self.debug:

@@ -30,16 +30,17 @@ image_path = f'{DIR}/outputs/image.png'
 # image_path = f'{DIR}/outputs/camera_0_rgb.png'
 # image_path = f'{DIR}/outputs/camera.jpg'
 
-simulator_client = SimulatorClient()
-# simulator_client.call(func='LoadTask', task_name='putting_shoes_on_rack')
-object_list = simulator_client.call(func='GetTaskObjects').object_names
-print(object_list)
-object_name = object_list[0]
+# simulator_client = SimulatorClient()
+# # simulator_client.call(func='LoadTask', task_name='putting_shoes_on_rack')
+# object_list = simulator_client.call(func='GetTaskObjects').object_names
+# print(object_list)
+# object_name = object_list[0]
 
-# simulator_client.call(func='NavigateToObject', object_name=object_name)
-# response = simulator_client.call(func='SaveCameraImage', output_path=image_path)
-query = f'point out the {object_name.split(".")[0]}.'
-print(query)
+# # simulator_client.call(func='NavigateToObject', object_name=object_name)
+# # response = simulator_client.call(func='SaveCameraImage', output_path=image_path)
+query = f'point out the pen.'
+# query = f'point out the {object_name.split(".")[0]}.'
+# print(query)
 
 molmo_client = MolmoClient()
 generated_text = molmo_client.call(func='PointQA',

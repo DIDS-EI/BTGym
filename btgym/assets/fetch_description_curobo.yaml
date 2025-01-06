@@ -127,42 +127,42 @@ robot_cfg:
           "radius": 0.05963
       r_gripper_finger_link:
         - "center": [-0.01365, 0.01, 0.01368]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [-0.01365, 0.01, -0.0015]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [-0.01365, 0.01, -0.016]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [0.005, 0.01, 0.01368]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [0.005, 0.01, -0.0015]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [0.005, 0.01, -0.016]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [0.022, 0.01, 0.01368]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [0.022, 0.01, -0.0015]
-          "radius": 0.008
+          "radius": 0.01 # 0.008 
         - "center": [0.022, 0.01, -0.016]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
       l_gripper_finger_link:
         - "center": [-0.01365, 0.01, 0.01368]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [-0.01365, 0.01, -0.0015]
-          "radius": 0.008
+          "radius": 0.01 # 0.008 
         - "center": [-0.01365, 0.01, -0.016]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [0.005, 0.01, 0.01368]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [0.005, 0.01, -0.0015]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [0.005, 0.01, -0.016]
-          "radius": 0.008
+          "radius": 0.01 # 0.008 
         - "center": [0.022, 0.01, 0.01368]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
         - "center": [0.022, 0.01, -0.0015]
-          "radius": 0.008
+          "radius": 0.01 # 0.008  
         - "center": [0.022, 0.01, -0.016]
-          "radius": 0.008
+          "radius": 0.01 # 0.008
 
     collision_sphere_buffer: 0.002
     
@@ -203,9 +203,9 @@ robot_cfg:
       "forearm_roll_link": 0.001,
       "wrist_flex_link": 0.001,
       "wrist_roll_link": 0.001,
-      "gripper_link": 0.001,
-      "r_gripper_finger_link": 0.001,
-      "l_gripper_finger_link": 0.001
+      "gripper_link": 0.001, 
+      "r_gripper_finger_link": 0.001, 
+      "l_gripper_finger_link": 0.001 
     }
 
     cspace:

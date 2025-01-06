@@ -7,7 +7,7 @@ import parse
 import numpy as np
 import time
 from datetime import datetime
-from btgym.utils import cfg
+from btgym.dataclass.cfg import cfg
 
 
 # Function to encode the image
@@ -90,19 +90,11 @@ class LLM:
             }
         ]
 
-    def request(self, instruction):
-        """
-        Args:
-            instruction (str): instruction for the query 查询指令
-        Returns:
-            save_dir (str): directory where the constraints 约束保存的目录
-        """
-        # build prompt 构建提示
-        messages = self._build_prompt(instruction)
+    def request(self, message):
         stream = self.client.chat.completions.create(model=cfg.llm_model,
-                                                        messages=messages,
-                                                        temperature=cfg.llm_temperature,
-                                                        stream=True)
+                                                            messages=message,
+                                                            temperature=cfg.llm_temperature,
+                                                            stream=True)
         output = ""
         print("", end="", flush=True)  # 清空当前行
         print("正在生成回答...\n")
@@ -112,6 +104,18 @@ class LLM:
                 print(content, end="", flush=True)
                 output += content
         print("\n")
+        return output
+
+    def request_instruction(self, instruction):
+        """
+        Args:
+            instruction (str): instruction for the query 查询指令
+        Returns:
+            save_dir (str): directory where the constraints 约束保存的目录
+        """
+        # build prompt 构建提示
+        messages = self._build_prompt(instruction)
+        output = self.request(messages)
 
         # 非流式
         # response = self.client.chat.completions.create(

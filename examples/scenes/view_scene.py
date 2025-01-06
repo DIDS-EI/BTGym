@@ -19,7 +19,7 @@ from btgym.utils.path import ROOT_PATH
 import json
 import torch as th
 import omnigibson.utils.transform_utils as T
-from btgym.utils import cfg
+from btgym.dataclass.cfg import cfg
 # gm.USE_GPU_DYNAMICS = True
 # gm.ENABLE_FLATCACHE = False
 
@@ -94,7 +94,7 @@ class Simulator:
         self.current_task_name = task_name
         log(f"load_behavior_task: {task_name}")
 
-        config_filename = os.path.join(og.example_config_path, "fetch_primitives.yaml")
+        config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
         # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
         config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
 
@@ -110,7 +110,7 @@ class Simulator:
             "activity_definition_id": 0,
             "activity_instance_id": 0,
             "predefined_problem": None,
-            "online_object_sampling": True,
+            "online_object_sampling": False,
         }
         # config["robot"]["grasping_mode"] = "sticky"
         # gm.USE_GPU_DYNAMICS = True
@@ -147,26 +147,18 @@ class Simulator:
         config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
         from omnigibson.utils import bddl_utils 
         bddl_utils.BEHAVIOR_ACTIVITIES.append(task_name)
-        cfgs = {
-            "scene": {
-                "type": "InteractiveTraversableScene",
-                "scene_model": "Rs_int",
-            },
-            "robots": [
-                {
-                    "type": "Fetch",
-                    "obs_modalities": ["rgb"],
-                    "default_arm_pose": "diagonal30",
-                    "default_reset_mode": "tuck",
-                },
-            ],
-            "task": {
-                "type": "BehaviorTask",
-                "activity_name": task_name,
-                "activity_definition_id": 0,
-                "activity_instance_id": 0,
-                "online_object_sampling": True,
-            },
+
+        config_filename = os.path.join(cfg.ASSETS_PATH, "fetch_primitives.yaml")
+        # config_filename = os.path.join(og.example_config_path, "tiago_primitives.yaml")
+        cfgs = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
+        cfgs["scene"]["load_task_relevant_only"] = True
+
+        cfgs["task"] = {
+            "type": "BehaviorTask",
+            "activity_name": task_name,
+            "activity_definition_id": 0,
+            "activity_instance_id": 0,
+            "online_object_sampling": True,
         }
         env = og.Environment(configs=cfgs)
 
@@ -222,39 +214,25 @@ class Simulator:
     def get_trav_map(self):
         return self.scene._trav_map
 
-    def do_task(self):
-        log("start do_task")
-        controller = StarterSemanticActionPrimitives(self.og_sim, enable_head_tracking=False)
-
-        # Grasp of cologne
-        grasp_obj = self.scene.object_registry("name", "cologne")
-        print("Executing controller")
-
-        primitive_action = controller.apply_ref(StarterSemanticActionPrimitiveSet.GRASP, grasp_obj,attempts=10)
-
- 
-        self.add_control(primitive_action)
-        # execute_controller(primitive_action, self.og_sim)
-        # print("Finished executing grasp")
-
-       # Place cologne on another table
-        print("Executing controller")
-        table = self.scene.object_registry("name", "table")
-        primitive_action = controller.apply_ref(StarterSemanticActionPrimitiveSet.PLACE_ON_TOP, table,attempts=10)
-        self.add_control(primitive_action)
-        # execute_controller(controller.apply_ref(StarterSemanticActionPrimitiveSet.PLACE_ON_TOP, table), self.og_sim)
-        # print("Finished executing place")
-
-    def navigate_to_object(self, object_name):
-        object = self.scene.object_registry("name", object_name)
-        primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.NAVIGATE_TO, object)
-        self.add_control(primitive_action)
+    def save_camera_image(self, output_path):
+        """
+        保存机器人视角的RGB图像
+        Args:
+            output_path: 输出图像的路径，例如 "robot_view.png"
+        """
+        rgb_obs = list(self.robot.get_obs()[0].values())[0]['rgb'].cpu().numpy()
+        # 将numpy数组转换为PIL图像并保存
+        from PIL import Image
+        img = Image.fromarray(rgb_obs)
+        img = img.convert('RGB')  # 将RGBA转换为RGB
+        img.save(output_path, format='PNG')
+    
 
 if __name__ == "__main__":
     # print(gm.REMOTE_STREAMING)
     simulator = Simulator()
-    # simulator.load_behavior_task_by_name('putting_shoes_on_rack')
-    simulator.create_my_task('collect_shoes')
+    simulator.load_behavior_task_by_name('putting_shoes_on_rack')
+    # simulator.create_my_task('test_task')
 
     
 

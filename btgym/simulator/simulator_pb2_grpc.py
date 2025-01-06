@@ -34,10 +34,25 @@ class SimulatorServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.LoadTask = channel.unary_unary(
-                '/simulator.SimulatorService/LoadTask',
-                request_serializer=simulator__pb2.LoadTaskRequest.SerializeToString,
+        self.LoadBehaviorTask = channel.unary_unary(
+                '/simulator.SimulatorService/LoadBehaviorTask',
+                request_serializer=simulator__pb2.LoadBehaviorTaskRequest.SerializeToString,
                 response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.LoadCustomTask = channel.unary_unary(
+                '/simulator.SimulatorService/LoadCustomTask',
+                request_serializer=simulator__pb2.LoadCustomTaskRequest.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.LoadScene = channel.unary_unary(
+                '/simulator.SimulatorService/LoadScene',
+                request_serializer=simulator__pb2.LoadSceneRequest.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.SampleCustomTask = channel.unary_unary(
+                '/simulator.SimulatorService/SampleCustomTask',
+                request_serializer=simulator__pb2.SampleCustomTaskRequest.SerializeToString,
+                response_deserializer=simulator__pb2.SampleCustomTaskResponse.FromString,
                 _registered_method=True)
         self.InitActionPrimitives = channel.unary_unary(
                 '/simulator.SimulatorService/InitActionPrimitives',
@@ -99,6 +114,11 @@ class SimulatorServiceStub(object):
                 request_serializer=simulator__pb2.GraspObjectRequest.SerializeToString,
                 response_deserializer=simulator__pb2.Empty.FromString,
                 _registered_method=True)
+        self.PlaceOntopObject = channel.unary_unary(
+                '/simulator.SimulatorService/PlaceOntopObject',
+                request_serializer=simulator__pb2.PlaceOntopObjectRequest.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
         self.ReachPose = channel.unary_unary(
                 '/simulator.SimulatorService/ReachPose',
                 request_serializer=simulator__pb2.ReachPoseRequest.SerializeToString,
@@ -109,12 +129,70 @@ class SimulatorServiceStub(object):
                 request_serializer=simulator__pb2.SaveCameraImageRequest.SerializeToString,
                 response_deserializer=simulator__pb2.Empty.FromString,
                 _registered_method=True)
+        self.SetTargetVisualPose = channel.unary_unary(
+                '/simulator.SimulatorService/SetTargetVisualPose',
+                request_serializer=simulator__pb2.SetTargetVisualPoseRequest.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.GetObs = channel.unary_unary(
+                '/simulator.SimulatorService/GetObs',
+                request_serializer=simulator__pb2.Empty.SerializeToString,
+                response_deserializer=simulator__pb2.GetObsResponse.FromString,
+                _registered_method=True)
+        self.GetCameraInfo = channel.unary_unary(
+                '/simulator.SimulatorService/GetCameraInfo',
+                request_serializer=simulator__pb2.Empty.SerializeToString,
+                response_deserializer=simulator__pb2.GetCameraInfoResponse.FromString,
+                _registered_method=True)
+        self.SetCameraLookatPos = channel.unary_unary(
+                '/simulator.SimulatorService/SetCameraLookatPos',
+                request_serializer=simulator__pb2.SetCameraLookatPosRequest.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.GetObjectPos = channel.unary_unary(
+                '/simulator.SimulatorService/GetObjectPos',
+                request_serializer=simulator__pb2.GetObjectPosRequest.SerializeToString,
+                response_deserializer=simulator__pb2.GetObjectPosResponse.FromString,
+                _registered_method=True)
+        self.GraspObjectByPos = channel.unary_unary(
+                '/simulator.SimulatorService/GraspObjectByPos',
+                request_serializer=simulator__pb2.GraspObjectByPosRequest.SerializeToString,
+                response_deserializer=simulator__pb2.GraspObjectByPosResponse.FromString,
+                _registered_method=True)
+        self.Close = channel.unary_unary(
+                '/simulator.SimulatorService/Close',
+                request_serializer=simulator__pb2.Empty.SerializeToString,
+                response_deserializer=simulator__pb2.Empty.FromString,
+                _registered_method=True)
+        self.PoseToLocal = channel.unary_unary(
+                '/simulator.SimulatorService/PoseToLocal',
+                request_serializer=simulator__pb2.PoseToLocalRequest.SerializeToString,
+                response_deserializer=simulator__pb2.PoseToLocalResponse.FromString,
+                _registered_method=True)
 
 
 class SimulatorServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def LoadTask(self, request, context):
+    def LoadBehaviorTask(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def LoadCustomTask(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def LoadScene(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SampleCustomTask(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -192,6 +270,12 @@ class SimulatorServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PlaceOntopObject(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ReachPose(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -204,13 +288,76 @@ class SimulatorServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetTargetVisualPose(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetObs(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCameraInfo(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetCameraLookatPos(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetObjectPos(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GraspObjectByPos(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Close(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PoseToLocal(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SimulatorServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'LoadTask': grpc.unary_unary_rpc_method_handler(
-                    servicer.LoadTask,
-                    request_deserializer=simulator__pb2.LoadTaskRequest.FromString,
+            'LoadBehaviorTask': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoadBehaviorTask,
+                    request_deserializer=simulator__pb2.LoadBehaviorTaskRequest.FromString,
                     response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'LoadCustomTask': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoadCustomTask,
+                    request_deserializer=simulator__pb2.LoadCustomTaskRequest.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'LoadScene': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoadScene,
+                    request_deserializer=simulator__pb2.LoadSceneRequest.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'SampleCustomTask': grpc.unary_unary_rpc_method_handler(
+                    servicer.SampleCustomTask,
+                    request_deserializer=simulator__pb2.SampleCustomTaskRequest.FromString,
+                    response_serializer=simulator__pb2.SampleCustomTaskResponse.SerializeToString,
             ),
             'InitActionPrimitives': grpc.unary_unary_rpc_method_handler(
                     servicer.InitActionPrimitives,
@@ -272,6 +419,11 @@ def add_SimulatorServiceServicer_to_server(servicer, server):
                     request_deserializer=simulator__pb2.GraspObjectRequest.FromString,
                     response_serializer=simulator__pb2.Empty.SerializeToString,
             ),
+            'PlaceOntopObject': grpc.unary_unary_rpc_method_handler(
+                    servicer.PlaceOntopObject,
+                    request_deserializer=simulator__pb2.PlaceOntopObjectRequest.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
             'ReachPose': grpc.unary_unary_rpc_method_handler(
                     servicer.ReachPose,
                     request_deserializer=simulator__pb2.ReachPoseRequest.FromString,
@@ -281,6 +433,46 @@ def add_SimulatorServiceServicer_to_server(servicer, server):
                     servicer.SaveCameraImage,
                     request_deserializer=simulator__pb2.SaveCameraImageRequest.FromString,
                     response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'SetTargetVisualPose': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetTargetVisualPose,
+                    request_deserializer=simulator__pb2.SetTargetVisualPoseRequest.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'GetObs': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetObs,
+                    request_deserializer=simulator__pb2.Empty.FromString,
+                    response_serializer=simulator__pb2.GetObsResponse.SerializeToString,
+            ),
+            'GetCameraInfo': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCameraInfo,
+                    request_deserializer=simulator__pb2.Empty.FromString,
+                    response_serializer=simulator__pb2.GetCameraInfoResponse.SerializeToString,
+            ),
+            'SetCameraLookatPos': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetCameraLookatPos,
+                    request_deserializer=simulator__pb2.SetCameraLookatPosRequest.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'GetObjectPos': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetObjectPos,
+                    request_deserializer=simulator__pb2.GetObjectPosRequest.FromString,
+                    response_serializer=simulator__pb2.GetObjectPosResponse.SerializeToString,
+            ),
+            'GraspObjectByPos': grpc.unary_unary_rpc_method_handler(
+                    servicer.GraspObjectByPos,
+                    request_deserializer=simulator__pb2.GraspObjectByPosRequest.FromString,
+                    response_serializer=simulator__pb2.GraspObjectByPosResponse.SerializeToString,
+            ),
+            'Close': grpc.unary_unary_rpc_method_handler(
+                    servicer.Close,
+                    request_deserializer=simulator__pb2.Empty.FromString,
+                    response_serializer=simulator__pb2.Empty.SerializeToString,
+            ),
+            'PoseToLocal': grpc.unary_unary_rpc_method_handler(
+                    servicer.PoseToLocal,
+                    request_deserializer=simulator__pb2.PoseToLocalRequest.FromString,
+                    response_serializer=simulator__pb2.PoseToLocalResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -294,7 +486,7 @@ class SimulatorService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def LoadTask(request,
+    def LoadBehaviorTask(request,
             target,
             options=(),
             channel_credentials=None,
@@ -307,9 +499,90 @@ class SimulatorService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/simulator.SimulatorService/LoadTask',
-            simulator__pb2.LoadTaskRequest.SerializeToString,
+            '/simulator.SimulatorService/LoadBehaviorTask',
+            simulator__pb2.LoadBehaviorTaskRequest.SerializeToString,
             simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def LoadCustomTask(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/LoadCustomTask',
+            simulator__pb2.LoadCustomTaskRequest.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def LoadScene(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/LoadScene',
+            simulator__pb2.LoadSceneRequest.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SampleCustomTask(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/SampleCustomTask',
+            simulator__pb2.SampleCustomTaskRequest.SerializeToString,
+            simulator__pb2.SampleCustomTaskResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -645,6 +918,33 @@ class SimulatorService(object):
             _registered_method=True)
 
     @staticmethod
+    def PlaceOntopObject(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/PlaceOntopObject',
+            simulator__pb2.PlaceOntopObjectRequest.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def ReachPose(request,
             target,
             options=(),
@@ -688,6 +988,222 @@ class SimulatorService(object):
             '/simulator.SimulatorService/SaveCameraImage',
             simulator__pb2.SaveCameraImageRequest.SerializeToString,
             simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetTargetVisualPose(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/SetTargetVisualPose',
+            simulator__pb2.SetTargetVisualPoseRequest.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetObs(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/GetObs',
+            simulator__pb2.Empty.SerializeToString,
+            simulator__pb2.GetObsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCameraInfo(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/GetCameraInfo',
+            simulator__pb2.Empty.SerializeToString,
+            simulator__pb2.GetCameraInfoResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetCameraLookatPos(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/SetCameraLookatPos',
+            simulator__pb2.SetCameraLookatPosRequest.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetObjectPos(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/GetObjectPos',
+            simulator__pb2.GetObjectPosRequest.SerializeToString,
+            simulator__pb2.GetObjectPosResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GraspObjectByPos(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/GraspObjectByPos',
+            simulator__pb2.GraspObjectByPosRequest.SerializeToString,
+            simulator__pb2.GraspObjectByPosResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Close(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/Close',
+            simulator__pb2.Empty.SerializeToString,
+            simulator__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PoseToLocal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/PoseToLocal',
+            simulator__pb2.PoseToLocalRequest.SerializeToString,
+            simulator__pb2.PoseToLocalResponse.FromString,
             options,
             channel_credentials,
             insecure,

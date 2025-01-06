@@ -116,7 +116,7 @@ def main():
         if i == int(len(list_of_robots) / 2):
             pose.position[0, 0] = -offset_y
             pose.position[0, 1] = 0
-        robot_cfg = load_yaml(join_path(f"{ROOT_PATH}/../examples/curobo/assets", list_of_robots[i]))["robot_cfg"]
+        robot_cfg = load_yaml(join_path(f"{ROOT_PATH}/assets", list_of_robots[i]))["robot_cfg"]
 
         robot_cfg["kinematics"]["usd_path"] = os.path.join(og_root_path, 'data/assets',robot_cfg["kinematics"]["usd_path"])  
         robot_cfg["kinematics"]["urdf_path"] = os.path.join(og_root_path, 'data/assets',robot_cfg["kinematics"]["urdf_path"])  
