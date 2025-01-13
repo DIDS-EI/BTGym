@@ -164,3 +164,8 @@ def point_to_pixel(pt, intrinsics, extrinsics):
     pt_in_cam /= pt_in_cam[2, :]
 
     return pt_in_cam[:2, :].T
+
+
+def pixel_to_world(obs, camera_info, pixel_x,  pixel_y):
+    p2w = pixel_to_3d_points(obs['depth'], camera_info['intrinsics'], camera_info['extrinsics'])
+    return p2w[pixel_y,pixel_x]

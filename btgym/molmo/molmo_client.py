@@ -7,7 +7,7 @@ import btgym.molmo.molmo_pb2_grpc as molmo_pb2_grpc
 import numpy as np
 import os
 import re
-
+from PIL import Image, ImageDraw
 class MolmoClient:
     def __init__(self):
         i = 1
@@ -53,6 +53,50 @@ class MolmoClient:
                 point = point * np.array([image.width, image.height])
                 all_points.append(point)
         return all_points
+
+    def draw_points_on_image(self, image, points, output_path):
+        # 创建图片副本以免修改原图
+        img_with_points = image.copy()
+        
+        # 转换为可绘制格式
+        draw = ImageDraw.Draw(img_with_points)
+        
+        radius = 10
+        # 为每个点画一个红色圆圈和序号
+        for i, point in enumerate(points):
+            x, y = point
+            draw.ellipse([x-radius, y-radius, x+radius, y+radius], fill='green')
+            draw.text((x-3, y-6), str(i+1), fill='white', font=None)
+        # 保存并显示结果
+        img_with_points.convert('RGB').save(output_path)
+        # img_with_points.save(output_path)
+
+    def get_grasp_pose_by_molmo(self,query,dir):
+        query = f'point out the grasp point of the {cfg.target_object_name.split(".")[0]}. make sure the grasp point is in a stable position and safe.'
+
+        print('query:',query)
+        image_path = f'{dir}/camera_0_rgb.png'
+
+        generated_text = self.call(func='PointQA',
+                        #    query=f'Point out the important parts for doing the task. The task is "reorient the white pen and drop it upright into the black pen holder".',
+                        query=query,
+                        image_path=image_path
+                        ).text
+
+        image = Image.open(image_path)
+        points = self.extract_points(generated_text, image)
+        print('molmo points',points)
+        self.draw_points_on_image(image, points, f'{dir}/camera_0_rgb_points.png')
+
+        if len(points) > 0:
+            return int(points[0][0]),int(points[0][1])
+        else:
+            print('molmo没有标出任何点！')
+            return None
+
+        # response = client.call(func='SetCameraLookatPos', pos=pos)
+
+
 
 def main():
     client = MolmoClient()

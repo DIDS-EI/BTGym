@@ -154,12 +154,12 @@ class SimulatorCommandHandler:
 
     @RPCMethod(simulator_pb2.GetCameraInfoResponse)
     def GetCameraInfo(self, request) -> Dict:
-        camera_info = self.simulator.get_camera_info()
+        camera_info = self.simulator.get_camera_info_server()
         return camera_info
 
     @RPCMethod(simulator_pb2.GetObsResponse)
     def GetObs(self, request) -> Dict:
-        obs = self.simulator.get_obs_bytes()
+        obs = self.simulator.get_obs_server()
         return obs
 
     @RPCMethod(simulator_pb2.Empty)

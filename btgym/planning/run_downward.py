@@ -43,9 +43,10 @@ def run_fast_downward(domain_file, problem_file, output_file,sas_file=None,  deb
 
 if __name__ == "__main__":
     # 使用示例
-    domain_file = "/home/cxl/code/BTGym/examples/domain.pddl"
-    problem_file = "/home/cxl/code/BTGym/examples/problem.pddl"
-    plan = run_fast_downward(domain_file, problem_file) 
+    DIR = "/home/cxl/code/BTGym/btgym/planning/"
+    domain_file = f"{DIR}/domain_omnigibson.bddl"
+    problem_file = f"{DIR}/problem0.bddl"
+    plan = run_fast_downward(domain_file, problem_file,output_file=f"{DIR}/plan.txt",debug=True) 
 
     if plan:
         print("Plan found:")

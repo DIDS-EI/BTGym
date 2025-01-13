@@ -8,7 +8,10 @@ class state:
     target_euler = [0, math.pi/2, math.pi/2]
     target_local_pose = [0,0,0, 0, math.pi/2, math.pi/2]
 
-    # obs
+
+
+@dataclass
+class Obs:
     rgb = None
     depth = None
     seg_semantic = None

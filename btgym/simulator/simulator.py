@@ -44,6 +44,7 @@ VALID_SCENE_LIST = open(os.path.join(cfg.ASSETS_PATH, 'scene_list.txt'), 'r').re
 # gm.USE_GPU_DYNAMICS = True
 # gm.ENABLE_FLATCACHE = False
 
+
 gm.USE_GPU_DYNAMICS = False
 gm.ENABLE_FLATCACHE = True
 
@@ -64,7 +65,8 @@ class Simulator:
     Demonstrates how to use the action primitives to pick and place an object in an empty scene.
     """
 
-    def __init__(self):
+    def __init__(self,headless=False):
+        gm.HEADLESS = headless
         self.og_sim = None
         self.current_task_name = None
         self.device = th.device('cuda' if th.cuda.is_available() else 'cpu')
@@ -220,7 +222,7 @@ class Simulator:
         if self.og_sim is not None: 
             og.clear()
             del self.og_sim
-            del self.target_visual
+            if self.target_visual: del self.target_visual
             del self.action_primitives
             del self.curobo_mg
             # self.reload_count += 1
@@ -404,74 +406,13 @@ class Simulator:
         target_pose = th.cat([target_pos, target_euler], dim=0).cpu().numpy()
         return target_pose
 
-    # def reach_pose(self, pose, is_local=False):
-    #     robot = self.robot
-    #     pos = th.tensor(pose[:3],device=self.device)
-    #     euler = th.tensor(pose[3:],device=self.device)
-
-    #     if euler is None:
-    #         quat = T.euler2quat(th.tensor([0,math.pi/2,0], dtype=th.float32)) # 默认上往下抓
-    #     else:
-    #         quat = T.euler2quat(euler)
-        
-    #     # 将当前位置和目标位置拼接在一起
-    #     pos_sequence = th.stack([pos, pos])  # 形状变为 [2, 3]
-    #     quat_sequence = th.stack([quat, quat])  # 形状变为 [2, 4]
-
-    #     # 如果机器人接近关节限制，则调整关节位置
-    #     jp = robot.get_joint_positions(normalized=True)
-    #     if not th.all(th.abs(jp)[:-2] < 0.97):
-    #         new_jp = jp.clone()
-    #         new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
-    #         robot.set_joint_positions(new_jp, normalized=True)
-    #     og.sim.step()
-
-    #     successes, paths = self.curobo_mg.compute_trajectories(pos_sequence, quat_sequence,is_local=is_local)
-
-    #     if successes[0]:
-    #         # 执行轨迹
-    #         joint_trajectory = self.curobo_mg.path_to_joint_trajectory(paths[0])
-    #         # 打印轨迹
-    #         # print(joint_trajectory)
-            
-    #         for time_i,joint_positions in enumerate(joint_trajectory):
-    #             # joint_positions = joint_trajectory[-1]
-    #             full_action = th.zeros(robot.n_joints, device=joint_positions.device)
-
-    #             # full_action[2] = joint_positions[0]
-    #             full_action[4:] = joint_positions
-                
-    #             # robot.set_joint_positions(full_action)
-                
-    #             if time_i == len(joint_trajectory) - 1:
-    #                 full_action[-1] = 0.0
-    #                 full_action[-2] = 0.0
-    #             else:
-    #                 full_action[-1] = 0.05
-    #                 full_action[-2] = 0.05  
-
-    #             print(f"time_i: {time_i}, full_action: {full_action}")
-    #             self.og_sim.step(full_action.to('cpu'))
-    
-
-    def grasp_object_by_pose(self, pose, object_name, is_local=True):
+    def reach_pose(self, pose, is_local=True):
         robot = self.robot
-        # object_pos = th.tensor(pos,device=self.device)
-        # euler = th.tensor(pose[3:],device=self.device)
         target_pos = th.tensor(pose[:3],device=self.device)
-        offset = th.tensor([0.0,0.0,0.02],device=self.device)
+        offset = th.tensor([0.0,0.0,0.0],device=self.device)
         target_pos = target_pos + offset
         target_euler = th.tensor(pose[3:],device=self.device)
         target_quat = T.euler2quat(target_euler)
-        # grasp_orientations = [
-        #     T.euler2quat(th.tensor([0, math.pi/2, math.pi/2], dtype=th.float32)),      # 从上往下抓
-        #     # T.euler2quat(th.tensor([0, -math.pi/2, 0], dtype=th.float32)),     # 从下往上抓
-        #     # T.euler2quat(th.tensor([0, 0, 0], dtype=th.float32)),              # 从前往后抓
-        #     # T.euler2quat(th.tensor([0, math.pi, 0], dtype=th.float32)),        # 从后往前抓
-        #     # T.euler2quat(th.tensor([0, 0, math.pi/2], dtype=th.float32)),      # 从左往右抓
-        #     # T.euler2quat(th.tensor([0, 0, -math.pi/2], dtype=th.float32)),     # 从右往左抓
-        #     # T.euler2quat(th.tensor([0, 3*math.pi/4, 0], dtype=th.float32)) # 45度角抓取
-        # ]
 
         # 在pos周围生成更多的目标点
         pos_list = []
@@ -479,8 +420,6 @@ class Simulator:
         scales = th.tensor([[0.000, 0.000, 0.000]], device=self.device).expand(self.batch_size-1, -1)  # [batch_size, 3]
         offsets = th.randn(self.batch_size-1, 3, device=self.device) * scales  # [batch_size, 3]
 
-
-        
         pos_tensor = target_pos.unsqueeze(0).expand(self.batch_size-1, -1) + offsets  # [batch_size, 3]
         pos_tensor = th.cat([pos_tensor, target_pos.unsqueeze(0)], dim=0)
         quat_tensor = target_quat.unsqueeze(0).expand(self.batch_size, -1)
@@ -516,6 +455,78 @@ class Simulator:
         # 执行轨迹
         joint_trajectory = self.curobo_mg.path_to_joint_trajectory(success_path)
         joint_positions = self.robot.get_joint_positions()
+
+        action = th.zeros(self.robot.n_joints)
+        for time_i,jp in enumerate(joint_trajectory):
+            action[2:4] = self.camera_action
+            # action[2] = joint_positions[3]
+            # action[3] = joint_positions[5]
+            action[4:] = jp
+            self.og_sim.step(action.to('cpu'))
+        self.idle_step(20)
+
+        log(f"尝试位置: {target_pos.tolist()}")  # 打印当前尝试的位置
+        return True
+
+    def grasp_object_by_pose(self, pose, object_name, is_local=True):
+        robot = self.robot
+        
+
+        target_pos = th.tensor(pose[:3],device=self.device)
+        # offset = th.tensor([0.0,0.0,0.02],device=self.device)
+        # target_pos = target_pos + offset
+        target_euler = th.tensor(pose[3:],device=self.device)
+        target_quat = T.euler2quat(target_euler)
+
+        # 根据欧拉角计算单位向量
+        # 欧拉角为 [roll, pitch, yaw]
+        # roll: 绕x轴旋转的角度
+        # pitch: 绕y轴旋转的角度
+        # yaw: 绕z轴旋转的角度
+        x = th.cos(target_euler[1]) * th.cos(target_euler[2])
+        y = th.cos(target_euler[1]) * th.sin(target_euler[2]) 
+        z = th.sin(target_euler[1])
+        unit_vector = th.tensor([x, y, z], device=self.device)
+        unit_vector = unit_vector / th.norm(unit_vector)  # 归一化
+
+        # 从0.02到-0.02
+        offset_tensor = unit_vector.unsqueeze(0).expand(self.batch_size, -1) * th.linspace(0.02, -0.02, self.batch_size, device=self.device).unsqueeze(1)
+        pos_tensor = target_pos.unsqueeze(0).expand(self.batch_size, -1) + offset_tensor
+        quat_tensor = target_quat.unsqueeze(0).expand(self.batch_size, -1)
+
+        self.open_gripper()
+
+        # 如果机器人接近关节限制，则调整关节位置
+        jp = robot.get_joint_positions(normalized=True)
+        if not th.all(th.abs(jp)[:-2] < 0.97):
+            new_jp = jp.clone()
+            new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
+            robot.set_joint_positions(new_jp, normalized=True)
+        self.idle_step(20)
+
+        try:  
+            successes, paths = self.curobo_mg.compute_trajectories(pos_tensor, quat_tensor, is_local=is_local)
+        except Exception as e:
+            log(f'error: {str(e)}')
+            log(f"IK求解失败!")
+            return False
+
+        # 找出第一个成功的位置和路径
+        if not th.any(successes):
+            log(f"IK求解失败!")
+            return False
+        
+        success_idx = th.where(successes)[0][0]  # 获取第一个成功的索引
+        target_pos = pos_tensor[success_idx].unsqueeze(0)  # 添加维度以保持张量形状
+        # 得到每个pos的cost
+        # dist_cost = th.norm(valid_pos_tensor - target_pos, dim=1)
+        # min_cost_index = th.argmin(dist_cost)
+        # success_idx = success_indices[min_cost_index]
+        success_path = paths[success_idx]
+
+        # 执行轨迹
+        joint_trajectory = self.curobo_mg.path_to_joint_trajectory(success_path)
+        joint_positions = self.robot.get_joint_positions()
         # target_jp = joint_trajectory[-1]
 
         # joint_positions[2] = target_jp[0]
@@ -530,7 +541,7 @@ class Simulator:
             # action[3] = joint_positions[5]
             action[4:] = jp
             self.og_sim.step(action.to('cpu'))
-        self.idle_step(20)
+        self.idle_step(40)
 
         log(f"尝试位置: {target_pos.tolist()}")  # 打印当前尝试的位置
                 
@@ -585,7 +596,6 @@ class Simulator:
         img.save(output_path, format='PNG')
     
     def set_target_visual_pose(self, pose):
-        if self.target_visual is None: return
 
         pos = th.tensor(pose[:3],device=self.device)
         euler = th.tensor(pose[3:],device=self.device)
@@ -594,7 +604,29 @@ class Simulator:
         else:
             quat = T.euler2quat(euler)
         
+        if self.target_visual is None:
+            from omni.isaac.core.objects import cuboid
+
+            # Make a target to follow
+            self.target_visual = cuboid.VisualCuboid(
+                "/World/visual",
+                position=np.array([0.3, 0, 0.67]),
+                orientation=np.array([0, 1, 0, 0]),
+                color=np.array([1.0, 0, 0]),
+                size=0.001,
+            )
         self.target_visual.set_world_pose(pos, quat)
+
+    def start_follow_visual(self,euler=(0,math.pi/2,math.pi/2)):
+        n = 0
+        while True:
+            cube_position, cube_orientation = self.target_visual.get_world_pose()
+            success = self.reach_pose(self.pose_to_local(th.cat([th.tensor(cube_position), th.tensor(euler)])))
+            if not success:
+                n+=1
+                if n > 5:
+                    self.reset_hand()
+                    n = 0
 
     def set_camera_lookat_pos(self,pos):
         z_limits = [-1.57, 1.57]
@@ -675,7 +707,7 @@ class Simulator:
 
 
 
-    def get_camera_info(self):
+    def get_camera_info_server(self):
         sensor = list(self.robot.sensors.values())[0]
         intrinsics = og_utils.get_cam_intrinsics(sensor).reshape(-1)
         # intrinsics = sensor.intrinsic_matrix.reshape(-1).cpu().numpy()
@@ -687,8 +719,20 @@ class Simulator:
             'extrinsics': extrinsics
         }
 
+    def get_camera_info(self):
+        sensor = list(self.robot.sensors.values())[0]
+        intrinsics = og_utils.get_cam_intrinsics(sensor)
+        # intrinsics = sensor.intrinsic_matrix.reshape(-1).cpu().numpy()
+        pose = sensor.get_position_orientation()
+        extrinsics = T.pose_inv(T.pose2mat(pose))
 
-    def get_obs_bytes(self):
+        return {
+            'intrinsics': intrinsics,
+            'extrinsics': extrinsics
+        }
+
+
+    def get_obs_server(self):
         sensor_obs = list(self.robot.sensors.values())[0].get_obs()
         rgb_obs = sensor_obs[0]['rgb'][:,:,:3].cpu().numpy().tobytes()
         depth_obs = sensor_obs[0]['depth_linear'].cpu().numpy().tobytes()
@@ -784,6 +828,8 @@ class Simulator:
 
     def close(self):
         og.shutdown()
+
+
 
 if __name__ == "__main__":
     set_logger_entry(__file__)

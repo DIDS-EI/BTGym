@@ -1,6 +1,6 @@
 (define (domain omnigibson)
-    (:requirements :strips :typing :adl)
-    (:types $type_list)
+    (:requirements :strips :adl)
+    (:types water.n.06 hot_tub.n.02 chlorine.n.01 chlorine__bottle.n.01 floor.n.01 agent.n.01)
     
     (:predicates 
         (cooked ?obj1)
@@ -30,19 +30,24 @@
         (broken ?obj1)
         (grasped ?obj1 ?obj2)
     )
-    
 
-    ;; Grasp an object
-    (:action grasp
-        :parameters (?obj1)
-        :precondition (forall (?obj2) (not (grasped agent.n.01_1 ?obj2)))
-        :effect (grasped agent.n.01_1 ?obj1)
-    )
 
-    ;; Place the currently grasped object on top of another object
-    (:action place_on_top
+    (:action fill
         :parameters (?obj1 ?obj2)
-        :precondition (grasped agent.n.01_1  ?obj1)
-        :effect (and (ontop ?obj1 ?obj2) (covered ?obj1 ?obj2) (not (grasped agent.n.01_1 ?obj1))) 
+        :precondition ()
+        :effect (filled ?obj1 ?obj2)
     )
+
+    (:action put_inside
+        :parameters (?obj1 ?obj2)
+        :precondition ()
+        :effect (contains ?obj1 ?obj2)
+    )
+
+    (:action grasp
+    :parameters (?x ?y)
+    :precondition ()
+    :effect (grasped ?x ?y)
+    )
+
 )
