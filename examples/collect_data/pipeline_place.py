@@ -56,7 +56,7 @@ if __name__ == '__main__':
         success = simulator.grasp_object_by_pose(state.target_local_pose,object_name=cfg.target_object_name)
         if success:
             # print(f"第{i}次尝试成功,保存数据")
-            # add_hdf5_sample(cfg.hdf5_path,obs)
+            add_hdf5_sample(cfg.hdf5_path,obs)
             # break
             
             place_success = False
@@ -87,6 +87,8 @@ if __name__ == '__main__':
                 if not success: continue
                 place_success = True
                 print(f"第{j}次尝试 放置物体成功,保存数据")
+                obs['gripper_open'] = True
+                obs['eef_pose'] = target_local_pose
                 add_hdf5_sample(cfg.hdf5_path,obs)
                 break
             
