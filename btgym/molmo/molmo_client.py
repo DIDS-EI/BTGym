@@ -72,7 +72,7 @@ class MolmoClient:
         # img_with_points.save(output_path)
 
     def get_grasp_pose_by_molmo(self,query,dir):
-        query = f'point out the grasp point of the {cfg.target_object_name.split(".")[0]}. make sure the grasp point is in a stable position and safe.'
+        # query = f'point out the grasp point of the {cfg.target_object_name.split(".")[0]}. make sure the grasp point is in a stable position and safe.'
 
         print('query:',query)
         image_path = f'{dir}/camera_0_rgb.png'
