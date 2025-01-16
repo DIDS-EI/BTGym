@@ -71,11 +71,14 @@ class MolmoClient:
         img_with_points.convert('RGB').save(output_path)
         # img_with_points.save(output_path)
 
-    def get_grasp_pose_by_molmo(self,query,dir):
+    def get_grasp_pose_by_molmo(self,query,dir,point_img_path=None):
         # query = f'point out the grasp point of the {cfg.target_object_name.split(".")[0]}. make sure the grasp point is in a stable position and safe.'
 
         print('query:',query)
-        image_path = f'{dir}/camera_0_rgb.png'
+        if point_img_path==None:
+            image_path = f'{dir}/camera_0_rgb.png'
+        else:
+            image_path = point_img_path
 
         generated_text = self.call(func='PointQA',
                         #    query=f'Point out the important parts for doing the task. The task is "reorient the white pen and drop it upright into the black pen holder".',
@@ -86,7 +89,11 @@ class MolmoClient:
         image = Image.open(image_path)
         points = self.extract_points(generated_text, image)
         print('molmo points',points)
-        self.draw_points_on_image(image, points, f'{dir}/camera_0_rgb_points.png')
+        
+        if point_img_path==None:
+            self.draw_points_on_image(image, points, f'{dir}/camera_0_rgb_points.png')
+        else:
+            self.draw_points_on_image(image, points, point_img_path)
 
         if len(points) > 0:
             return int(points[0][0]),int(points[0][1])
