@@ -44,6 +44,14 @@ if __name__ == '__main__':
         obs = simulator.get_obs()
         obs['gripper_open'] = False
         obs['eef_pose'] = state.target_local_pose
+        
+        # ========= 打个点 有点效果
+        rgb_img = Image.fromarray(obs['rgb'])
+        rgb_img.save(f'{CURRENT_DIR}/camera_grasp_rgb.png')
+        molmo_client = MolmoClient()
+        query = f'point out the {cfg.target_object_name.split(".")[0]}.'
+        point = molmo_client.get_grasp_pose_by_molmo(query,CURRENT_DIR,point_img_path=f'{CURRENT_DIR}/camera_grasp_rgb.png')
+        # ========= 
 
         grasp_pos = simulator.get_object_pos_by_pose(cfg.target_object_name)['pos'].tolist()
         # simulator.set_target_visual_pose([*grasp_pos,0,0,0])

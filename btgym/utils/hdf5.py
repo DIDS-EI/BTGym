@@ -20,8 +20,16 @@ def add_hdf5_sample(hdf5_path,obs):
         data_group = f['data']
         current_samples = f.attrs['total_samples']
 
-        sample_group = data_group.create_group(f'{current_samples:08d}')
 
+        # 生成组名
+        group_name = f'{current_samples:08d}'
+        
+        # 如果组已经存在，先删除它
+        if group_name in data_group:
+            del data_group[group_name]
+            
+        sample_group = data_group.create_group(f'{current_samples:08d}')
+        
         sample_group.create_dataset('rgb', 
                                     data=obs['rgb'],
                                     compression='gzip',
