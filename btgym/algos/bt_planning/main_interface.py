@@ -398,8 +398,8 @@ def collect_action_nodes(behavior_lib):
                 for arg in cls.valid_args:
                     action_list.append(Action(name=cls.get_ins_name(arg), **cls.get_info(arg)))
             if cls.num_args > 1:
-                # 检查如果 len(cls.valid_args) 不等于 cls.num_args，则两两组合
-                if len(cls.valid_args) != cls.num_args:
+                # 检查如果 cls.valid_args 的维度 不等于 cls.num_args，则两两组合
+                if np.array(cls.valid_args).ndim != cls.num_args:
                     for args in itertools.combinations(cls.valid_args, cls.num_args):
                         action_list.append(Action(name=cls.get_ins_name(*args), **cls.get_info(*args)))
                 else:

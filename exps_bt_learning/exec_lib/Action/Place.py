@@ -3,7 +3,7 @@ from exps_bt_learning.exec_lib._base.OGAction import OGAction
 class Place(OGAction):
     can_be_expanded = True
     num_args = 2
-    valid_args = ["apple", "breakfast_table", "coffee_table"]
+    valid_args = ["apple", "coffee_table", "breakfast_table"]
 
     def __init__(self, *args):
         super().__init__(*args)

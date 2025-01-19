@@ -33,6 +33,8 @@ behavior_lib_path = os.path.join(DIR,"../exec_lib")
 ########################
 llm = LLM()
 prompt = build_prompt(goal=goal_str,objects=objects)
+# 蓝色打印
+print("\033[94m",f"Requesting llm...","\033[0m")
 answer = llm.request_instruction(prompt)
 # 绿色打印
 print("\033[92m",answer,"\033[0m")
@@ -46,7 +48,7 @@ code_blocks = re.findall(code_blocks_pattern, answer, re.DOTALL)
 class_pattern = r'class\s+(\w+)\s*\((\w+)\):'
 for code in code_blocks:
     # 提取类定义
-    matches = re.finditer(class_pattern, code)
+    matches = re.finditer(class_pattern, code) # 迭代器是一次性的
     for match in matches:
         class_name = match.group(1)
         base_class = match.group(2)
@@ -62,11 +64,12 @@ for code in code_blocks:
             continue  # 如果基类不匹配，跳过这个类
         
         # 找到类定义的起始位置
-        start_index = match.start()
+        start_index = code.find(f"class {class_name}")
         
         # 找到下一个类定义的起始位置，或者代码块的结束位置
-        next_match = next(matches, None)
-        end_index = next_match.start() if next_match else len(code)
+        end_index = code.find("class ", start_index + 1)
+        if end_index == -1:
+            end_index = len(code)
         
         # 提取单个类的代码
         single_class_code = code[start_index:end_index].strip()

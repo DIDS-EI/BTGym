@@ -3,8 +3,8 @@ from exps_bt_learning.exec_lib._base.OGAction import OGAction
 class Walk(OGAction):
     can_be_expanded = True
     num_args = 1
-    valid_args = ["apple", "coffee_table", "breakfast_table", "floor"]
-
+    valid_args = ["floor", "coffee_table", "breakfast_table", "apple"]
+    
     def __init__(self, *args):
         super().__init__(*args)
         self.target_obj = self.args[0]
