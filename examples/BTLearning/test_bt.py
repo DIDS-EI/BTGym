@@ -25,7 +25,7 @@ llm = LLM()
 def extract_code(answer,file_path):
     # 使用正则表达式提取代码
     pattern = r"```python\n(.*?)```"
-    match = re.search(pattern, answer, re.DOTALL)
+    match = re.search(pattern, answer, re.DOTALL) #用于匹配以 python 开头和 结尾的代码块
     if match:
         answer = match.group(1).strip()
     else:
@@ -38,12 +38,12 @@ def extract_code(answer,file_path):
 answer = llm.request_instruction('''
 生成一个行为树的节点，例如：
 ```python
-from examples.BTLearning.exec_lib._base.RHSAction import RHSAction
+from examples.BTLearning.exec_lib._base.OGAction import OGAction
 
-class Close(RHSAction):
+class Close(OGAction):
     can_be_expanded = True
     num_args = 1
-    valid_args = RHSAction.CAN_OPEN
+    valid_args = OGAction.CAN_OPEN
 
     def __init__(self, *args):
         super().__init__(*args)

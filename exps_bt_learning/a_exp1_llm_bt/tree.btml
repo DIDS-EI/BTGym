@@ -1,0 +1,2 @@
+selector
+    cond On(apple,coffee_table)
