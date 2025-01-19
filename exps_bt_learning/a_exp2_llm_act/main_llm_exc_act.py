@@ -27,3 +27,5 @@ act_str = "Walk(apple)"
 
 
 # 想 5 个场景
+# pick & place
+# open close
