@@ -367,6 +367,21 @@ class Simulator:
         # primitive_action = self.action_primitives.apply_ref(StarterSemanticActionPrimitiveSet.NAVIGATE_TO, object)
         # execute_controller(primitive_action, self.og_sim)
 
+    def navigate_to_pos(self, object_name,pos,offset=(1.2,-0.2)):
+        self.reset_hand()
+        obj = self.og_sim.task.object_scope[object_name]
+        self.action_primitives._navigate_to_pos(obj,pos,offset=offset)
+
+        self.idle_step(10)
+
+
+    def get_object_face_tensor(self,object_name,pos,horizontal=True):
+        obj = self.og_sim.task.object_scope[object_name]
+        face_tensor = self.action_primitives.get_object_face_tensor(obj,pos,horizontal=horizontal)
+        return face_tensor
+
+
+
 
 
 
@@ -560,6 +575,12 @@ class Simulator:
             return False
 
 
+    def move_hand_linearly(self,dir,is_local=True,distance=0.5,ignore_obj_in_hand=True):
+        action = self.action_primitives._move_hand_linearly(dir,distance=distance, ignore_obj_in_hand=ignore_obj_in_hand)
+        execute_controller(action, self.og_sim)
+        self.idle_step(20)
+
+
     def place_object_by_pose(self, pose, object_name, is_local=True):
         robot = self.robot
         
@@ -694,7 +715,7 @@ class Simulator:
         img = img.convert('RGB')  # 将RGBA转换为RGB
         img.save(output_path, format='PNG')
     
-    def set_target_visual_pose(self, pose):
+    def set_target_visual_pose(self, pose,size = 0.1):
 
         pos = th.tensor(pose[:3],device=self.device)
         euler = th.tensor(pose[3:],device=self.device)
@@ -712,7 +733,7 @@ class Simulator:
                 position=np.array([0.3, 0, 0.67]),
                 orientation=np.array([0, 1, 0, 0]),
                 color=np.array([1.0, 0, 0]),
-                size=0.001,
+                size=size,
             )
         self.target_visual.set_world_pose(pos, quat)
 
