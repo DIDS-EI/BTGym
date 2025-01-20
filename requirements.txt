@@ -11,3 +11,4 @@ pygame_gui
 h5py
 grpcio
 protobuf
+pygame

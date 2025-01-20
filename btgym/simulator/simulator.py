@@ -581,6 +581,102 @@ class Simulator:
         self.idle_step(20)
 
 
+
+    def open_object_by_pose_by_sticky(self, pose, object_name, is_local=True):
+        robot = self.robot
+        
+
+        target_pos = th.tensor(pose[:3],device=self.device)
+        # offset = th.tensor([0.0,0.0,0.02],device=self.device)
+        # target_pos = target_pos + offset
+        # target_euler = th.tensor(pose[3:],device=self.device)
+        # 从前到后
+        target_euler = th.tensor([0,0,math.pi/2],device=self.device)
+        target_quat = T.euler2quat(target_euler)
+
+        # 根据欧拉角计算单位向量
+        # 欧拉角为 [roll, pitch, yaw]
+        # roll: 绕x轴旋转的角度
+        # pitch: 绕y轴旋转的角度
+        # yaw: 绕z轴旋转的角度
+        x = th.cos(target_euler[1]) * th.cos(target_euler[2])
+        y = th.cos(target_euler[1]) * th.sin(target_euler[2]) 
+        z = th.sin(target_euler[1])
+        unit_vector = th.tensor([x, y, z], device=self.device)
+        unit_vector = unit_vector / th.norm(unit_vector)  # 归一化
+
+        # 从0.02到-0.02
+        offset_tensor = unit_vector.unsqueeze(0).expand(self.batch_size, -1) * th.linspace(0.02, -0.02, self.batch_size, device=self.device).unsqueeze(1)
+        pos_tensor = target_pos.unsqueeze(0).expand(self.batch_size, -1) + offset_tensor
+        quat_tensor = target_quat.unsqueeze(0).expand(self.batch_size, -1)
+
+        self.open_gripper()
+
+        # 如果机器人接近关节限制，则调整关节位置
+        jp = robot.get_joint_positions(normalized=True)
+        if not th.all(th.abs(jp)[:-2] < 0.97):
+            new_jp = jp.clone()
+            new_jp[:-2] = th.clamp(new_jp[:-2], min=-0.95, max=0.95)
+            robot.set_joint_positions(new_jp, normalized=True)
+        self.idle_step(20)
+        
+
+        try:  
+            successes, paths = self.curobo_mg.compute_trajectories(pos_tensor, quat_tensor, is_local=is_local)
+        except Exception as e:
+            log(f'error: {str(e)}')
+            log(f"IK求解失败!")
+            return False
+
+        # 找出第一个成功的位置和路径
+        if not th.any(successes):
+            log(f"IK求解失败!")
+            return False
+        
+        success_idx = th.where(successes)[0][0]  # 获取第一个成功的索引
+        target_pos = pos_tensor[success_idx].unsqueeze(0)  # 添加维度以保持张量形状
+        # 得到每个pos的cost
+        # dist_cost = th.norm(valid_pos_tensor - target_pos, dim=1)
+        # min_cost_index = th.argmin(dist_cost)
+        # success_idx = success_indices[min_cost_index]
+        success_path = paths[success_idx]
+
+        # 执行轨迹
+        joint_trajectory = self.curobo_mg.path_to_joint_trajectory(success_path)
+        joint_positions = self.robot.get_joint_positions()
+        # target_jp = joint_trajectory[-1]
+
+        # joint_positions[2] = target_jp[0]
+        # joint_positions[4] = target_jp[1]
+        # joint_positions[6:] = target_jp[2:]
+        # self.set_joint_states(joint_positions)
+
+        action = th.zeros(self.robot.n_joints)
+        for time_i,jp in enumerate(joint_trajectory):
+            action[2:4] = self.camera_action
+            # action[2] = joint_positions[3]
+            # action[3] = joint_positions[5]
+            action[4:] = jp
+            self.og_sim.step(action.to('cpu'))
+        self.idle_step(40)
+
+        log(f"尝试位置: {target_pos.tolist()}")  # 打印当前尝试的位置
+                
+        self.close_gripper()
+
+        object_name = self.og_sim.task.load_task_metadata()['inst_to_name'][object_name]
+        # 检测是否抓起了物体
+        # 目前存在问题: curobo碰撞总是发生
+        obj_in_hand = self.action_primitives._get_obj_in_hand()
+        # log(f"obj_in_hand: {obj_in_hand}")
+        if obj_in_hand is not None and obj_in_hand.name == object_name:  # 如果有接触
+            log(f"检测到物体接触 {obj_in_hand.name}")
+            return True  # 成功找到并执行了轨迹
+        else:
+            log("未检测到物体接触")
+            return False
+
+
     def place_object_by_pose(self, pose, object_name, is_local=True):
         robot = self.robot
         

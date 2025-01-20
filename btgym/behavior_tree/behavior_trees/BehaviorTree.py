@@ -63,8 +63,8 @@ class BehaviorTree(ptree.trees.BehaviourTree):
     def print(self):
         print_tree_from_root(self.root)
 
-    def draw(self,file_name="behavior_tree",png_only=False):
-        render_dot_tree(self.root,name=file_name,png_only=png_only)
+    def draw(self,file_name="behavior_tree",png_only=False,target_directory=None):
+        render_dot_tree(self.root,name=file_name,png_only=png_only,target_directory=target_directory)
 
 
 

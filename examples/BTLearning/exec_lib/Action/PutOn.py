@@ -1,9 +1,9 @@
-from examples.BTLearning.exec_lib._base.RHSAction import RHSAction
+from examples.BTLearning.exec_lib._base.OGAction import OGAction
 
-class PutOn(RHSAction):
+class PutOn(OGAction):
     can_be_expanded = True
     num_args = 2
-    valid_args = RHSAction.CAN_INTERACT
+    # valid_args = OGAction.CAN_INTERACT
 
     def __init__(self, *args):
         super().__init__(*args)

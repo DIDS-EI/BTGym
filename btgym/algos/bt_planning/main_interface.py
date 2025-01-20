@@ -1,7 +1,7 @@
 import re
 import os
 from btgym.utils import ROOT_PATH
-os.chdir(f'{ROOT_PATH}/../test_exp')
+# os.chdir(f'{ROOT_PATH}/../test_exp')
 import random
 import numpy as np
 seed = 0
@@ -21,8 +21,9 @@ from btgym.algos.bt_planning_expand_exp.BTExpansion import BTExpansion as BTExpa
 from btgym.algos.bt_planning_expand_exp.OBTEA import OBTEA as OBTEA_test
 from btgym.algos.bt_planning_expand_exp.HOBTEA import HOBTEA as HOBTEA_test
 
-from test_exp.Execution_Robustnes.tools import modify_condition_set_Random_Perturbations
+# from test_exp.Execution_Robustnes.tools import modify_condition_set_Random_Perturbations
 
+import itertools
 
 # 封装好的主接口
 class BTExpInterface:
@@ -397,8 +398,13 @@ def collect_action_nodes(behavior_lib):
                 for arg in cls.valid_args:
                     action_list.append(Action(name=cls.get_ins_name(arg), **cls.get_info(arg)))
             if cls.num_args > 1:
-                for args in cls.valid_args:
-                    action_list.append(Action(name=cls.get_ins_name(*args), **cls.get_info(*args)))
+                # 检查如果 cls.valid_args 的维度 不等于 cls.num_args，则两两组合
+                if np.array(cls.valid_args).ndim != cls.num_args:
+                    for args in itertools.combinations(cls.valid_args, cls.num_args):
+                        action_list.append(Action(name=cls.get_ins_name(*args), **cls.get_info(*args)))
+                else:
+                    for args in cls.valid_args:
+                        action_list.append(Action(name=cls.get_ins_name(*args), **cls.get_info(*args)))
 
     # print(f"Collected {len(action_list)} instantiated actions")
     # print(f"Collected {can_expand_ored} action predicates")

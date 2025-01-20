@@ -1,0 +1,8 @@
+
+1. Based on the BDDL file, generate the behavior libraries necessary for the behavior tree, including all action nodes and condition nodes, and provide them in Python code.
+2. Each action node and condition node should be written as a class, with the class name matching the action name, and should inherit from the OGAction class and OGCondition class, respectively.
+3. Each action node's info dictionary should include four keys: pre, add, del_set, and cost, which represent the preconditions, added conditions, deleted conditions, and the cost of the action or condition, respectively. The cost defaults to 1.
+4. Each action node's valid_args represents the parameters of the action, which are selected from {objects}.
+
+
+
