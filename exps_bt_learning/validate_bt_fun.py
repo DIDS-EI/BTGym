@@ -32,6 +32,8 @@ def validate_bt_fun(behavior_lib_path, goal_str,cur_cond_set,output_dir=None):
     start_time = time.time()
     algo.process(goal_set)
     end_time = time.time()
+    act_num = -1
+    expanded_num = -1
     planning_time_total = end_time - start_time
 
     time_limit_exceeded = algo.algo.time_limit_exceeded
@@ -62,8 +64,7 @@ def validate_bt_fun(behavior_lib_path, goal_str,cur_cond_set,output_dir=None):
         file_name, _ = os.path.splitext(file_name_with_extension)
         bt.draw(target_directory=os.path.join(os.path.dirname(output_dir),""),file_name=file_name)
         
-    return error, algo.algo.bt
-
+    return error, algo.algo.bt,expanded_num,act_num
     '''测试 BT 的正确性'''
 
 

@@ -1,0 +1,24 @@
+selector
+    sequence
+        cond Activated(light1)
+        cond Activated(light2)
+    sequence
+        cond IsSwitchOn()
+        selector
+            selector
+                sequence
+                    cond Activated(light2)
+                    selector
+                        sequence
+                            cond IsNear(light1)
+                            act ActivateLight(light1)
+                        act Walk(light1)
+                sequence
+                    cond IsNear(light2)
+                    act ActivateLight(light2)
+            act Walk(light2)
+    sequence
+        cond IsNear(switch)
+        act TurnOnSwitch(switch)
+    sequence
+        act Walk(switch)

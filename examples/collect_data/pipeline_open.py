@@ -54,9 +54,11 @@ if __name__ == '__main__':
 
     success = simulator.reach_pose(target_local_pose,is_local=True)
 
+    # 先往外推0.5m
     simulator.move_hand_linearly(dir=-obj_face_tensor,distance=0.5)
     simulator.close_gripper()
 
+    # 再向内拉0.3m
     simulator.move_hand_linearly(dir=obj_face_tensor,distance=0.3,ignore_obj_in_hand=True)
 
     simulator.open_gripper()

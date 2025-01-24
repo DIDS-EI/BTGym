@@ -1,0 +1,11 @@
+try_num,point_correct,curobo_success,success
+1,"tensor([ 1.5000, -8.6688,  0.6000])",True,True
+2,"tensor([ 1.5000, -8.6688,  0.6000])",True,True
+4,"tensor([ 1.5000, -8.6688,  0.6000])",True,True
+5,"tensor([ 1.5000, -8.6688,  0.6000])",True,True
+6,"tensor([ 1.5000, -8.6688,  0.6000])",True,True
+7,"tensor([ 1.5000, -8.6688,  0.6000])",True,True
+8,"tensor([ 1.5000, -8.6688,  0.6000])",True,True
+9,"tensor([ 1.5000, -8.6688,  0.6000])",True,True
+10,"tensor([ 1.5000, -8.6688,  0.6000])",True,True
+11,"tensor([ 1.5000, -8.6688,  0.6000])",True,True

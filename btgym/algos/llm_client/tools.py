@@ -63,38 +63,63 @@ def act_str_process(act_str, already_split=False):
 
 
 
+# def goal_transfer_str(goal):
+#     goal_dnf = str(to_dnf(goal, simplify=True,force=True))
+#     # print(goal_dnf)
+#     goal_set = []
+#     if ('|' in goal or '&' in goal or 'Not' in goal) or not '(' in goal:
+#         goal_ls = goal_dnf.split("|")
+#         for g in goal_ls:
+#             g_set = set()
+#             g = g.replace(" ", "").replace("(", "").replace(")", "")
+#             g = g.split("&")
+#             for literal in g:
+#                 if '_' in literal:
+#                     first_part, rest = literal.split('_', 1)
+#                     literal = first_part + '(' + rest
+#                     # 添加 ')' 到末尾
+#                     literal += ')'
+#                     # 替换剩余的 '_' 为 ','
+#                     literal = literal.replace('_', ',')
+#                 g_set.add(literal)
+#             goal_set.append(g_set)
+
+#     else:
+#         g_set = set()
+#         w = goal.split(")")
+#         g_set.add(w[0] + ")")
+#         if len(w) > 1:
+#             for x in w[1:]:
+#                 if x != "":
+#                     g_set.add(x[1:] + ")")
+#         goal_set.append(g_set)
+#     return goal_set
+
+
+# only consider &
 def goal_transfer_str(goal):
-    goal_dnf = str(to_dnf(goal, simplify=True,force=True))
-    # print(goal_dnf)
-    goal_set = []
-    if ('|' in goal or '&' in goal or 'Not' in goal) or not '(' in goal:
-        goal_ls = goal_dnf.split("|")
-        for g in goal_ls:
-            g_set = set()
-            g = g.replace(" ", "").replace("(", "").replace(")", "")
-            g = g.split("&")
-            for literal in g:
-                if '_' in literal:
-                    first_part, rest = literal.split('_', 1)
-                    literal = first_part + '(' + rest
-                    # 添加 ')' 到末尾
-                    literal += ')'
-                    # 替换剩余的 '_' 为 ','
-                    literal = literal.replace('_', ',')
-                g_set.add(literal)
-            goal_set.append(g_set)
+    # 去除空格
+    goal = goal.replace(" ", "")
+    # 按 & 分割
+    literals = goal.split("&")
+    g_set = set()
+    for literal in literals:
+        # 物体名称可能带下划线,不需要处理下划线
+        # 处理下划线格式
+        # if '_' in literal:
+        #     first_part, rest = literal.split('_', 1)
+        #     literal = f"{first_part}({rest})"
+        # 确保括号格式
+        # elif '(' not in literal:
+        #     literal = f"{literal}()"
+        g_set.add(literal)
 
-    else:
-        g_set = set()
-        w = goal.split(")")
-        g_set.add(w[0] + ")")
-        if len(w) > 1:
-            for x in w[1:]:
-                if x != "":
-                    g_set.add(x[1:] + ")")
-        goal_set.append(g_set)
-    return goal_set
+    return [g_set]
 
+# # 调用函数并打印结果
+# goal_set2 = goal_transfer_str('Activated(light1) & Activated(light2)')
+# goal_set2 = goal_transfer_str('Activated(light_1)')
+# print(goal_set2)
 
 
 def act_format_records(act_record_list):

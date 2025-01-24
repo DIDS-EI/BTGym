@@ -1,0 +1,26 @@
+(define (problem setting_up_living_room_for_guest_0)
+    (:domain omnigibson)
+
+    (:objects
+        chip.n.04_1 chip.n.04_2 chip.n.04_3 - chip.n.04
+        table.n.02_1 - table.n.02
+        floor.n.01_1 - floor.n.01
+        agent.n.01_1 - agent.n.01
+    )
+    
+    (:init 
+        (inside chip.n.04_1 bowl.n.01_1) 
+        (inside chip.n.04_2 bowl.n.01_1) 
+        (inside chip.n.04_3 bowl.n.01_1) 
+        (covered table.n.02_1 dust.n.01_1) 
+        (inroom floor.n.01_1 living_room) 
+        (inroom table.n.02_1 living_room) 
+        (ontop agent.n.01_1 floor.n.01_1)
+    )
+    
+    (:goal 
+        (not 
+            (covered table.n.02_1 dust.n.01_1)
+        )
+    )
+)

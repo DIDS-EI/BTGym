@@ -47,8 +47,8 @@ if __name__ == '__main__':
 
         molmo_client = MolmoClient()
         # query = f'point out the grasp point of the {cfg.target_object_name.split(".")[0]}. make sure the grasp point is in a stable position and safe.'
-        query = f'To open xxx, mark the key points of the handle for opening xxx..0
-         {cfg.target_object_name.split(".")[0]}. make sure the grasp point is in a stable position and safe.'
+        query = f'To open xxx, mark the key points of the handle for opening xxx..'
+        # {cfg.target_object_name.split(".")[0]}. make sure the grasp point is in a stable position and safe.'
         point = molmo_client.get_grasp_pose_by_molmo(query,CURRENT_DIR)
         if not point: continue
 

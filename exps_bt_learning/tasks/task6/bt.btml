@@ -1,0 +1,39 @@
+selector
+    sequence
+        cond IsOpen(drawer)
+        cond On(apple,coffee_table)
+        cond Toggled(oven)
+    sequence
+        cond Toggled(oven)
+        selector
+            selector
+                selector
+                    selector
+                        sequence
+                            cond On(apple,coffee_table)
+                            selector
+                                sequence
+                                    cond IsNear(drawer)
+                                    act Open(drawer)
+                                act Walk(drawer)
+                        sequence
+                            cond IsNear(coffee_table)
+                            cond IsHolding(apple)
+                            act Place(apple,coffee_table)
+                    sequence
+                        cond IsHolding(apple)
+                        act Walk(coffee_table)
+                sequence
+                    cond IsNear(apple)
+                    cond IsHandEmpty()
+                    act Grasp(apple)
+            sequence
+                cond IsHandEmpty()
+                act Walk(apple)
+    sequence
+        cond IsHandEmpty()
+        selector
+            sequence
+                cond IsNear(oven)
+                act Toggle(oven)
+            act Walk(oven)

@@ -1,0 +1,60 @@
+selector
+    sequence
+        cond Activated(oven)
+        cond Closed(oven)
+        cond On(apple,coffee_table)
+        cond On(chicken_leg,coffee_table)
+    sequence
+        cond Closed(oven)
+        selector
+            sequence
+                cond Activated(oven)
+                selector
+                    selector
+                        sequence
+                            cond On(apple,coffee_table)
+                            selector
+                                selector
+                                    sequence
+                                        cond IsHolding(chicken_leg)
+                                        selector
+                                            sequence
+                                                cond IsNear(coffee_table)
+                                                act PlaceOn(chicken_leg,coffee_table)
+                                            act Walk(coffee_table)
+                                    sequence
+                                        cond IsHandEmpty()
+                                        cond IsNear(chicken_leg)
+                                        act Grasp(chicken_leg)
+                                sequence
+                                    cond IsHandEmpty()
+                                    act Walk(chicken_leg)
+                        sequence
+                            cond IsNear(coffee_table)
+                            cond IsHolding(apple)
+                            act PlaceOn(apple,coffee_table)
+                    sequence
+                        cond IsHolding(apple)
+                        act Walk(coffee_table)
+            sequence
+                cond IsNear(oven)
+                cond IsHolding(apple)
+                act Activate(oven)
+    sequence
+        cond IsOpen(oven)
+        selector
+            selector
+                sequence
+                    cond IsHolding(apple)
+                    selector
+                        sequence
+                            cond IsNear(oven)
+                            act Close(oven)
+                        act Walk(oven)
+                sequence
+                    cond IsHandEmpty()
+                    cond IsNear(apple)
+                    act Grasp(apple)
+            sequence
+                cond IsHandEmpty()
+                act Walk(apple)

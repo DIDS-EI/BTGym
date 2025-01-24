@@ -4,7 +4,7 @@ from btgym.utils.logger import log
 import math
 
 from btgym.core.simulator import Simulator
-from omnigibson.action_primitives.starter_semantic_action_primitives import StarterSemanticActionPrimitiveSet, StarterSemanticActionPrimitives
+from omnigibson.action_primitives.starter_semantic_action_primitives import StarterSemanticActionPrimitiveSet, StarterSemanticActionPrimitives,set_base_and_detect_collision
 from btgym.utils.logger import log
 import math
 import omnigibson.utils.transform_utils as T
@@ -22,7 +22,7 @@ m.MAX_STEPS_FOR_GRASP_OR_RELEASE = 50
 m.MAX_STEPS_FOR_HAND_MOVE_JOINT = 100
 m.OPENNESS_FRACTION_TO_OPEN = 80
 m.OPENNESS_THRESHOLD_TO_CLOSE = 10
-
+m.MAX_ATTEMPTS_FOR_SAMPLING_POSE_NEAR_OBJECT=1000
 def get_grasp_poses_for_object_sticky(target_obj):
     """
     Obtain a grasp pose for an object from top down, to be used with sticky grasping.
@@ -132,7 +132,20 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
         approach_pos = grasp_pose[0]
         approach_pose = (approach_pos, grasp_pose[1])
 
-        pose = self._sample_pose_near_object(obj, pose_on_obj=approach_pose, **kwargs)
+        # 求物体半径
+        bbox_center_in_world, bbox_quat_in_world, bbox_extent_in_base_frame, _ = obj.get_base_aligned_bbox(
+            visual=False
+        )
+        distance_lo=0.2
+        distance_hi=2
+        # distance_lo = min(bbox_extent_in_base_frame[0],bbox_extent_in_base_frame[1]) + 0.3
+        # distance_hi = max(bbox_extent_in_base_frame[0],bbox_extent_in_base_frame[1]) + 0.5
+        # print(f"distance_lo: {distance_lo}, distance_hi: {distance_hi}")
+
+        pose = self._sample_pose_near_object(obj, pose_on_obj=approach_pose, distance_lo=distance_lo,distance_hi=distance_hi,**kwargs)
+        # pose = self._sample_pose_near_object(obj, pose_on_obj=pose_on_obj, distance_lo=distance_lo,distance_hi=distance_hi,**kwargs)
+
+        
         x,y,yaw = pose
         pose = (th.tensor([x, y, 0.0], dtype=th.float32), T.euler2quat(th.tensor([0, 0, yaw], dtype=th.float32)))
 
@@ -170,16 +183,17 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
         if not horizontal:
             pose = self._sample_pose_near_pos(pos,distance_lo=0.4,distance_hi=2)
         else:
-            u = self.get_object_face_tensor(obj,pos)
+            # u = self.get_object_face_tensor(obj,pos)
+            u = th.tensor([0,1,0],dtype=th.float32)
             x_offset,y_offset,_ = u
             # u逆时针旋转90度
             # 把 (x_offset,y_offset) 方向作为pos为圆心的正方向，求pos坐标系到世界坐标系的转移矩阵
             pos_to_world_matrix = th.tensor([[u[0],-u[1],pos[0]],
                                             [u[1],u[0],pos[1]],
-                                             [0,0,1]])
+                                             [0.,0,1]], dtype=th.float32)
             
             # 把pos坐标系下的(1.5,-0.3)转换到世界坐标系下
-            x,y,_ = pos_to_world_matrix@th.tensor([offset[0],offset[1],1])
+            x,y,_ = pos_to_world_matrix@th.tensor([offset[0],offset[1],1], dtype=th.float32)
             # 求(-x_offset,-y_offset)和(1,0)的夹角
             yaw = math.atan2(-y_offset,x_offset)
 
@@ -474,7 +488,7 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
                 },
             )
 
-    def _sample_pose_near_object(self, obj, pose_on_obj=None, **kwargs):
+    def _sample_pose_near_object(self, obj, pose_on_obj=None, distance_lo=0.2,distance_hi=2,**kwargs):
         """
         Returns a 2d pose for the robot within in the range of the object and where the robot is not in collision with anything
 
@@ -491,9 +505,11 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
             for _ in range(m.MAX_ATTEMPTS_FOR_SAMPLING_POSE_NEAR_OBJECT):
                 if pose_on_obj is None:
                     pos_on_obj = self._sample_position_on_aabb_side(obj)
+                    # pos_on_obj, aabb_extent = obj.aabb_center, obj.aabb_extent
+                    
                     pose_on_obj = [pos_on_obj, th.tensor([0, 0, 0, 1])]
 
-                distance_lo, distance_hi = 0.2, 2
+                # distance_lo, distance_hi = 0.2, 2
                 distance = (th.rand(1) * (distance_hi - distance_lo) + distance_lo).item()
                 yaw_lo, yaw_hi = -math.pi, math.pi
                 yaw = th.rand(1) * (yaw_hi - yaw_lo) + yaw_lo
@@ -519,6 +535,7 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
                     continue
 
                 indented_print("Found valid position near object.")
+                print("distance:",distance)
                 return pose_2d
 
             raise ActionPrimitiveError(
@@ -530,6 +547,30 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
                     "pose on target": pose_on_obj,
                 },
             )
+
+    # TODO: Why do we need to pass in the context here?
+    def _test_pose(self, pose_2d, context, pose_on_obj=None):
+        """
+        Determines whether the robot can reach the pose on the object and is not in collision at the specified 2d pose
+
+        Args:
+            pose_2d (Iterable): (x, y, yaw) 2d pose
+            context (Context): Planning context reference
+            pose_on_obj (Iterable of arrays): Pose on the object in the world frame
+
+        Returns:
+            bool: True if the robot is in a valid pose, False otherwise
+        """
+        pose = self._get_robot_pose_from_2d_pose(pose_2d)
+        if pose_on_obj is not None:
+            relative_pose = T.relative_pose_transform(*pose_on_obj, *pose)
+            if not self._target_in_reach_of_robot_relative(relative_pose):
+                return False
+
+        if set_base_and_detect_collision(context, pose):
+            indented_print("Candidate position failed collision test.")
+            return False
+        return True
 
 
     def _open_or_close(self, obj, should_open):

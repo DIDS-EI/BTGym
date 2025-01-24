@@ -7,9 +7,10 @@ import random
 # Define action categories, which include prerequisites, adding and deleting impacts
 class Action:
     def __init__(self,name='anonymous action',pre=set(),add=set(),del_set=set(),cost=10,vaild_num=0,vild_args=set()):
-        self.pre=copy.deepcopy(pre)
-        self.add=copy.deepcopy(add)
-        self.del_set=copy.deepcopy(del_set)
+        # 去除pre中每个元素的空格,再赋给 self.pre
+        self.pre = {p.replace(" ", "") for p in pre}
+        self.add = {a.replace(" ", "") for a in add}
+        self.del_set = {d.replace(" ", "") for d in del_set}
         self.name=name
         self.real_cost=cost
         self.cost=cost

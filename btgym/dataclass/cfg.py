@@ -29,6 +29,7 @@ class cfg:
     scene_name = 'Rs_int'
     scene_file_name = 'scene_file_0'
     target_object_name = 'apple.n.01_1'
+    target_place_name = 'coffee_table.n.01_1'
     hdf5_path = None
 
 

@@ -36,6 +36,12 @@ from bddl.object_taxonomy import ObjectTaxonomy
 import time
 
 
+from pathlib import Path
+from PIL import Image
+from btgym.molmo.molmo_client import MolmoClient
+DIR = Path(__file__).parent
+from btgym.dataclass import cfg, state
+
 OBJECT_TAXONOMY = ObjectTaxonomy()
 
 task_list_path = os.path.join(cfg.ASSETS_PATH, 'tasks.txt')
@@ -67,6 +73,11 @@ class Simulator:
 
     def __init__(self,headless=False):
         gm.HEADLESS = headless
+        
+        # gm.USE_GPU_DYNAMICS = True
+        # gm.ENABLE_FLATCACHE = False
+        
+        
         self.og_sim = None
         self.current_task_name = None
         self.device = th.device('cuda' if th.cuda.is_available() else 'cpu')
@@ -79,7 +90,7 @@ class Simulator:
         self.target_visual = None
         self.reload_count = 0
         self.reload_count_max = 1
-        self.batch_size = 32
+        self.batch_size = 4 #32
 
         # self.action = []
         self.default_move_action = th.tensor([0,0])
@@ -168,10 +179,17 @@ class Simulator:
         self.load_from_config(config)
 
 
-    def load_custom_task(self, task_name, scene_name=None, scene_file_name=None,is_sample=False):
+    def load_custom_task(self, task_name, scene_name=None, scene_file_name=None,is_sample=False,folder_path=None,load_task_relevant_only=True):
         from bddl import config
-        config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
-        from omnigibson.utils import bddl_utils 
+        # 如果 folder_path没提供,就活动配置路径 默认路径  my_tasks
+        if folder_path is None:
+            config.ACTIVITY_CONFIGS_PATH = f'{cfg.ASSETS_PATH}/my_tasks'
+        else:
+            config.ACTIVITY_CONFIGS_PATH = f'{folder_path}'
+            cfg.task_folder = folder_path
+            
+        from omnigibson.utils import bddl_utils
+        # 如果任务名不在bddl_utils.BEHAVIOR_ACTIVITIES中，则添加
         if task_name not in bddl_utils.BEHAVIOR_ACTIVITIES:
             bddl_utils.BEHAVIOR_ACTIVITIES.append(task_name)
 
@@ -184,7 +202,7 @@ class Simulator:
             cfgs["scene"]["scene_file"] = f'{cfg.task_folder}/{task_name}/{scene_file_name}.json'
         
         if not is_sample:
-            cfgs["scene"]["load_task_relevant_only"] = True
+            cfgs["scene"]["load_task_relevant_only"] = load_task_relevant_only
 
         cfgs['task'] = {
                 "type": "BehaviorTask",
@@ -194,20 +212,55 @@ class Simulator:
                 "online_object_sampling": is_sample,
             }
         self.load_from_config(cfgs)
+        
+        # 保存
+        output_json_path = f'{cfg.task_folder}/{task_name}/{scene_file_name}.json'
+        if is_sample:
+            self.og_sim.task.write_task_metadata()
+            og.sim.save(json_paths=[output_json_path])
+        return output_json_path
+        
+        
 
-    def sample_custom_task(self,task_name, scene_name=None):
+    # def sample_custom_task(self,task_name, scene_name=None):
+    #     try:
+    #         self.load_custom_task(task_name, scene_name=scene_name, is_sample=True)
+    #     except Exception as e:
+    #         print(f"Error loading task {task_name}: {str(e)}")
+    #         return ''
+    #     os.makedirs(f'{cfg.OUTPUTS_PATH}/sampled_tasks',exist_ok=True)
+    #     json_path = f'{cfg.OUTPUTS_PATH}/sampled_tasks/{task_name}_{int(time.time())}.json'
+
+    #     self.og_sim.task.write_task_metadata()
+    #     # og.sim.write_metadata('scene_file_name',scene_name)
+    #     og.sim.save(json_paths=[json_path])
+    #     return json_path
+
+
+    # cys: 采样任务
+    # 输入:
+    # task_name: 任务的名称。
+    # scene_name: 场景的名称（可选）。
+    # folder_path: 任务配置文件夹的路径（可选）。
+    # output_json_path: 输出 JSON 文件的路径（可选）。
+    def sample_custom_task(self,task_name, scene_name=None,folder_path=None,output_json_path=None):
         try:
-            self.load_custom_task(task_name, scene_name=scene_name, is_sample=True)
+            self.load_custom_task(task_name, scene_name=scene_name, folder_path=folder_path,is_sample=True)
         except Exception as e:
             print(f"Error loading task {task_name}: {str(e)}")
             return ''
-        os.makedirs(f'{cfg.OUTPUTS_PATH}/sampled_tasks',exist_ok=True)
-        json_path = f'{cfg.OUTPUTS_PATH}/sampled_tasks/{task_name}_{int(time.time())}.json'
+        if output_json_path is None:
+            os.makedirs(f'{cfg.OUTPUTS_PATH}/sampled_tasks',exist_ok=True)
+            output_json_path = f'{cfg.OUTPUTS_PATH}/sampled_tasks/{task_name}_{int(time.time())}.json'
+        else:
+            os.makedirs(os.path.dirname(output_json_path),exist_ok=True)
+            output_json_path = os.path.join(cfg.task_folder,task_name,output_json_path)
+        
 
         self.og_sim.task.write_task_metadata()
         # og.sim.write_metadata('scene_file_name',scene_name)
-        og.sim.save(json_paths=[json_path])
-        return json_path
+        og.sim.save(json_paths=[output_json_path])
+        return output_json_path
 
 
     def load_scene(self, scene_name):
@@ -259,6 +312,7 @@ class Simulator:
         self.kinematics_config = self.curobo_mg.mg.robot_cfg.kinematics.kinematics_config
 
         log("load task: success!")
+        
 
         # from omni.isaac.core.objects import cuboid
 
@@ -275,12 +329,14 @@ class Simulator:
             self.idle_step()
 
 
-    # def load_from_json(self, task_name, json_path):
-    #     config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
-    #     config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
-    #     config["scene"]["scene_file"] = json_path
-
-    #     self.load_from_config(config)
+    def load_from_json(self, task_name, json_path):
+        config_filename = os.path.join(ROOT_PATH, "assets/fetch_primitives.yaml")
+        config = yaml.load(open(config_filename, "r"), Loader=yaml.FullLoader)
+        config["scene"]["scene_file"] = json_path
+        
+        config["scene"]["load_task_relevant_only"] = True
+        
+        self.load_from_config(config)
 
     # def load_from_json_task(self, json_path, task_name):
     #     pass
@@ -297,6 +353,7 @@ class Simulator:
 
     def reset(self):
         self.og_sim.reset()
+        self.target_visual = None
 
     # def step(self):
     #     if self.control_queue.empty():
@@ -358,8 +415,7 @@ class Simulator:
         return list(self.og_sim.task.object_instance_to_category.keys())
 
     def navigate_to_object(self, object_name):
-        # object = self.scene.object_registry("name", object_name)
-        self.reset_hand()
+        # object = self.scene.object_registry("name", object_name)        self.reset_hand()
         obj = self.og_sim.task.object_scope[object_name]
         self.action_primitives._navigate_to_obj(obj)
         self.idle_step(10)
@@ -368,6 +424,7 @@ class Simulator:
         # execute_controller(primitive_action, self.og_sim)
 
     def navigate_to_pos(self, object_name,pos,offset=(1.2,-0.2)):
+        # offset = th.tensor(offset,dtype=th.double)
         self.reset_hand()
         obj = self.og_sim.task.object_scope[object_name]
         self.action_primitives._navigate_to_pos(obj,pos,offset=offset)
@@ -581,7 +638,6 @@ class Simulator:
         self.idle_step(20)
 
 
-
     def open_object_by_pose_by_sticky(self, pose, object_name, is_local=True):
         robot = self.robot
         
@@ -790,7 +846,7 @@ class Simulator:
                 2.0,
                 -1.0,
                 1.36904,
-                1.90996,  # arm
+                0,  # arm
                 jp[-2],
                 jp[-1],  # gripper
             ])
@@ -1044,6 +1100,74 @@ class Simulator:
 
     def close(self):
         og.shutdown()
+        
+    ####################################################################################
+    
+    # 传入图片和相机信息，返回全局坐标系下的目标点
+    def keypoint_proposal(self,query,img_dir=None,file_name='camera_0_rgb.png'):
+        img_dir = DIR.parent / '../exps_bt_learning/outputs' if img_dir is None else img_dir
+        
+        obs = self.get_obs()
+        rgb_img = Image.fromarray(obs['rgb'])
+        camera_info = self.get_camera_info()
+
+        
+        rgb_img = Image.fromarray(obs['rgb'])
+        
+        rgb_img.save(f'{img_dir}/{file_name}')
+        molmo_client = MolmoClient()
+        point = molmo_client.get_grasp_pose_by_molmo(query,dir=img_dir,point_img_path=f'{img_dir}/{file_name}')
+        if point:
+            target_pos = og_utils.pixel_to_world(obs, camera_info, point[0], point[1])
+            print(f"target_pos: {target_pos}")
+            self.navigate_to_pos(object_name=cfg.target_object_name,pos=target_pos,offset=(0.9,-0.2))
+        else:
+            target_pos = None
+        return target_pos
+
+
+    # 用于水平抓取获取 抓取点
+    def eef_reach_pos(self,pos,horizontal=True,grounding=False):
+        target_pos = pos
+        
+        if horizontal:
+            obj_face_tensor = th.tensor([0,1,0.])
+            yaw = math.atan2(-obj_face_tensor[1],obj_face_tensor[0])
+
+            target_pos = target_pos+obj_face_tensor*0.1
+            target_euler = [math.pi/2, 0, yaw]
+
+            # 可视化目标点
+            self.set_target_visual_pose([*target_pos,0,0,0],size=0.05)
+            self.idle_step(10)
+
+            target_local_pose = self.pose_to_local([*target_pos, *target_euler])
+            success = self.reach_pose(target_local_pose,is_local=True)
+        else:
+            
+            if not grounding:
+                # 确定抓取的方向为 相机位置到 目标位置的方向
+                camera_pos = self.camera.get_position_orientation()[0] # 0为位置,1为四元数
+                grasp_direction = target_pos - camera_pos
+                grasp_direction = grasp_direction / np.linalg.norm(grasp_direction)
+
+                target_pos = target_pos + grasp_direction * 0.02 # target_pos 为朝着 grasp_direction 方向的 1厘米 处
+            
+            # if grounding， just reach the target_pos
+            state.target_local_pose = self.pose_to_local(target_pos.tolist()+state.target_euler)
+            success = self.grasp_object_by_pose(state.target_local_pose,object_name=cfg.target_object_name)
+        
+
+    def move_hand_forward(self,distance=0.5):
+        obj_face_tensor=th.tensor([0,1,0.])
+        self.move_hand_linearly(dir=-obj_face_tensor,distance=distance)
+
+
+    def move_hand_backward(self,distance=0.3):
+        obj_face_tensor=th.tensor([0,1,0.])
+        self.move_hand_linearly(dir=obj_face_tensor,distance=distance,ignore_obj_in_hand=True)
+    
+    ####################################################################################
 
 
 
