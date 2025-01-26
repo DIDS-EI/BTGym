@@ -1,0 +1,160 @@
+
+goal = "IsHolding(coffee_cup)"
+objects = ["coffee_cup","table"]
+```python
+class Grasp(OGAction):
+    can_be_expanded = True
+    num_args = 1
+    valid_args = ["coffee_cup"]
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    @classmethod
+    def get_info(cls,*arg):
+        info = {}
+        info["pre"]={"IsHandEmpty()",f"IsNear({arg[0]})"}
+        info["add"]={f"IsHolding({arg[0]})"}
+        info["del_set"] = {f"IsHandEmpty()"}
+        info["cost"] = 1
+        return info
+
+
+    def change_condition_set(self):
+        self.agent.condition_set |= (self.info["add"])
+        self.agent.condition_set -= self.info["del_set"]
+```
+```python
+class Walk(OGAction):
+    can_be_expanded = True
+    num_args = 1
+    valid_args = ["coffee_cup","table"]
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.target_obj = self.args[0]
+
+    @classmethod
+    def get_info(cls,*arg):
+        info = {}
+        info["pre"]=set()
+        info["add"]={f"IsNear({arg[0]})"}
+        info["del_set"] = {f'IsNear({place})' for place in cls.valid_args if place != arg[0]}
+        info["cost"] = 1
+        return info
+
+    def change_condition_set(self):
+        self.agent.condition_set |= (self.info["add"])
+        self.agent.condition_set -= self.info["del_set"] 
+```
+```python
+class IsHandEmpty(OGCondition):
+    can_be_expanded = True
+    num_args = 1
+```
+```python
+class IsHolding(OGCondition):
+    can_be_expanded = True
+    num_args = 1
+```
+```python
+class IsNear(OGCondition):
+    can_be_expanded = True
+    num_args = 2
+```
+
+
+goal = "In(ruler,drawer)"
+objects = ["ruler","drawer"]
+```python
+class GraspFrom(OGAction):
+    can_be_expanded = True
+    num_args = 1
+    valid_args = ["apple","drawer"]
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    @classmethod
+    def get_info(cls,*arg):
+        info = {}
+        info["pre"]={"IsHandEmpty()",f"IsNear({arg[0]})",f"IsOpen({arg[1]})"}
+        info["add"]={f"IsHolding({arg[0]})"}
+        info["del_set"] = {f"IsHandEmpty()"}
+        info["cost"] = 1
+        return info
+
+
+    def change_condition_set(self):
+        self.agent.condition_set |= (self.info["add"])
+        self.agent.condition_set -= self.info["del_set"]
+```
+```python
+class Walk(OGAction):
+    can_be_expanded = True
+    num_args = 1
+    valid_args = ["apple","table"]
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.target_obj = self.args[0]
+
+    @classmethod
+    def get_info(cls,*arg):
+        info = {}
+        info["pre"]=set()
+        info["add"]={f"IsNear({arg[0]})"}
+        info["del_set"] = {f'IsNear({place})' for place in cls.valid_args if place != arg[0]}
+        info["cost"] = 1
+        return info
+
+    def change_condition_set(self):
+        self.agent.condition_set |= (self.info["add"])
+        self.agent.condition_set -= self.info["del_set"] 
+```
+```python
+class Open(OGAction):
+    can_be_expanded = True
+    num_args = 1
+    valid_args = ["drawer"]
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.target_obj = self.args[0]
+
+    @classmethod
+    def get_info(cls,*arg):
+        info = {}
+        info["pre"]={"IsHandEmpty()",f"IsNear({arg[0]})",f"Closed({arg[0]})"}
+        info["add"]={f"IsOpen({arg[0]})"}
+        info["del_set"] = {f"IsHandEmpty()",f"Closed({arg[0]})"}
+        info["cost"] = 1
+        return info
+
+    def change_condition_set(self):
+        self.agent.condition_set |= (self.info["add"])
+        self.agent.condition_set -= self.info["del_set"] 
+```
+```python
+class IsHandEmpty(OGCondition):
+    can_be_expanded = True
+    num_args = 1
+```
+```python
+class IsHolding(OGCondition):
+    can_be_expanded = True
+    num_args = 1
+```
+```python
+class IsNear(OGCondition):
+    can_be_expanded = True
+    num_args = 2
+```
+```python
+class IsOpen(OGCondition):
+    can_be_expanded = True
+    num_args = 1
+```
+```python
+class Closed(OGCondition):
+    can_be_expanded = True
+    num_args = 1
+```

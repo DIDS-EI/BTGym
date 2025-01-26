@@ -1,0 +1,12 @@
+try_num,point_correct,curobo_success,success
+1,"(242, 96)",True,True
+2,"(48, 11)",False,False
+3,"(242, 96)",True,True
+4,"(234, 116)",True,True
+5,"(243, 96)",True,True
+6,"(99, 96)",True,True
+7,"(145, 96)",True,True
+8,"(145, 96)",True,True
+9,"(51, 96)",True,True
+10,"(99, 239)",True,True
+11,"(140, 96)",True,True

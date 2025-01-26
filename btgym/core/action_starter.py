@@ -4,7 +4,7 @@ from btgym.utils.logger import log
 import math
 
 from btgym.core.simulator import Simulator
-from omnigibson.action_primitives.starter_semantic_action_primitives import StarterSemanticActionPrimitiveSet, StarterSemanticActionPrimitives
+from omnigibson.action_primitives.starter_semantic_action_primitives import StarterSemanticActionPrimitiveSet, StarterSemanticActionPrimitives,set_base_and_detect_collision
 from btgym.utils.logger import log
 import math
 import omnigibson.utils.transform_utils as T
@@ -15,13 +15,14 @@ from omnigibson.action_primitives.starter_semantic_action_primitives import m,in
     object_states,get_grasp_position_for_open,get_grasp_poses_for_object_sticky
 
 from omnigibson.utils.grasping_planning_utils import JointType, _get_relevant_joints,grasp_position_for_open_on_revolute_joint,grasp_position_for_open_on_prismatic_joint
+import omnigibson as og
 
 m.GRASP_APPROACH_DISTANCE = 0.3
 m.MAX_STEPS_FOR_GRASP_OR_RELEASE = 50
 m.MAX_STEPS_FOR_HAND_MOVE_JOINT = 100
 m.OPENNESS_FRACTION_TO_OPEN = 80
 m.OPENNESS_THRESHOLD_TO_CLOSE = 10
-
+m.MAX_ATTEMPTS_FOR_SAMPLING_POSE_NEAR_OBJECT=1000
 def get_grasp_poses_for_object_sticky(target_obj):
     """
     Obtain a grasp pose for an object from top down, to be used with sticky grasping.
@@ -131,7 +132,20 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
         approach_pos = grasp_pose[0]
         approach_pose = (approach_pos, grasp_pose[1])
 
-        pose = self._sample_pose_near_object(obj, pose_on_obj=approach_pose, **kwargs)
+        # 求物体半径
+        bbox_center_in_world, bbox_quat_in_world, bbox_extent_in_base_frame, _ = obj.get_base_aligned_bbox(
+            visual=False
+        )
+        distance_lo=0.2
+        distance_hi=2
+        # distance_lo = min(bbox_extent_in_base_frame[0],bbox_extent_in_base_frame[1]) + 0.3
+        # distance_hi = max(bbox_extent_in_base_frame[0],bbox_extent_in_base_frame[1]) + 0.5
+        # print(f"distance_lo: {distance_lo}, distance_hi: {distance_hi}")
+
+        pose = self._sample_pose_near_object(obj, pose_on_obj=approach_pose, distance_lo=distance_lo,distance_hi=distance_hi,**kwargs)
+        # pose = self._sample_pose_near_object(obj, pose_on_obj=pose_on_obj, distance_lo=distance_lo,distance_hi=distance_hi,**kwargs)
+
+        
         x,y,yaw = pose
         pose = (th.tensor([x, y, 0.0], dtype=th.float32), T.euler2quat(th.tensor([0, 0, yaw], dtype=th.float32)))
 
@@ -146,6 +160,84 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
         self.simulator.set_camera_lookat_robot()
         # self.simulator.idle_step(1)
         self.simulator.set_camera_lookat_pos(approach_pos)
+
+
+    def get_object_face_tensor(self,obj,pos,horizontal=True):
+        aabb_center, aabb_extent = obj.aabb_center, obj.aabb_extent
+        obj_center_pos = aabb_center
+        # 假设物体一定是水平或竖直的。
+        x_offset = pos[0]-obj_center_pos[0]
+        y_offset = pos[1]-obj_center_pos[1]
+        # 把(x_offset,y_offset)变成最接近的x或y轴
+        if abs(x_offset)>abs(y_offset):
+            x_offset = 0
+            y_offset = th.sign(y_offset)
+        else:
+            y_offset = 0
+            x_offset = th.sign(x_offset)
+
+        u = th.tensor([x_offset, y_offset,0])
+        return u
+
+    def _navigate_to_pos(self,obj,pos,horizontal=True,offset=(1.2,-0.2)):
+        if not horizontal:
+            pose = self._sample_pose_near_pos(pos,distance_lo=0.4,distance_hi=2)
+        else:
+            # u = self.get_object_face_tensor(obj,pos)
+            u = th.tensor([0,1,0],dtype=th.float32)
+            x_offset,y_offset,_ = u
+            # u逆时针旋转90度
+            # 把 (x_offset,y_offset) 方向作为pos为圆心的正方向，求pos坐标系到世界坐标系的转移矩阵
+            pos_to_world_matrix = th.tensor([[u[0],-u[1],pos[0]],
+                                            [u[1],u[0],pos[1]],
+                                             [0.,0,1]], dtype=th.float32)
+            
+            # 把pos坐标系下的(1.5,-0.3)转换到世界坐标系下
+            x,y,_ = pos_to_world_matrix@th.tensor([offset[0],offset[1],1], dtype=th.float32)
+            # 求(-x_offset,-y_offset)和(1,0)的夹角
+            yaw = math.atan2(-y_offset,x_offset)
+
+            # pose = self._sample_pose_near_pos(pos,distance_lo=2,distance_hi=3,yaw_lo=-math.pi/2,yaw_hi=math.pi/2)
+        
+            pose = (th.tensor([x, y, 0.0], dtype=th.float32), T.euler2quat(th.tensor([0, 0, yaw], dtype=th.float32)))
+
+
+            self.robot.set_position_orientation(pose[0],pose[1])
+            self.simulator.set_camera_lookat_robot()
+            # self.simulator.idle_step(1)
+            self.simulator.set_camera_lookat_pos(pos)
+
+            # with PlanningContext(self.env, self.robot, self.robot_copy, "simplified") as context:
+            #     for _ in range(m.MAX_ATTEMPTS_FOR_SAMPLING_POSE_NEAR_OBJECT):
+            #         pose_on_obj = [pos, th.tensor([0, 0, 0, 1])]
+
+            #         distance = (th.rand(1) * (distance_hi - distance_lo) + distance_lo).item()
+            #         yaw_lo, yaw_hi = -math.pi, math.pi
+            #         yaw = th.rand(1) * (yaw_hi - yaw_lo) + yaw_lo
+            #         avg_arm_workspace_range = th.mean(self.robot.arm_workspace_range[self.arm])
+            #         pose_2d = th.cat(
+            #             [
+            #                 pose_on_obj[0][0] + distance * th.cos(yaw),
+            #                 pose_on_obj[0][1] + distance * th.sin(yaw),
+            #                 yaw + math.pi - avg_arm_workspace_range,
+            #             ]
+            #         )
+
+            #         if not self._test_pose(pose_2d, context, pose_on_obj=pose_on_obj, **kwargs):
+            #             continue
+
+            #         indented_print("Found valid position near object.")
+            #         return pose_2d
+
+            #     raise ActionPrimitiveError(
+            #         ActionPrimitiveError.Reason.SAMPLING_ERROR,
+            #         "Could not find valid position near object.",
+            #         {
+            #             "pose on target": pose_on_obj,
+            #         },
+            #     )
+
+
 
 
 
@@ -278,8 +370,8 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
             )
 
 
-    def _move_hand_linearly_cartesian(
-        self, target_pose, stop_on_contact=False, ignore_failure=False, stop_if_stuck=False
+    def _move_hand_linearly(
+        self, dir,distance=0.5, stop_on_contact=False, ignore_failure=False, stop_if_stuck=False,ignore_obj_in_hand=False
     ):
         """
         Yields action for the robot to move its arm to reach the specified target pose by moving the eef along a line in cartesian
@@ -293,75 +385,110 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
         Returns:
             th.tensor or None: Action array for one step for the robot to move arm or None if its at the target pose
         """
+        dis_offset = 0.02
         # To make sure that this happens in a roughly linear fashion, we will divide the trajectory
         # into 1cm-long pieces
-        start_pos, start_orn = self.robot.eef_links[self.arm].get_position_orientation()
-        travel_distance = th.norm(target_pose[0] - start_pos)
-        num_poses = int(
-            th.max(th.tensor([2, int(travel_distance / m.MAX_CARTESIAN_HAND_STEP) + 1], dtype=th.float32)).item()
-        )
-        pos_waypoints = multi_dim_linspace(start_pos, target_pose[0], num_poses)
+        collision_counts = 0
+        start_pos,start_orn = self.robot.eef_links[self.arm].get_position_orientation()
+        while True:
+            if detect_robot_collision_in_sim(self.robot, ignore_obj_in_hand=ignore_obj_in_hand):
+                collision_counts += 1
+                if collision_counts > 3:
+                    break
+            else:
+                collision_counts = 0
 
-        # Also interpolate the rotations
-        t_values = th.linspace(0, 1, num_poses)
-        quat_waypoints = [T.quat_slerp(start_orn, target_pose[1], t) for t in t_values]
+            current_pos, current_orn = self.robot.eef_links[self.arm].get_position_orientation()
+            target_pos = current_pos + dir * dis_offset
+            current_distance = th.norm(target_pos-start_pos)
+            if current_distance >= distance:
+                break
+            joint_pos = self._convert_cartesian_to_joint_space((target_pos, current_orn))
+            yield from self._move_hand_direct_joint(
+                joint_pos, stop_on_contact=stop_on_contact, ignore_failure=ignore_failure
+            )
+    
 
-        controller_config = self.robot._controller_config["arm_" + self.arm]
-        if controller_config["name"] == "InverseKinematicsController":
-            waypoints = list(zip(pos_waypoints, quat_waypoints))
+    def _move_hand_direct_joint(self, joint_pos, stop_on_contact=False, ignore_failure=False):
+        """
+        Yields action for the robot to move its arm to reach the specified joint positions by directly actuating with no planner
 
-            for i, waypoint in enumerate(waypoints):
-                if i < len(waypoints) - 1:
-                    yield from self._move_hand_direct_ik(
-                        waypoint,
-                        stop_on_contact=stop_on_contact,
-                        ignore_failure=ignore_failure,
-                        stop_if_stuck=stop_if_stuck,
-                    )
-                else:
-                    yield from self._move_hand_direct_ik(
-                        waypoints[-1],
-                        pos_thresh=0.01,
-                        ori_thresh=0.1,
-                        stop_on_contact=stop_on_contact,
-                        ignore_failure=ignore_failure,
-                        stop_if_stuck=stop_if_stuck,
-                    )
+        Args:
+            joint_pos (th.tensor): Array of joint positions for the arm
+            stop_on_contact (boolean): Determines whether to stop move once an object is hit
+            ignore_failure (boolean): Determines whether to throw error for not reaching final joint positions
 
-                # Also decide if we can stop early.
-                current_pos, current_orn = self.robot.eef_links[self.arm].get_position_orientation()
-                pos_diff = th.norm(current_pos - target_pose[0])
-                orn_diff = T.get_orientation_diff_in_radian(target_pose[1], current_orn).item()
-                if pos_diff < m.HAND_DIST_THRESHOLD and orn_diff < th.deg2rad(th.tensor([0.1])).item():
-                    return
+        Returns:
+            th.tensor or None: Action array for one step for the robot to move arm or None if its at the joint positions
+        """
 
-                if stop_on_contact and detect_robot_collision_in_sim(self.robot, ignore_obj_in_hand=False):
-                    return
+        # Store the previous eef pose for checking if we got stuck
+        prev_eef_pos = th.zeros(3)
 
-            if not ignore_failure:
-                raise ActionPrimitiveError(
-                    ActionPrimitiveError.Reason.EXECUTION_ERROR,
-                    "Your hand was obstructed from moving to the desired world position",
+        # All we need to do here is save the target joint position so that empty action takes us towards it
+        controller_name = f"arm_{self.arm}"
+        self._arm_targets[controller_name] = joint_pos
+
+        for i in range(m.MAX_STEPS_FOR_HAND_MOVE_JOINT):
+            current_joint_pos = self.robot.get_joint_positions()[self._manipulation_control_idx]
+            diff_joint_pos = joint_pos - current_joint_pos
+            if th.max(th.abs(diff_joint_pos)).item() < m.JOINT_POS_DIFF_THRESHOLD:
+                return
+            if stop_on_contact and detect_robot_collision_in_sim(self.robot, ignore_obj_in_hand=False):
+                return
+            # check if the eef stayed in the same pose for sufficiently long
+            if (
+                og.sim.get_sim_step_dt() * i > m.TIME_BEFORE_JOINT_STUCK_CHECK
+                and th.max(th.abs(self.robot.get_eef_position(self.arm) - prev_eef_pos)).item() < 0.0001
+            ):
+                # We're stuck!
+                break
+
+            # Since we set the new joint target as the arm_target, the empty action will take us towards it.
+            action = self._empty_action()
+
+            prev_eef_pos = self.robot.get_eef_position(self.arm)
+            yield self._postprocess_action(action)
+
+        if not ignore_failure:
+            raise ActionPrimitiveError(
+                ActionPrimitiveError.Reason.EXECUTION_ERROR,
+                "Your hand was obstructed from moving to the desired joint position",
+            )
+
+
+    def _sample_pose_near_pos(self, pos,distance_lo=0.2,distance_hi=2,yaw_lo=-math.pi,yaw_hi=math.pi,**kwargs):
+        with PlanningContext(self.env, self.robot, self.robot_copy, "simplified") as context:
+            for _ in range(m.MAX_ATTEMPTS_FOR_SAMPLING_POSE_NEAR_OBJECT):
+                pose_on_obj = [pos, th.tensor([0, 0, 0, 1])]
+
+                distance = (th.rand(1) * (distance_hi - distance_lo) + distance_lo).item()
+                yaw_lo, yaw_hi = -math.pi, math.pi
+                yaw = th.rand(1) * (yaw_hi - yaw_lo) + yaw_lo
+                avg_arm_workspace_range = th.mean(self.robot.arm_workspace_range[self.arm])
+                pose_2d = th.cat(
+                    [
+                        pose_on_obj[0][0] + distance * th.cos(yaw),
+                        pose_on_obj[0][1] + distance * th.sin(yaw),
+                        yaw + math.pi - avg_arm_workspace_range,
+                    ]
                 )
-        else:
-            collision_counts = 0
-            while True:
-                if detect_robot_collision_in_sim(self.robot, ignore_obj_in_hand=False):
-                    collision_counts += 1
-                    if collision_counts > 3:
-                        break
-                else:
-                    collision_counts = 0
 
-                current_pos, current_orn = self.robot.eef_links[self.arm].get_position_orientation()
-                target_pos = current_pos - th.tensor([0,0,0.02])
-                joint_pos = self._convert_cartesian_to_joint_space((target_pos, current_orn))
-                yield from self._move_hand_direct_joint(
-                    joint_pos, stop_on_contact=stop_on_contact, ignore_failure=ignore_failure
-                )
-            
+                if not self._test_pose(pose_2d, context, pose_on_obj=pose_on_obj, **kwargs):
+                    continue
 
-    def _sample_pose_near_object(self, obj, pose_on_obj=None, **kwargs):
+                indented_print("Found valid position near object.")
+                return pose_2d
+
+            raise ActionPrimitiveError(
+                ActionPrimitiveError.Reason.SAMPLING_ERROR,
+                "Could not find valid position near object.",
+                {
+                    "pose on target": pose_on_obj,
+                },
+            )
+
+    def _sample_pose_near_object(self, obj, pose_on_obj=None, distance_lo=0.2,distance_hi=2,**kwargs):
         """
         Returns a 2d pose for the robot within in the range of the object and where the robot is not in collision with anything
 
@@ -378,9 +505,11 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
             for _ in range(m.MAX_ATTEMPTS_FOR_SAMPLING_POSE_NEAR_OBJECT):
                 if pose_on_obj is None:
                     pos_on_obj = self._sample_position_on_aabb_side(obj)
+                    # pos_on_obj, aabb_extent = obj.aabb_center, obj.aabb_extent
+                    
                     pose_on_obj = [pos_on_obj, th.tensor([0, 0, 0, 1])]
 
-                distance_lo, distance_hi = 0.2, 2
+                # distance_lo, distance_hi = 0.2, 2
                 distance = (th.rand(1) * (distance_hi - distance_lo) + distance_lo).item()
                 yaw_lo, yaw_hi = -math.pi, math.pi
                 yaw = th.rand(1) * (yaw_hi - yaw_lo) + yaw_lo
@@ -406,6 +535,7 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
                     continue
 
                 indented_print("Found valid position near object.")
+                print("distance:",distance)
                 return pose_2d
 
             raise ActionPrimitiveError(
@@ -417,6 +547,30 @@ class ActionPrimitives(StarterSemanticActionPrimitives):
                     "pose on target": pose_on_obj,
                 },
             )
+
+    # TODO: Why do we need to pass in the context here?
+    def _test_pose(self, pose_2d, context, pose_on_obj=None):
+        """
+        Determines whether the robot can reach the pose on the object and is not in collision at the specified 2d pose
+
+        Args:
+            pose_2d (Iterable): (x, y, yaw) 2d pose
+            context (Context): Planning context reference
+            pose_on_obj (Iterable of arrays): Pose on the object in the world frame
+
+        Returns:
+            bool: True if the robot is in a valid pose, False otherwise
+        """
+        pose = self._get_robot_pose_from_2d_pose(pose_2d)
+        if pose_on_obj is not None:
+            relative_pose = T.relative_pose_transform(*pose_on_obj, *pose)
+            if not self._target_in_reach_of_robot_relative(relative_pose):
+                return False
+
+        if set_base_and_detect_collision(context, pose):
+            indented_print("Candidate position failed collision test.")
+            return False
+        return True
 
 
     def _open_or_close(self, obj, should_open):

@@ -1,0 +1,12 @@
+task_name,try_times,action_lib_num,condition_lib_num,expanded_num,act_num,success_or_not
+task4,1,6.0,7.0,3.0,0.0,False
+task4,2,7.0,8.0,-1.0,-1.0,False
+task4,3,7.0,8.0,-1.0,-1.0,False
+task4,4,7.0,8.0,-1.0,-1.0,False
+task4,5,6.0,7.0,3.0,0.0,False
+task4,6,6.0,7.0,16.0,0.0,False
+task4,7,6.0,7.0,76.0,0.0,False
+task4,8,7.0,8.0,-1.0,-1.0,False
+task4,9,7.0,8.0,5.0,0.0,False
+task4,10,6.0,7.0,16.0,0.0,False
+task4,-1,6.5,7.5,11.5,-0.4,False

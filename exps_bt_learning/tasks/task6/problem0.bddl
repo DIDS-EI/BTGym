@@ -1,0 +1,20 @@
+(define (problem installing_a_printer_0)
+    (:domain omnigibson)
+
+    (:objects
+        oven.n.01_1 - oven.n.01
+        floor.n.01_1 - floor.n.01
+        agent.n.01_1 - agent.n.01
+    )
+    
+    (:init 
+        (inroom floor.n.01_1 kitchen) 
+        (ontop oven.n.01_1 floor.n.01_1)
+        (open oven.n.01_1)
+        (ontop agent.n.01_1 floor.n.01_1)
+    )
+    
+    (:goal 
+        (toggled_on oven.n.01_1)
+    )
+)

@@ -169,3 +169,39 @@ def point_to_pixel(pt, intrinsics, extrinsics):
 def pixel_to_world(obs, camera_info, pixel_x,  pixel_y):
     p2w = pixel_to_3d_points(obs['depth'], camera_info['intrinsics'], camera_info['extrinsics'])
     return p2w[pixel_y,pixel_x]
+
+
+# # 将方向向量转为欧拉角度
+# def direction_to_euler(direction):
+#     import transforms3d.euler as euler
+#     import transforms3d.quaternions as quaternions
+#     import transforms3d.axangles as axangles
+
+#     # 将方向向量转换为旋转矩阵
+#     rotation_matrix = axangles.axangle2mat(direction, 0)
+#     # 将旋转矩阵转换为四元数
+#     grasp_quaternion = quaternions.mat2quat(rotation_matrix)
+#     # 将四元数转换为欧拉角
+#     return euler.quat2euler(grasp_quaternion)
+# import torch as th
+# grasp_direction = th.tensor([-0.5659, -0.1251, -0.8150])
+# print(direction_to_euler(grasp_direction))
+def direction_vector_to_euler_angles(unit_vector):
+    # 计算 pitch (绕 y 轴)
+    pitch = np.arctan2(unit_vector[2], unit_vector[0])  # z 和 x 的夹角
+    # pitch_degrees = np.degrees(pitch)
+
+    # 计算 yaw (绕 z 轴)
+    yaw = np.arctan2(unit_vector[1], unit_vector[0])  # y 和 x 的夹角
+    # yaw_degrees = np.degrees(yaw)
+
+    # Roll 通常为零，因为我们假设初始方向是 (1, 0, 0)
+    roll = 0.0
+    # roll_degrees = np.degrees(roll)
+    
+    return [roll,pitch, yaw]
+    
+# 示例
+# grasp_direction = np.array([0.5, 0.5, 0.7071])
+# alpha, beta, gamma = direction_vector_to_euler_angles(grasp_direction)
+# print(f"欧拉角: {alpha}, {beta}, {gamma}")

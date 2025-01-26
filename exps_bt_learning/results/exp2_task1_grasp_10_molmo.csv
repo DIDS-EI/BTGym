@@ -1,0 +1,29 @@
+try_num,point_correct,curobo_success,success
+0,False,False,False
+0,False,False,False
+0,False,False,False
+0,False,False,False
+1,"(203, 140)",True,True
+1,False,False,False
+1,False,False,False
+2,"(171, 140)",True,True
+3,"(143, 145)",True,True
+3,False,False,False
+4,"(331, 165)",True,True
+5,"(110, 155)",True,True
+5,False,False,False
+5,False,False,False
+5,False,False,False
+5,False,False,False
+5,False,False,False
+5,False,False,False
+6,"(201, 131)",False,False
+7,"(243, 147)",False,False
+8,"(240, 137)",False,False
+9,"(240, 133)",True,True
+10,"(355, 427)",False,False
+10,False,False,False
+10,False,False,False
+10,False,False,False
+10,False,False,False
+11,"(216, 134)",True,True

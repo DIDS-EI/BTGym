@@ -1,0 +1,57 @@
+selector
+    sequence
+        cond Closed(cabinet)
+        cond On(pen,coffee_table)
+        cond In(apple,cabinet)
+    sequence
+        cond On(pen,coffee_table)
+        selector
+            selector
+                selector
+                    sequence
+                        cond IsNear(cabinet)
+                        selector
+                            sequence
+                                cond IsOpen(cabinet)
+                                selector
+                                    sequence
+                                        cond In(apple,cabinet)
+                                        act Close(cabinet)
+                                    sequence
+                                        cond IsHolding(apple)
+                                        act PlaceIn(apple,cabinet)
+                            sequence
+                                cond Closed(cabinet)
+                                cond IsHolding(apple)
+                                act Open(cabinet)
+                    sequence
+                        cond Closed(cabinet)
+                        cond IsHolding(apple)
+                        act Walk(cabinet)
+                sequence
+                    cond Closed(cabinet)
+                    cond IsHandEmpty()
+                    cond IsNear(apple)
+                    act Grasp(apple)
+            sequence
+                cond Closed(cabinet)
+                cond IsHandEmpty()
+                act Walk(apple)
+    sequence
+        cond Closed(cabinet)
+        selector
+            selector
+                sequence
+                    cond IsHolding(pen)
+                    selector
+                        sequence
+                            cond IsNear(coffee_table)
+                            act PlaceOn(pen,coffee_table)
+                        act Walk(coffee_table)
+                sequence
+                    cond IsHandEmpty()
+                    cond IsNear(pen)
+                    act Grasp(pen)
+            sequence
+                cond IsHandEmpty()
+                act Walk(pen)

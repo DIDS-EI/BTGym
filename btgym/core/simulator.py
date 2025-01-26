@@ -221,6 +221,8 @@ collecting_wood
 
         camera_quat = T.euler2quat(th.tensor([0.45,0,angle]))
         og.sim.viewer_camera.set_position_orientation(camera_pos, camera_quat)
+        self.camera_pos = camera_pos
+        self.camera_quat = camera_quat
 
 
             

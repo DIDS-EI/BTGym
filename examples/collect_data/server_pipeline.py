@@ -221,13 +221,14 @@ def save_data():
 
 
 if __name__ == '__main__':
-    # sample_task()
-    # restart_simulator()
+    sample_task()
+    restart_simulator()
     load_task()
 
     for i in range(10):
         get_image()
         grasp_pose = get_grasp_pose_by_object()
+        
 
         if grasp_pose is not None:
             success = grasp_object(grasp_pose)

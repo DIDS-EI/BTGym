@@ -1,0 +1,70 @@
+
+
+
+
+
+
+
+
+
+
+
+
+1.根据 BDDL 文件,生成行为树所必需的行为库,包括所有动作节点和条件节点,用 python 代码给出.
+2.每个动作节点和条件节点写为一个类,类名与动作名一致,分别继承自 OGAction 类和 OGCondition 类.
+3.每个动作节点 info 字典都包含 pre,add,del_set,cost 四个键,分别表示动作或条件的前置条件,添加的条件,删除的条件,以及动作的代价.cost 默认为1
+4.每个动作节点 valid_args 表示动作的参数,参数从 {objecet} 中选取.
+
+
+例如:
+objects = ["apple","table"]
+goal = "IsHolding(apple)"
+```python
+from exps_bt_learning.exec_lib._base.OGAction import OGAction
+
+class Grasp(OGAction):
+    can_be_expanded = True
+    num_args = 1
+    valid_args = ["apple"]
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    @classmethod
+    def get_info(cls,*arg):
+        info = {}
+        info["pre"]={"IsHandEmpty()",f"IsNear({arg[0]})"}
+        info["add"]={f"IsHolding({arg[0]})"}
+        info["del_set"] = {f"IsHandEmpty()"}
+        info["cost"] = 1
+        return info
+
+
+    def change_condition_set(self):
+        self.agent.condition_set |= (self.info["add"])
+        self.agent.condition_set -= self.info["del_set"]
+```
+```python
+from exps_bt_learning.exec_lib._base.OGAction import OGAction
+
+class Walk(OGAction):
+    can_be_expanded = True
+    num_args = 1
+    valid_args = ["apple","table"]
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.target_obj = self.args[0]
+
+    @classmethod
+    def get_info(cls,*arg):
+        info = {}
+        info["pre"]=set()
+        info["add"]={f"IsNear({arg[0]})"}
+        info["del_set"] = {f'IsNear({place})' for place in cls.valid_args if place != arg[0]}
+        info["cost"] = 1
+        return info
+
+    def change_condition_set(self):
+        self.agent.condition_set |= (self.info["add"])
+        self.agent.condition_set -= self.info["del_set"] 
+```
