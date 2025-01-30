@@ -1,39 +1,37 @@
 selector
     sequence
-        cond IsOpen(drawer)
-        cond On(apple,coffee_table)
-        cond Toggled(oven)
+        cond Closed(microwave)
+        cond ToggledOn(oven)
+        cond On(cake,yard_table)
     sequence
-        cond Toggled(oven)
+        cond ToggledOn(oven)
         selector
             selector
-                selector
+                sequence
+                    cond On(cake,yard_table)
                     selector
                         sequence
-                            cond On(apple,coffee_table)
-                            selector
-                                sequence
-                                    cond IsNear(drawer)
-                                    act Open(drawer)
-                                act Walk(drawer)
-                        sequence
-                            cond IsNear(coffee_table)
-                            cond IsHolding(apple)
-                            act Place(apple,coffee_table)
-                    sequence
-                        cond IsHolding(apple)
-                        act Walk(coffee_table)
+                            cond IsNear(microwave)
+                            act Close(microwave)
+                        act Walk(microwave)
                 sequence
-                    cond IsNear(apple)
-                    cond IsHandEmpty()
-                    act Grasp(apple)
+                    cond IsNear(yard_table)
+                    cond IsHolding(cake)
+                    act Place(cake,yard_table)
             sequence
-                cond IsHandEmpty()
-                act Walk(apple)
+                cond IsHolding(cake)
+                act Walk(yard_table)
+    sequence
+        cond IsHolding(cake)
+        selector
+            sequence
+                cond IsNear(oven)
+                act ToggleOn(oven)
+            act Walk(oven)
     sequence
         cond IsHandEmpty()
         selector
             sequence
-                cond IsNear(oven)
-                act Toggle(oven)
-            act Walk(oven)
+                cond IsNear(cake)
+                act Grasp(cake)
+            act Walk(cake)

@@ -17,12 +17,12 @@ act_str = "Walk(apple)"
 #########################
 # 1.1 导入环境 config
 
-task_name = "aaa_demo1_putin_fail_light"
+task_name = "aaa_demo0_draw6" #"aaa_demo0_draw3_garden" #"aaa_demo1_putin_fail_light"
 scene_file_name = "scene_file_0"
 folder_path  = os.path.join(DIR.parent, "tasks")
 json_path = os.path.join(DIR.parent, "tasks", task_name, scene_file_name)
 
-simulator = Simulator(headless=False)
+simulator = Simulator(headless=True)
 
 
 #################################### 采样一 ###########################################
@@ -38,7 +38,8 @@ simulator = Simulator(headless=False)
 
 
 #################################### 采样二 ###########################################
-simulator.load_custom_task(task_name=task_name, scene_name="Merom_0_garden",scene_file_name=scene_file_name,\
-                                                folder_path=os.path.join(DIR.parent, f"tasks"),is_sample=False)
-
+#Rs_int
+simulator.load_custom_task(task_name=task_name, scene_name="Rs_garden",scene_file_name=scene_file_name, 
+                                                folder_path=os.path.join(DIR.parent, f"tasks"),is_sample=True)
+simulator.navigate_to_object("electric_refrigerator.n.01_1")
 simulator.idle()

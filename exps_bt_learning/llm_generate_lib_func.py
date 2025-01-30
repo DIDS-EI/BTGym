@@ -15,7 +15,7 @@ import time
 # 2. 输出: 行为库 behavior_lib_path
 ######################################
 
-def llm_generate_behavior_lib(bddl_file,goal_str,objects,start_state,behavior_lib_path):
+def llm_generate_behavior_lib(bddl_file,goal_str,objects,start_state,behavior_lib_path,model="gpt-4o"):
     
     ########################
     # 1. set input BDDL file 设置输入 BDDL 文件
@@ -58,7 +58,7 @@ def llm_generate_behavior_lib(bddl_file,goal_str,objects,start_state,behavior_li
     ########################
     # 2. call llm to generate behavior lib 调用大模型生成行为库
     ########################
-    llm = LLM()
+    llm = LLM(model=model) #gpt-3.5-turbo
     prompt = build_prompt(goal=goal_str,objects=objects)
     # 蓝色打印
     print("\033[94m",f"Requesting llm...","\033[0m")

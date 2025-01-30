@@ -496,6 +496,10 @@ class Simulator:
         pos_tensor = th.cat([pos_tensor, target_pos.unsqueeze(0)], dim=0)
         quat_tensor = target_quat.unsqueeze(0).expand(self.batch_size, -1)
 
+        # 确保pos_tensor和quat_tensor的形状正确
+        # pos_tensor = target_pos.unsqueeze(0).expand(2, -1)  # 使用两个目标位置
+        # quat_tensor = target_quat.unsqueeze(0).expand(2, -1)  # 使用两个目标方向
+
         self.open_gripper()
 
         # 如果机器人接近关节限制，则调整关节位置
@@ -1120,18 +1124,21 @@ class Simulator:
         if point:
             target_pos = og_utils.pixel_to_world(obs, camera_info, point[0], point[1])
             print(f"target_pos: {target_pos}")
-            self.navigate_to_pos(object_name=cfg.target_object_name,pos=target_pos,offset=(0.9,-0.2))
+            # self.navigate_to_pos(object_name=cfg.target_object_name,pos=target_pos,offset=(0.9,-0.2))
         else:
             target_pos = None
         return target_pos
 
 
     # 用于水平抓取获取 抓取点
-    def eef_reach_pos(self,pos,horizontal=True,grounding=False):
+    def eef_reach_pos(self,pos,horizontal=True,grounding=False,obj_face_tensor = None):
         target_pos = pos
         
+        if obj_face_tensor==None:obj_face_tensor = th.tensor([0,1,0.])
+        
         if horizontal:
-            obj_face_tensor = th.tensor([0,1,0.])
+            # obj_face_tensor = th.tensor([0,1,0.])
+            
             yaw = math.atan2(-obj_face_tensor[1],obj_face_tensor[0])
 
             target_pos = target_pos+obj_face_tensor*0.1
@@ -1158,13 +1165,15 @@ class Simulator:
             success = self.grasp_object_by_pose(state.target_local_pose,object_name=cfg.target_object_name)
         
 
-    def move_hand_forward(self,distance=0.5):
-        obj_face_tensor=th.tensor([0,1,0.])
+    def move_hand_forward(self,distance=0.5,obj_face_tensor=None):
+        if obj_face_tensor==None:
+            obj_face_tensor=th.tensor([0,1,0.])
         self.move_hand_linearly(dir=-obj_face_tensor,distance=distance)
 
 
-    def move_hand_backward(self,distance=0.3):
-        obj_face_tensor=th.tensor([0,1,0.])
+    def move_hand_backward(self,distance=0.3,obj_face_tensor=None):
+        if obj_face_tensor==None:
+            obj_face_tensor=th.tensor([0,1,0.])
         self.move_hand_linearly(dir=obj_face_tensor,distance=distance,ignore_obj_in_hand=True)
     
     ####################################################################################

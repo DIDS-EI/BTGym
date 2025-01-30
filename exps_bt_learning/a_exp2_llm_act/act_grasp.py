@@ -58,31 +58,31 @@ while try_time<=total_try:
         
         simulator.navigate_to_object(object_name=cfg.target_object_name)
         
-        # ========= Point by Molmo =========
-        obs = simulator.get_obs()
-        obs['gripper_open'] = False
-        obs['eef_pose'] = state.target_local_pose
-        rgb_img = Image.fromarray(obs['rgb'])
+        # # ========= Point by Molmo =========
+        # obs = simulator.get_obs()
+        # obs['gripper_open'] = False
+        # obs['eef_pose'] = state.target_local_pose
+        # rgb_img = Image.fromarray(obs['rgb'])
         
-        rgb_img.save(f'{DIR}/camera_{cfg.task_name}_rgb.png')
-        molmo_client = MolmoClient()
-        query = f'The image contains {cfg.target_object_name.split(".")[0]}. Point out the most likely {cfg.target_object_name.split(".")[0]} in the image.'
-        point = molmo_client.get_grasp_pose_by_molmo(query,dir=DIR,point_img_path=f'{DIR}/camera_{cfg.task_name}_rgb.png')
-        # =========                ========= 
-        if not point:
-            print(f"第{try_time}次尝试失败, point 为空")
-            data.append([try_time, False, False, False])
-            continue
+        # rgb_img.save(f'{DIR}/camera_{cfg.task_name}_rgb.png')
+        # molmo_client = MolmoClient()
+        # query = f'The image contains {cfg.target_object_name.split(".")[0]}. Point out the most likely {cfg.target_object_name.split(".")[0]} in the image.'
+        # point = molmo_client.get_grasp_pose_by_molmo(query,dir=DIR,point_img_path=f'{DIR}/camera_{cfg.task_name}_rgb.png')
+        # # =========                ========= 
+        # if not point:
+        #     print(f"第{try_time}次尝试失败, point 为空")
+        #     data.append([try_time, False, False, False])
+        #     continue
         
-        # try_time+=1
+        # # try_time+=1
         
         
-        # point 转为世界坐标
-        camera_info = simulator.get_camera_info()
-        target_pos = og_utils.pixel_to_world(obs, camera_info, point[0], point[1])
+        # # point 转为世界坐标
+        # camera_info = simulator.get_camera_info()
+        # target_pos = og_utils.pixel_to_world(obs, camera_info, point[0], point[1])
         
-        # grasp_pos = simulator.get_object_pos_by_pose(cfg.target_object_name)['pos'].tolist()
-        # target_pos = th.tensor([ 0.7194, -3.7099,  0.7962])
+        grasp_pos = simulator.get_object_pos_by_pose(cfg.target_object_name)['pos'].tolist()
+        target_pos = th.tensor([ 0.7194, -3.7099,  0.7962])
         
         # 确定抓取的方向为 相机位置到 目标位置的方向
         camera_pos = simulator.camera.get_position_orientation()[0] # 0为位置,1为四元数

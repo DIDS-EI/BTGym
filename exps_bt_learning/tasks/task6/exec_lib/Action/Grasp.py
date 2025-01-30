@@ -3,7 +3,7 @@ from exps_bt_learning.tasks.task6.exec_lib._base.OGAction import OGAction
 class Grasp(OGAction):
     can_be_expanded = True
     num_args = 1
-    valid_args = ["coffee_cup", "apple"]
+    valid_args = ["agent", "floor", "cake", "oven", "microwave", "yard_table"]
 
     def __init__(self, *args):
         super().__init__(*args)

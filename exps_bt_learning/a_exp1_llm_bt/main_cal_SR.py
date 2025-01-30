@@ -10,33 +10,39 @@ task2name = {
     "task2":"PutInDrawer",
     "task3":"ActivateLights",
     "task4":"HomeRearrangement",
-    "task5":"MealPreparation"
+    "task5":"MealPreparation",
+    "task6":"aaa_demo0_draw6"
 }
 task2objects = {
     "task1":['apple','coffee_table'],
     "task2":['pen','cabinet'],
     "task3":['light1','light2'],
     "task4":['apple','coffee_table','pen','cabinet'],
-    "task5":['oven','chicken_leg','apple','coffee_table']
+    "task5":['oven','chicken_leg','apple','coffee_table'],
+    "task6":['cake','microwave',"yard_table","oven"]
 }
 task2start_state = {
     "task1":{'IsHandEmpty()'},
     "task2":{'IsHandEmpty()','Closed(cabinet)'},
     "task3":{'IsHandEmpty()','ToggledOff(light1)','ToggledOn(light2)'},
     "task4":{'IsHandEmpty()','Open(cabinet)','In(pen,cabinet)'},
-    "task5":{'IsHandEmpty()','IsOpen(oven)','ToggledOff(oven)'}
+    "task5":{'IsHandEmpty()','IsOpen(oven)','ToggledOff(oven)'},
+    "task6":{'IsHandEmpty()','IsOpen(microwave)','ToggledOff(oven)'}
 }
 task2goal_str = {
     "task1":'On(apple,coffee_table)',
     "task2":'In(pen,cabinet)',
     "task3":'ToggledOn(light1) & ToggledOff(light2)',
     "task4":'On(pen,coffee_table) & Closed(cabinet) & On(apple,coffee_table)', #In(apple,cabinet) & Closed(cabinet) & 
-    "task5":'Closed(oven) & ToggledOn(oven) & On(apple,coffee_table) & In(chicken_leg,oven)' #& On(apple,coffee_table) & On(chicken_leg,coffee_table)
+    "task5":'Closed(oven) & ToggledOn(oven) & On(apple,coffee_table) & In(chicken_leg,oven)', #& On(apple,coffee_table) & On(chicken_leg,coffee_table)
+    "task6":'On(cake,yard_table) & Closed(microwave) & ToggledOn(oven)'
 }
 
+# model = "gpt-4o"
+model = "gpt-3.5-turbo"
+# model = "gpt-4o-mini"
 
-
-for task_id in range(5,6):
+for task_id in range(1,2):
 
     # 1. 设置任务
     task_name = f"task{task_id}"
@@ -75,19 +81,21 @@ for task_id in range(5,6):
     result_dir = os.path.join(DIR,"results")
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
-    dataframe_path = os.path.join(result_dir,f"exp1_{task_name}_success_rate_{total_try_times}_NF_example=1.csv")
+    dataframe_path = os.path.join(result_dir,f"exp1_{task_name}_success_rate_{total_try_times}_NF_example=1_gpt3.csv")
     table_data = []
 
     for i in range(total_try_times):
         print(f"try {i+1} times")
         # 1. 生成行为库
-        llm_generate_behavior_lib(bddl_file=bddl_file,goal_str=goal_str,objects=objects,start_state=start_state,behavior_lib_path=behavior_lib_path)
+        llm_generate_behavior_lib(bddl_file=bddl_file,goal_str=goal_str,objects=objects,start_state=start_state,\
+            behavior_lib_path=behavior_lib_path,model=model)
         # 2. 验证行为库 
         print("Validate behavior lib...")
         try:
             error,bt,expanded_num,act_num = validate_bt_fun(behavior_lib_path=behavior_lib_path, goal_str=goal_str,cur_cond_set=start_state,output_dir=output_dir)
             if error == 0:
                 success_times += 1
+                # break # 成功后直接跳出循环
         except Exception as e:
             error=True
             act_num=-1
@@ -112,10 +120,17 @@ for task_id in range(5,6):
     
     # 最后一列为平均值:action_lib_num的平均值,condition_lib_num的平均值,expanded_num的平均值,act_num的平均值
     # 平均值只需要计算 success 的次数
-    action_lib_num_avg = sum([row[2] for row in table_data if row[6]]) / success_times
-    condition_lib_num_avg = sum([row[3] for row in table_data if row[6]]) / success_times
-    expanded_num_avg = sum([row[4] for row in table_data if row[6]]) / success_times
-    act_num_avg = sum([row[5] for row in table_data if row[6]]) / success_times
+    # 如果都是0,就都为0
+    if success_times == 0:
+        action_lib_num_avg = 0
+        condition_lib_num_avg = 0
+        expanded_num_avg = 0
+        act_num_avg = 0
+    else:
+        action_lib_num_avg = sum([row[2] for row in table_data if row[6]]) / success_times
+        condition_lib_num_avg = sum([row[3] for row in table_data if row[6]]) / success_times
+        expanded_num_avg = sum([row[4] for row in table_data if row[6]]) / success_times
+        act_num_avg = sum([row[5] for row in table_data if row[6]]) / success_times
     table_data.append([task_name,-1,action_lib_num_avg,condition_lib_num_avg,expanded_num_avg,act_num_avg,not error])
 
     # 把表格数据写入csv文件,英文标题

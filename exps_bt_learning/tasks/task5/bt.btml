@@ -1,44 +1,6 @@
 selector
     sequence
         cond ToggledOn(oven)
-        cond On(apple,coffee_table)
         cond In(chicken_leg,oven)
+        cond On(apple,coffee_table)
         cond Closed(oven)
-    sequence
-        cond IsHolding(apple)
-        selector
-            selector
-                sequence
-                    cond In(chicken_leg,oven)
-                    selector
-                        sequence
-                            cond IsNear(coffee_table)
-                            selector
-                                sequence
-                                    cond ToggledOn(oven)
-                                    selector
-                                        sequence
-                                            cond Closed(oven)
-                                            act PlaceOn(apple,coffee_table)
-                                        sequence
-                                            cond IsOpen(oven)
-                                            act Close(oven)
-                                sequence
-                                    cond IsOpen(oven)
-                                    cond IsOff(oven)
-                                    act ToggleOn(oven)
-                        sequence
-                            cond IsOpen(oven)
-                            cond IsOff(oven)
-                            act Walk(coffee_table)
-                sequence
-                    cond IsOpen(oven)
-                    cond IsNear(oven)
-                    cond IsOff(oven)
-                    cond IsHolding(chicken_leg)
-                    act PutIn(chicken_leg,oven)
-            sequence
-                cond IsOpen(oven)
-                cond IsOff(oven)
-                cond IsHolding(chicken_leg)
-                act Walk(oven)

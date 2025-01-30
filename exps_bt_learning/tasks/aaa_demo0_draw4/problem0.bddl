@@ -1,0 +1,28 @@
+(define (problem task_1)
+    (:domain omnigibson)
+
+    (:objects
+        breakfast_table.n.01_1 - breakfast_table.n.01
+        floor.n.01_1 - floor.n.01
+        agent.n.01_1 - agent.n.01
+
+        chocolate_cake.n.01_1 - chocolate_cake.n.01
+
+        coffee_table.n.01_2 - coffee_table.n.01
+
+       
+    )
+    
+    (:init 
+        (inroom floor.n.01_1 living_room)
+        (inroom breakfast_table.n.01_1 living_room) 
+        (inroom coffee_table.n.01_2 garden)
+        (ontop agent.n.01_1 floor.n.01_1)
+        (ontop chocolate_cake.n.01_1 breakfast_table.n.01_1)
+
+    )
+    
+    (:goal 
+        (ontop chocolate_cake.n.01_1 floor.n.01_1) 
+    )
+)
