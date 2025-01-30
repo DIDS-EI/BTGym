@@ -1,2 +1,24 @@
 selector
     cond In(pen,cabinet)
+    sequence
+        cond IsOpen(cabinet)
+        selector
+            selector
+                sequence
+                    cond IsHolding(pen)
+                    selector
+                        sequence
+                            cond IsNear(cabinet)
+                            act PlacePenInCabinet(pen,cabinet)
+                        act MoveTo(cabinet)
+                sequence
+                    cond IsHandEmpty()
+                    cond IsNear(pen)
+                    act PickUpPen(pen)
+            sequence
+                cond IsHandEmpty()
+                act MoveTo(pen)
+    sequence
+        cond IsClose(cabinet)
+        cond IsHandEmpty()
+        act OpenCabinet(cabinet)

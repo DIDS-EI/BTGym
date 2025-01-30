@@ -1,5 +1,49 @@
 selector
     sequence
-        cond On(pen,coffee_table)
-        cond On(apple,coffee_table)
-        cond Closed(cabinet)
+        cond On(pen,coffeetable)
+        cond IsClose(cabinet)
+        cond On(apple,coffeetable)
+    sequence
+        cond On(apple,coffeetable)
+        selector
+            selector
+                selector
+                    sequence
+                        cond IsClose(cabinet)
+                        selector
+                            selector
+                                selector
+                                    selector
+                                        sequence
+                                            cond IsHolding(pen)
+                                            selector
+                                                sequence
+                                                    cond IsNear(coffeetable)
+                                                    act PlaceOn(pen,coffeetable)
+                                                act MoveTo(coffeetable)
+                                        sequence
+                                            cond IsHandEmpty()
+                                            cond IsNear(pen)
+                                            act Grasp(pen)
+                                    sequence
+                                        cond IsHandEmpty()
+                                        act MoveTo(pen)
+                                sequence
+                                    cond IsHolding(apple)
+                                    cond IsNear(chip)
+                                    act PlaceOn1(apple,chip)
+                            sequence
+                                cond IsHolding(apple)
+                                act MoveTo(chip)
+                    sequence
+                        cond IsNear(cabinet)
+                        cond IsHolding(apple)
+                        cond IsOpen(cabinet)
+                        act CloseCabinet1(cabinet)
+                sequence
+                    cond IsNear(cabinet)
+                    cond IsHolding(apple)
+                    act OpenCabinet1(cabinet)
+            sequence
+                cond IsHolding(apple)
+                act MoveTo(cabinet)

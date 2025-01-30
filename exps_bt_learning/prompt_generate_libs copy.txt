@@ -1,0 +1,6 @@
+
+1. Generate behavior libraries for the behavior tree from the BDDL file, including all action nodes, in Python code.
+2. Each action node should be a class named after the action, inheriting from 'OGAction'.
+3. Each action node's 'info' dictionary should contain 'pre', 'add', and 'del_set' keys, representing preconditions, added conditions, and deleted conditions, respectively. 
+4. These conditions are sets of predicates selected from [In, On, IsNear, ToggledOn, ToggledOff, IsOpen, IsClose, IsHandEmpty, IsHolding].
+5. Each action node's 'valid_args' represents the action's parameters, should be a list of objects selected from {objects}.

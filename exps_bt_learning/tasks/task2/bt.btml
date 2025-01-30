@@ -2,3 +2,15 @@ selector
     sequence
         cond ToggledOff(light2)
         cond ToggledOn(light1)
+    sequence
+        cond ToggledOn(light1)
+        selector
+            sequence
+                cond IsNear(light2)
+                act ToggledOff(light2)
+            act MoveTo(light2)
+    sequence
+        cond IsNear(light1)
+        act ToggledOn(light1)
+    sequence
+        act MoveTo(light1)

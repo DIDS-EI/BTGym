@@ -1,11 +1,11 @@
 
-goal = "IsHolding(coffee_cup)"
-objects = ["coffee_cup","table"]
+goal = "IsHolding(coffeecup)"
+objects = ["coffeecup","table"]
 ```python
 class Grasp(OGAction):
     can_be_expanded = True
     num_args = 1
-    valid_args = ["coffee_cup"]
+    valid_args = ["coffeecup"]
     def __init__(self, *args):
         super().__init__(*args)
 
@@ -24,10 +24,10 @@ class Grasp(OGAction):
         self.agent.condition_set -= self.info["del_set"]
 ```
 ```python
-class Walk(OGAction):
+class MoveTo(OGAction):
     can_be_expanded = True
     num_args = 1
-    valid_args = ["coffee_cup","table"]
+    valid_args = ["coffeecup","table"]
 
     def __init__(self, *args):
         super().__init__(*args)

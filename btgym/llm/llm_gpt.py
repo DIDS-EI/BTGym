@@ -51,6 +51,15 @@ class LLM:
         )
 
         return response.choices[0].message.content
+    
+    def request_instruction_with_history(self, messages):
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=messages,
+            temperature=self.temperature,
+            max_tokens=self.max_tokens
+        )
+        return response.choices[0].message.content
 
 if __name__ == "__main__":      
     # 使用示例

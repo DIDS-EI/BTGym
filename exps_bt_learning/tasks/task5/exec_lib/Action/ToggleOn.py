@@ -12,8 +12,8 @@ class ToggleOn(OGAction):
     @classmethod
     def get_info(cls,*arg):
         info = {}
-        info["pre"]={"IsClosed({arg[0]})"}
-        info["add"]={f"IsToggledOn({arg[0]})"}
+        info["pre"] = {f"IsClose({arg[0]})"}
+        info["add"] = {f"ToggledOn({arg[0]})"}
         info["del_set"] = set()
         info["cost"] = 1
         return info

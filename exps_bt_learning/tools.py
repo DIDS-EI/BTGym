@@ -16,6 +16,8 @@ def parse_bddl(file_path):
         
         # 提取每个标识符的第一个单词
         first_words = [obj.split('.')[0] for obj in full_objects]
+        # 去除所有的_
+        first_words = [word.replace('_', '') for word in first_words]
     objects = first_words
 
     # 提取 init (start state)
@@ -73,7 +75,8 @@ def build_prompt(goal,objects):
     content = content.format(goal=goal,objects=objects)
     instruction = f"objects: {objects}\ngoal: {goal}"
     
-    return content +"\n"+ example_content +"\n"+ instruction
+    return content +"\n"+ example_content +"\n \
+        Here is the goal and objects, please generate the behavior libraries:\n"+ instruction
 
 def extract_code(answer,file_path):
     # 使用正则表达式提取代码

@@ -64,7 +64,7 @@ def validate_bt_fun(behavior_lib_path, goal_str,cur_cond_set,output_dir=None):
         file_name, _ = os.path.splitext(file_name_with_extension)
         bt.draw(target_directory=os.path.join(os.path.dirname(output_dir),""),file_name=file_name)
         
-    return error, algo.algo.bt,expanded_num,act_num
+    return error, algo.algo.bt,expanded_num,act_num,record_act_ls,ptml_string
     '''测试 BT 的正确性'''
 
 

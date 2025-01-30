@@ -14,28 +14,28 @@ task2name = {
     "task6":"aaa_demo0_draw6"
 }
 task2objects = {
-    "task1":['apple','coffee_table'],
+    "task1":['apple','coffeetable'],
     "task2":['light1','light2'],
     "task3":['pen','cabinet'],
-    "task4":['apple','coffee_table','pen','cabinet'],
-    "task5":['oven','chicken_leg','apple','coffee_table'],
-    "task6":['cake','microwave',"yard_table","oven"]
+    "task4":['apple','coffeetable','pen','cabinet'],
+    "task5":['oven','chickenleg','apple','coffeetable'],
+    # "task6":['cake','microwave',"yard_table","oven"]
 }
 task2start_state = {
     "task1":{'IsHandEmpty()'},
     "task2":{'IsHandEmpty()','ToggledOff(light1)','ToggledOn(light2)'},
-    "task3":{'IsHandEmpty()','Closed(cabinet)'},
-    "task4":{'IsHandEmpty()','Open(cabinet)','In(pen,cabinet)'},
+    "task3":{'IsHandEmpty()','IsClose(cabinet)'},
+    "task4":{'IsHandEmpty()','IsOpen(cabinet)','In(pen,cabinet)'},
     "task5":{'IsHandEmpty()','IsOpen(oven)','ToggledOff(oven)'},
-    "task6":{'IsHandEmpty()','IsOpen(microwave)','ToggledOff(oven)'}
+    # "task6":{'IsHandEmpty()','IsOpen(microwave)','ToggledOff(oven)'}
 }
 task2goal_str = {
-    "task1":'On(apple,coffee_table)',
+    "task1":'On(apple,coffeetable)',
     "task2":'ToggledOn(light1) & ToggledOff(light2)',
     "task3":'In(pen,cabinet)',
-    "task4":'On(pen,coffee_table) & Closed(cabinet) & On(apple,coffee_table)', #In(apple,cabinet) & Closed(cabinet) & 
-    "task5":'Closed(oven) & ToggledOn(oven) & On(apple,coffee_table) & In(chicken_leg,oven)', #& On(apple,coffee_table) & On(chicken_leg,coffee_table)
-    "task6":'On(cake,yard_table) & Closed(microwave) & ToggledOn(oven)'
+    "task4":'On(pen,coffeetable) & IsClose(cabinet) & On(apple,coffeetable)', #In(apple,cabinet) & Closed(cabinet) & 
+    "task5":'IsClose(oven) & ToggledOn(oven) & On(apple,coffeetable) & In(chickenleg,oven)', #& On(apple,coffee_table) & On(chicken_leg,coffee_table)
+    # "task6":'On(cake,yard_table) & IsClose(microwave) & ToggledOn(oven)'
 }
 
 total_try_times = 10
@@ -44,7 +44,8 @@ total_try_times = 10
 model = "gpt-3.5-turbo"
 # model = "gpt-4o-mini"
 latex_data = {}
-for model in ["gpt-3.5-turbo","gpt-4o-mini","gpt-4o"]:
+model_ls = ["gpt-3.5-turbo"]#,"gpt-4o-mini","gpt-4o"
+for model in model_ls:
     latex_data[model] = {}
 
     for task_id in range(1,6):
@@ -72,12 +73,6 @@ for model in ["gpt-3.5-turbo","gpt-4o-mini","gpt-4o"]:
         print("start_state:",start_state)
         print("goal_str:",goal_str)
 
-
-        # 编写 5 个任务，每个任务包含 objects, start_state, goal_str
-        #
-
-
-
         # 2. 运行实验
         
         success_times = 0
@@ -97,10 +92,10 @@ for model in ["gpt-3.5-turbo","gpt-4o-mini","gpt-4o"]:
             # 2. 验证行为库 
             print("Validate behavior lib...")
             try:
-                error,bt,expanded_num,act_num = validate_bt_fun(behavior_lib_path=behavior_lib_path, goal_str=goal_str,cur_cond_set=start_state,output_dir=output_dir)
+                error,bt,expanded_num,act_num,record_act_ls,ptml_string = validate_bt_fun(behavior_lib_path=behavior_lib_path, goal_str=goal_str,cur_cond_set=start_state,output_dir=output_dir)
                 if error == 0:
                     success_times += 1
-                    # break # 成功后直接跳出循环
+                # break # 成功后直接跳出循环
             except Exception as e:
                 error=True
                 act_num=-1
@@ -150,21 +145,24 @@ task_names2type = {"task1":"Pick \& Place","task2":"ToggleOn \& ToggleOff","task
 rows = ""
 for task_name in ["task1","task2","task3","task4","task5"]:
     type_name = task_names2type[task_name]
-    for j,model in enumerate(["gpt-3.5-turbo","gpt-4o-mini","gpt-4o"]):
+    len_model_ls = len(model_ls)
+    for j,model in enumerate(model_ls):
         if j == 0:
             rows += f"{type_name} & "
         rows += " & ".join(str(x) for x in latex_data[model][task_name])
-        if j == 2:
+        if j == len_model_ls-1:
             rows += r" \\"+ "\n"
         else:
             rows += " & "
-
+            
+# 把 rows 保存为 txt 文件
+with open(os.path.join(DIR,"results","exp1_SR_models.txt"),"w") as f:
+    f.write(rows)
+    
 print("========================================")
 print(rows)
 print("========================================")
 print("done")
 
-# 把 rows 保存为 txt 文件
-with open(os.path.join(DIR,"results","exp1_SR_models.txt"),"w") as f:
-    f.write(rows)
+
     

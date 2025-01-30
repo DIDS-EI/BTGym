@@ -2,115 +2,226 @@ import os
 DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 import pandas as pd
 from exps_bt_learning.tools import parse_bddl
-from exps_bt_learning.llm_generate_lib_func import llm_generate_behavior_lib
+from exps_bt_learning.llm_generate_lib_func import llm_generate_behavior_lib,llm_generate_behavior_lib_need_feedback
 from exps_bt_learning.validate_bt_fun import validate_bt_fun
+from btgym.llm.llm_gpt import LLM
 
 task2name = {
     "task1":"PlaceApple",
-    "task2":"PutInDrawer",
-    "task3":"ActivateLights",
+    "task2":"ActivateLights",
+    "task3":"PutInDrawer",
     "task4":"HomeRearrangement",
-    "task5":"MealPreparation"
+    "task5":"MealPreparation",
+    "task6":"aaa_demo0_draw6"
 }
 task2objects = {
-    "task1":['apple','coffee_table'],
-    "task2":['pen','cabinet'],
-    "task3":['light1','light2'],
-    "task4":['apple','coffee_table','pen','cabinet'],
-    "task5":['oven','chicken_leg','apple','coffee_table']
+    "task1":['apple','coffeetable'],
+    "task2":['light1','light2'],
+    "task3":['pen','cabinet'],
+    "task4":['apple','coffeetable','pen','cabinet'],
+    "task5":['oven','chickenleg','apple','coffeetable'],
+    # "task6":['cake','microwave',"yard_table","oven"]
 }
 task2start_state = {
     "task1":{'IsHandEmpty()'},
-    "task2":{'IsHandEmpty()','Closed(cabinet)'},
-    "task3":{'IsHandEmpty()'},
-    "task4":{'IsHandEmpty()','Closed(cabinet)','In(pen,cabinet)'},
-    "task5":{'IsHandEmpty()','IsOpen(oven)'}
+    "task2":{'IsHandEmpty()','ToggledOff(light1)','ToggledOn(light2)'},
+    "task3":{'IsHandEmpty()','IsClose(cabinet)'},
+    "task4":{'IsHandEmpty()','IsOpen(cabinet)','In(pen,cabinet)'},
+    "task5":{'IsHandEmpty()','IsOpen(oven)','ToggledOff(oven)'},
+    # "task6":{'IsHandEmpty()','IsOpen(microwave)','ToggledOff(oven)'}
 }
 task2goal_str = {
-    "task1":'On(apple,coffee_table)',
-    "task2":'In(pen,cabinet)',
-    "task3":'Activated(light1) & Activated(light2)',
-    "task4":'On(pen,coffee_table) & Closed(cabinet) & In(apple,cabinet)', #In(apple,cabinet) & Closed(cabinet) & 
-    "task5":'Closed(oven) & Activated(oven) & On(apple,coffee_table) & On(chicken_leg,coffee_table)' #& On(apple,coffee_table) & On(chicken_leg,coffee_table)
+    "task1":'On(apple,coffeetable)',
+    "task2":'ToggledOn(light1) & ToggledOff(light2)',
+    "task3":'In(pen,cabinet)',
+    "task4":'On(pen,coffeetable) & IsClose(cabinet) & On(apple,coffeetable)', #In(apple,cabinet) & Closed(cabinet) & 
+    "task5":'IsClose(oven) & ToggledOn(oven) & On(apple,coffeetable) & In(chickenleg,oven)', #& On(apple,coffee_table) & On(chicken_leg,coffee_table)
+    # "task6":'On(cake,yard_table) & IsClose(microwave) & ToggledOn(oven)'
 }
 
+total_try_times = 10
+max_feedback_times = 3
+# model = "gpt-4o"
+model = "gpt-3.5-turbo"
+# model = "gpt-4o-mini"
+latex_data = {}
+model_ls = ["gpt-4o"]#,"gpt-4o-mini","gpt-4o"
+task_names = ["task4","task5"]
+for model in model_ls:
+    latex_data[model] = {}
+
+    for task_name in task_names:
+
+        # 1. 设置任务
+        # task_name = f"task{task_id}"
+
+        bddl_file = os.path.join(DIR,f"tasks/{task_name}/problem0.bddl")
+        behavior_lib_path = os.path.join(DIR,f"tasks/{task_name}/exec_lib")  # os.path.join(DIR,"../exec_lib")
+        output_dir = os.path.join(DIR,f"tasks/{task_name}/bt.btml")
 
 
-for task_id in range(3,4):
+        # objects, start_state, goal = parse_bddl(bddl_file)
+        # goal_str = ' '.join(goal) # 把 goal 转换为字符串
+        objects, start_state, _ = parse_bddl(bddl_file)
+        
+        # start_state = task2start_state[task_name]
+        # objects = set(task2objects[task_name])
+        # goal_str = task2goal_str[task_name]
+        
+        objects.update(task2objects[task_name])
+        start_state.update(task2start_state[task_name])
+        goal_str = task2goal_str[task_name]
+        print("objects:",objects)
+        print("start_state:",start_state)
+        print("goal_str:",goal_str)
 
-    # 1. 设置任务
-    task_name = f"task{task_id}"
+        # 2. 运行实验
+        
+        success_times = 0
 
-    bddl_file = os.path.join(DIR,f"tasks/{task_name}/problem0.bddl")
-    behavior_lib_path = os.path.join(DIR,f"tasks/{task_name}/exec_lib")  # os.path.join(DIR,"../exec_lib")
-    output_dir = os.path.join(DIR,f"tasks/{task_name}/bt.btml")
+        # 新建 result 目录,已经结果csv
+        result_dir = os.path.join(DIR,"results")
+        if not os.path.exists(result_dir):
+            os.makedirs(result_dir)
+        dataframe_path = os.path.join(result_dir,f"exp1_{task_name}_success_rate_{total_try_times}_{model}_3F.csv")
+        table_data = []
 
+        for i in range(total_try_times):
+            record_feedback_times = 0
+            print(f"try {i+1} times")
+            # 1. 生成行为库
+            llm = LLM(model=model) #gpt-3.5-turbo
+            messages = llm_generate_behavior_lib_need_feedback(bddl_file=bddl_file,goal_str=goal_str,objects=objects,start_state=start_state,\
+                behavior_lib_path=behavior_lib_path,llm=llm)
+      
+            # 2. 验证行为库 
+            print("Validate behavior lib...")
+            try:
+                ee=None
+                error,bt,expanded_num,act_num,record_act_ls,ptml_string = validate_bt_fun(behavior_lib_path=behavior_lib_path, goal_str=goal_str,cur_cond_set=start_state,output_dir=output_dir)
+                if error == 0:
+                    success_times += 1
+                        # break # 成功后直接跳出循环
+            except Exception as e:
+                error=True
+                act_num=-1
+                ptml_string=None
+                expanded_num=-1
+                record_act_ls=None
+                print(f"error: {e}")
+                ee=e
+                
+            if error:
+                # 设计反馈
+                for feedback_times in range(max_feedback_times):
+                    record_feedback_times += 1
+                    # 紫色输出
+                    print(f"\033[95mfeedback {feedback_times+1} times\033[0m")
+                    # 反馈的输入：现在的 bt，expanded_num，act_num，record_act_ls
+                    if ptml_string is not None:
+                        feedback_prompt = f"The behavior tree generated by your behavior library is:\n{ptml_string}\nThe expanded number is {expanded_num}. \n \
+                            The sequence of actions after running the behavior tree is {record_act_ls}"
+                    else:
+                        feedback_prompt = f"Can't generate behavior tree, error: {ee}"
+                    # 规划出的 behavior tree 并不能完成目标{goal}，清增加动作节点或者条件节点，继续以python代码的形式给出，不需要额外解释。
+                    # feedback_prompt += f"\nThe goal is:\n{goal_str}\nThe behavior tree cannot complete the goal, \
+                    #     please check whether the action is missing or the pre,add,del,num_args and valid_args are incorrect or missing, \
+                    #     please supplement more new action nodes or condition nodes or regenerate and modify the existing action nodes or condition nodes, continue to give the python code, no extra explanation is needed."
+                    feedback_prompt += f"""
+                    The goal is:
+                    {goal_str}
 
-    objects, start_state, goal = parse_bddl(bddl_file)
-    # objects.update(task2objects[task_name])
-    objects = set(task2objects[task_name])
-    # 把 goal 转换为字符串
-    goal_str = ' '.join(goal)
-    print("objects:",objects)
-    print("start_state:",start_state)
-    print("goal_str:",goal_str)
+                    The current behavior tree is unable to achieve the goal. Please review the following aspects:
+                    1. Are the preconditions (pre), effects (add/del), number of arguments (num_args), or valid arguments (valid_args) incorrect or incomplete?
+                    2. Are there any missing actions or conditions?
 
-    # start_state.update({'IsHandEmpty()'})
-    # # goal_str = 'IsHolding(apple)'
-    # goal_str = 'On(apple,coffee_table)'
+                    Based on your analysis, please:
+                    - Modify existing wrong nodes and regenerate them to ensure they align with the goal.\
+                    - Add new action or condition nodes if necessary.\
+                    - Avoid completely duplicate nodes.
 
-    start_state.update(task2start_state[task_name])
-    goal_str = task2goal_str[task_name]
+                    Provide the updated Python code directly, without additional explanations.
+                    """
+                    
+                    # 结合之前的chat记录
+                    tmp_msg = messages
+                    tmp_msg.append({"role": "user", "content": feedback_prompt})
+                    # 生成新的行为库
+                    _ = llm_generate_behavior_lib_need_feedback(bddl_file=bddl_file,goal_str=goal_str,objects=objects,start_state=start_state,\
+                        behavior_lib_path=behavior_lib_path,llm=llm,messages=messages,clear_lib=False)
+                    print(f"\033[95mValidate behavior lib...\033[0m")
+                    try:
+                        error,bt,expanded_num,act_num,record_act_ls,ptml_string = validate_bt_fun(behavior_lib_path=behavior_lib_path, goal_str=goal_str,cur_cond_set=start_state,output_dir=output_dir)
+                        if error == 0:
+                            success_times += 1
+                            break
+                    except Exception as e:
+                        print(f"error: {e}")
+                            
+                
+            # 输出生成的动作库数量和条件库数量
+            action_lib_num = len(os.listdir(os.path.join(behavior_lib_path,'Action')))
+            condition_lib_num = len(os.listdir(os.path.join(behavior_lib_path,'Condition')))
+            print(f"action lib num: {action_lib_num}")
+            print(f"condition lib num: {condition_lib_num}")
+            # 把每次的结果存入表格
+            # 表格的列：任务名,尝试次数，成功次数，动作库数量，条件库数量，成功是否
+            # 表格的行：每次尝试
+            table_data.append([task_name,i+1,action_lib_num,condition_lib_num,expanded_num,act_num,not error])
+        
+        # 输出成功率
+        # 用百分比表示,保留两位小数
+        # 再输出 成功率/总次数
+        print(f"success rate: {success_times/total_try_times*100:.2f}%") 
+        print(f"success rate/total try times: {success_times}/{total_try_times}")
+        
+        # 最后一列为平均值:action_lib_num的平均值,condition_lib_num的平均值,expanded_num的平均值,act_num的平均值
+        # 平均值只需要计算 success 的次数
+        # 如果都是0,就都为0
+        if success_times == 0:
+            action_lib_num_avg = 0
+            condition_lib_num_avg = 0
+            expanded_num_avg = 0
+            act_num_avg = 0
+            record_feedback_times_avg = 0
+        else:
+            action_lib_num_avg = sum([row[2] for row in table_data if row[6]]) / success_times
+            condition_lib_num_avg = sum([row[3] for row in table_data if row[6]]) / success_times
+            expanded_num_avg = sum([row[4] for row in table_data if row[6]]) / success_times
+            act_num_avg = sum([row[5] for row in table_data if row[6]]) / success_times
+            record_feedback_times_avg = sum([row[6] for row in table_data if row[6]]) / success_times
+        table_data.append([task_name,-1,action_lib_num_avg,condition_lib_num_avg,expanded_num_avg,act_num_avg,not error,record_feedback_times_avg])
+        
+        # 把表格数据写入csv文件,英文标题
+        df = pd.DataFrame(table_data, columns=['task_name', 'try_times', 'action_lib_num', 'condition_lib_num','expanded_num','act_num','success_or_not',"record_feedback_times_avg"])
+        df.to_csv(dataframe_path, index=False)
+        
+        # 记录本次 模型 和 任务 的结果
+        latex_data[model][task_name] = [action_lib_num_avg,condition_lib_num_avg,expanded_num_avg,act_num_avg,f"{success_times}/{total_try_times}",f"{record_feedback_times_avg}"]
 
-
-
-
-    # 2. 运行实验
-    total_try_times = 1
-    success_times = 0
-
-    # 新建 result 目录,已经结果csv
-    result_dir = os.path.join(DIR,"results")
-    if not os.path.exists(result_dir):
-        os.makedirs(result_dir)
-    dataframe_path = os.path.join(result_dir,f"exp1_{task_name}_success_rate_{total_try_times}.csv")
-    table_data = []
-
-    for i in range(total_try_times):
-        print(f"try {i+1} times")
-        # 1. 生成行为库
-        llm_generate_behavior_lib(bddl_file=bddl_file,goal_str=goal_str,objects=objects,start_state=start_state,behavior_lib_path=behavior_lib_path)
-        # 2. 验证行为库 
-        print("Validate behavior lib...")
-        try:
-            error,bt,expanded_num,act_num = validate_bt_fun(behavior_lib_path=behavior_lib_path, goal_str=goal_str,cur_cond_set=start_state,output_dir=output_dir)
-            if error == 0:
-                success_times += 1
-        except Exception as e:
-            error=True
-            act_num=-1
-            expanded_num=-1
-            print(f"error: {e}")
+task_names2type = {"task1":"Pick \& Place","task2":"ToggleOn \& ToggleOff","task3":"Open \& PutIn",
+                   "task4":"Home Rearrangement","task5":"Meal Preparation"}
+rows = ""
+for task_name in task_names:
+    type_name = task_names2type[task_name]
+    len_model_ls = len(model_ls)
+    for j,model in enumerate(model_ls):
+        if j == 0:
+            rows += f"{type_name} & "
+        rows += " & ".join(str(x) for x in latex_data[model][task_name])
+        if j == len_model_ls-1:
+            rows += r" \\"+ "\n"
+        else:
+            rows += " & "
             
-        # 输出生成的动作库数量和条件库数量
-        action_lib_num = len(os.listdir(os.path.join(behavior_lib_path,'Action')))
-        condition_lib_num = len(os.listdir(os.path.join(behavior_lib_path,'Condition')))
-        print(f"action lib num: {action_lib_num}")
-        print(f"condition lib num: {condition_lib_num}")
-        # 把每次的结果存入表格
-        # 表格的列：任务名,尝试次数，成功次数，动作库数量，条件库数量，成功是否
-        # 表格的行：每次尝试
-        table_data.append([task_name,i+1,action_lib_num,condition_lib_num,expanded_num,act_num,not error])
+# 把 rows 保存为 txt 文件
+with open(os.path.join(DIR,"results","exp1_SR_models_3F.txt"),"w") as f:
+    f.write(rows)
     
-    # 输出成功率
-    # 用百分比表示,保留两位小数
-    # 再输出 成功率/总次数
-    print(f"success rate: {success_times/total_try_times*100:.2f}%") 
-    print(f"success rate/total try times: {success_times}/{total_try_times}") 
-
-    # 把表格数据写入csv文件,英文标题
-    df = pd.DataFrame(table_data, columns=['task_name', 'try_times', 'action_lib_num', 'condition_lib_num','expanded_num','act_num','success_or_not'])
-    df.to_csv(dataframe_path, index=False)
-
+print("========================================")
+print(rows)
+print("========================================")
 print("done")
+
+
     

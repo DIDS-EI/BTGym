@@ -1,2 +1,16 @@
 selector
-    cond On(apple,coffee_table)
+    cond On(apple,coffeetable)
+    sequence
+        cond IsHolding(apple)
+        selector
+            sequence
+                cond IsNear(coffeetable)
+                act PlaceOn(apple,coffeetable)
+            act MoveTo(coffeetable)
+    sequence
+        cond IsHandEmpty()
+        selector
+            sequence
+                cond IsNear(apple)
+                act Grasp(apple)
+            act MoveTo(apple)

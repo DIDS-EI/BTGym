@@ -1,6 +1,19 @@
 selector
     sequence
-        cond Closed(oven)
         cond ToggledOn(oven)
-        cond In(chicken_leg,oven)
-        cond On(apple,coffee_table)
+        cond IsClose(oven)
+        cond On(apple,coffeetable)
+        cond In(chickenleg,oven)
+    sequence
+        cond IsClose(oven)
+        selector
+            sequence
+                cond In(chickenleg,oven)
+                selector
+                    sequence
+                        cond On(apple,coffeetable)
+                        act ToggleOn(oven)
+                    act PutOn(apple,coffeetable)
+            sequence
+                cond IsNear(oven)
+                act PutIn(chickenleg,oven)

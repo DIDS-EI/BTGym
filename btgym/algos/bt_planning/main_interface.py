@@ -405,6 +405,8 @@ def collect_action_nodes(behavior_lib):
                 else:
                     for args in cls.valid_args:
                         action_list.append(Action(name=cls.get_ins_name(*args), **cls.get_info(*args)))
+    # 去重
+    action_list = list(set(action_list))
 
     # print(f"Collected {len(action_list)} instantiated actions")
     # print(f"Collected {can_expand_ored} action predicates")

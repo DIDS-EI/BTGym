@@ -1,0 +1,5 @@
+Pick \& Place & 0 & 0 & 0 & 0 & 0/10 \\
+ToggleOn \& ToggleOff & 3.0 & 5.0 & 5.0 & 2.0 & 3/10 \\
+Open \& PutIn & 0 & 0 & 0 & 0 & 0/10 \\
+Home Rearrangement & 0 & 0 & 0 & 0 & 0/10 \\
+Meal Preparation & 0 & 0 & 0 & 0 & 0/10 \\

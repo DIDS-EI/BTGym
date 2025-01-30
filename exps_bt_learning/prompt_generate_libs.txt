@@ -1,8 +1,15 @@
 
-1. Based on the BDDL file, generate the behavior libraries necessary for the behavior tree, including all action nodes and condition nodes, and provide them in Python code.
-2. Each action node and condition node should be written as a class, with the class name matching the action name, and should inherit from the OGAction class and OGCondition class, respectively.
-3. Each action node's info dictionary should include four keys: pre, add, del_set, and cost, which represent the preconditions, added conditions, deleted conditions, and the cost of the action or condition, respectively. The cost defaults to 1.
-4. Each action node's valid_args represents the parameters of the action, which are selected from {objects}.
-
-
-
+1. Generate behavior libraries based on goals and objects: \
+Include all action nodes and condition nodes, implemented in Python code.
+2. Each action node should be implemented as a class, \
+with the class name matching the action name and inheriting from the 'OGAction' class.
+Each condition node should be implemented as a class, \
+with the class name matching the condition name and inheriting from the 'OGCondition' class.
+3. Each action info dictionary should include 3 keys: pre, add and del_set, which represent the preconditions, added conditions, deleted conditions, respectively.
+4. Each condition are need to be selected from [In, On, IsNear, ToggledOn, ToggledOff, IsOpen, IsClose, IsHandEmpty, IsHolding],\
+ but maybe not all conditions are needed.
+5. The valid_args of each action node represent the action parameters, selected from {objects}; num_args indicates the number of parameters involved in the action, with some actions potentially involving multiple parameters.
+6. Only provide the code, no need for any explanation.
+7. Below is an example, please note that the actions and conditions in the example are not included in the already generated behavior libraries, \
+and the actions ("Grasp","MoveTo") and conditions ("IsHandEmpty",IsHolding","IsNear") in the example should also be included in your code if necessary. \
+the parameter of 'MoveTo' can be objects.
