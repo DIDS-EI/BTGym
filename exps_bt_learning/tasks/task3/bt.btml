@@ -1,16 +1,2 @@
 selector
     cond In(pen,cabinet)
-    sequence
-        cond IsHolding(pen)
-        selector
-            sequence
-                cond IsNear(cabinet)
-                act Place(pen,cabinet)
-            act Walk(cabinet)
-    sequence
-        cond IsHandEmpty()
-        selector
-            sequence
-                cond IsNear(pen)
-                act Grasp(pen)
-            act Walk(pen)

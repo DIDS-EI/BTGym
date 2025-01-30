@@ -1,6 +1,6 @@
 selector
     sequence
+        cond Closed(oven)
         cond ToggledOn(oven)
         cond In(chicken_leg,oven)
         cond On(apple,coffee_table)
-        cond Closed(oven)

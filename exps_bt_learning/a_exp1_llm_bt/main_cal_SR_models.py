@@ -38,7 +38,7 @@ task2goal_str = {
     "task6":'On(cake,yard_table) & Closed(microwave) & ToggledOn(oven)'
 }
 
-total_try_times = 1
+total_try_times = 10
 
 # model = "gpt-4o"
 model = "gpt-3.5-turbo"
@@ -156,6 +156,8 @@ for task_name in ["task1","task2","task3","task4","task5"]:
         rows += " & ".join(str(x) for x in latex_data[model][task_name])
         if j == 2:
             rows += r" \\"+ "\n"
+        else:
+            rows += " & "
 
 print("========================================")
 print(rows)
