@@ -3,3 +3,41 @@ selector
         cond Closed(cabinet)
         cond On(pen,coffee_table)
         cond On(apple,coffee_table)
+    sequence
+        cond On(apple,coffee_table)
+        selector
+            selector
+                selector
+                    selector
+                        sequence
+                            cond Closed(cabinet)
+                            selector
+                                selector
+                                    sequence
+                                        cond IsHolding(pen)
+                                        selector
+                                            sequence
+                                                cond IsNear(coffee_table)
+                                                act Place(pen,coffee_table)
+                                            act Walk(coffee_table)
+                                    sequence
+                                        cond IsNear(pen)
+                                        cond IsHandEmpty()
+                                        act Grasp(pen)
+                                sequence
+                                    cond IsHandEmpty()
+                                    act Walk(pen)
+                        sequence
+                            cond IsNear(cabinet)
+                            cond IsHandEmpty()
+                            act Close(cabinet)
+                    sequence
+                        cond IsHandEmpty()
+                        act Walk(cabinet)
+                sequence
+                    cond IsHolding(coffee_table)
+                    cond IsNear(table)
+                    act Place(coffee_table,table)
+            sequence
+                cond IsHolding(coffee_table)
+                act Walk(table)
