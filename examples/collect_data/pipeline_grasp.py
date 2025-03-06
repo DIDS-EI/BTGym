@@ -37,7 +37,7 @@ if __name__ == '__main__':
     
     simulator = Simulator(headless=False)
 
-    simulator.load_custom_task(task_name=cfg.task_name, scene_file_name=cfg.scene_file_name)
+    simulator.load_custom_task(task_name=cfg.task_name, scene_file_name=cfg.scene_file_name, load_task_relevant_only=False)
 
     for i in range(10):
         simulator.navigate_to_object(object_name=cfg.target_object_name)

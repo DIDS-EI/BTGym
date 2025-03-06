@@ -48,7 +48,7 @@ if __name__ == '__main__':
     target_pos = target_pos+obj_face_tensor*0.1
     target_euler = [math.pi/2, 0, yaw]
 
-    simulator.set_target_visual_pose([*target_pos,0,0,0],size=0.02)
+    # simulator.set_target_visual_pose([*target_pos,0,0,0],size=0.02)
     simulator.idle_step(10)
     target_local_pose = simulator.pose_to_local([*target_pos, *target_euler])
 

@@ -2428,7 +2428,7 @@
                 },
                 "non_kin": {
                     "ToggledOn": {
-                        "value": true,
+                        "value": false,
                         "hand_in_marker_steps": 0
                     },
                     "Temperature": {

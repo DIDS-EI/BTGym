@@ -18,7 +18,7 @@ from pathlib import Path
 import time
 import math
 from btgym.utils.hdf5 import add_hdf5_sample
-
+import torch as th
 from btgym.utils import og_utils
 
 cfg.task_name='task1'
@@ -49,7 +49,8 @@ if __name__ == '__main__':
         obs['eef_pose'] = state.target_local_pose
 
         grasp_pos = simulator.get_object_pos_by_pose(cfg.target_object_name)['pos'].tolist()
-        # simulator.set_target_visual_pose([*grasp_pos,0,0,0])
+        
+        
         
         state.target_local_pose = simulator.pose_to_local(grasp_pos+state.target_euler)
         print(f"local pose: {state.target_local_pose}")
@@ -67,21 +68,26 @@ if __name__ == '__main__':
                 simulator.idle_step(10)
                 
                 # 在桌子上打点
-                obs = simulator.get_obs()
-                camera_info = simulator.get_camera_info()
-                rgb_img = Image.fromarray(obs['rgb'])
-                rgb_img.save(f'{CURRENT_DIR}/camera_0_rgb.png')
-                molmo_client = MolmoClient()
-                query = f'To place an object on the {cfg.target_object_name.split(".")[0]}, please mark the positions on the {cfg.target_object_name.split(".")[0]} where it can be placed, ensuring the position is stable and safe.'
-                point = molmo_client.get_grasp_pose_by_molmo(query,CURRENT_DIR)
-                if not point: continue
+                # obs = simulator.get_obs()
+                # camera_info = simulator.get_camera_info()
+                # rgb_img = Image.fromarray(obs['rgb'])
+                # rgb_img.save(f'{CURRENT_DIR}/camera_0_rgb.png')
+                # molmo_client = MolmoClient()
+                # query = f'To place an object on the {cfg.target_object_name.split(".")[0]}, please mark the positions on the {cfg.target_object_name.split(".")[0]} where it can be placed, ensuring the position is stable and safe.'
+                # point = molmo_client.get_grasp_pose_by_molmo(query,CURRENT_DIR)
+                # if not point: continue
                 
-                # point 转为机器人相对坐标
-                target_pos = og_utils.pixel_to_world(obs, camera_info, point[0], point[1])
+                # # point 转为机器人相对坐标
+                # target_pos = og_utils.pixel_to_world(obs, camera_info, point[0], point[1])
+                # print(f"target_pos: {target_pos}")
+            
+                target_pos = th.tensor([-0.47, -0.9,  0.4])  # -0.8  1.5
+                simulator.set_target_visual_pose([*target_pos,0,0,0])
                 # 抬高 5厘米 放下
                 target_pos[2] += 0.05
                 target_euler = [0, math.pi/2, math.pi/2]
                 target_local_pose = simulator.pose_to_local([*target_pos, *target_euler])
+                
                 
                 success = simulator.place_object_by_pose(target_local_pose,object_name=cfg.target_object_name)
                 if not success: continue

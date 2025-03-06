@@ -871,7 +871,7 @@ class Simulator:
         img = img.convert('RGB')  # 将RGBA转换为RGB
         img.save(output_path, format='PNG')
     
-    def set_target_visual_pose(self, pose,size = 0.1):
+    def set_target_visual_pose(self, pose,size = 0.02):
 
         pos = th.tensor(pose[:3],device=self.device)
         euler = th.tensor(pose[3:],device=self.device)
